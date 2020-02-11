@@ -1,0 +1,14 @@
+{
+  "name": "ni-firestore-functions",
+  "version": "0.0.2",
+  "peerDependencies": {
+    "@angular/common": "^8.2.14",
+    "@angular/core": "^8.2.14"
+  },
+  "description": "Simple functions for angular to query and update dollections and documents in Firestore databse from Firebase.",
+  "author": "Braulio David",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brauliodavid/ni-library/tree/master/projects/ni-firestore-functions"
+  }
+}

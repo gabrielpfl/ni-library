@@ -1,0 +1,24 @@
+<div class="ni-tabs-groups-container" [ngClass]="{'parent': parent}">
+	<div class="ni-tabs-groups">
+		<ng-content></ng-content>
+		<div *ngFor="let tab of tabs, let i = index">
+			<div *ngIf="tab.niTabLabelTemplate; then niTabLabelTemplate else niDefaultLabelTemplate"></div>
+			<ng-template #niDefaultLabelTemplate>
+				<div class="ni-tab-group" (click)="activateTab(i)" [ngClass]="getTabClasses(tab)">
+					<div class="ni-label-content">
+						<div class="ni-tab-label">{{tab.label}}</div>
+						<i class="ni-tab-arrow material-icons">arrow_forward_ios</i>
+					</div>
+				</div>
+			</ng-template>
+			<ng-template #niTabLabelTemplate>
+				<div class="ni-tab-group" (click)="activateTab(i)" [ngClass]="getTabClasses(tab)">
+					<ng-container *ngTemplateOutlet="tab.niTabLabelTemplate"></ng-container>
+				</div>
+			</ng-template>
+		</div>
+	</div>
+	<div class="ni-tabs-groups-content">
+		<ng-content select="ni-vertical-tab"></ng-content>
+	</div>
+</div>

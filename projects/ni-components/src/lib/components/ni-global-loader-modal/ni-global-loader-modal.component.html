@@ -1,0 +1,15 @@
+<h4>{{data.title}}</h4>
+<mat-progress-bar
+    *ngIf="load"
+    color="primary"
+    mode="determinate"
+    [value]="data.value ? data.value : 0"
+    (animationEnd)="onEnd()"
+>
+</mat-progress-bar>
+<div class="gap-20"></div>
+<div class="dialog-actions">
+  <div class="dialog-action">
+    <button mat-button color="primary" (click)="onClick()">Cancel</button>
+  </div>
+</div>

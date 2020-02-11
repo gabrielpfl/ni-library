@@ -1,0 +1,30 @@
+
+.search-select {
+    display: block !important;
+    width: 100% !important;
+    border: none !important;
+    padding: 12px 10px !important;
+    height: auto !important;
+    border-radius: 4px 4px 0 0 !important;
+    &:focus {
+        outline: 0;
+    }
+    &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        opacity: .5; /* Firefox */
+    }
+}
+
+.no-results-select {
+    display: none;
+    padding: 10px;
+    &.show {
+        display: block;
+    }
+}
+
+.select-loader {
+    display: none;
+    &.show {
+        display: block;
+    }
+}

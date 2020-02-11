@@ -1,0 +1,55 @@
+.wrapper-ni-markdown-editor {
+    position: relative;
+    background-color: #ffffff;
+}
+
+.wrapper-ni-markdown-editor:focus {
+    outline: 0;
+}
+
+.full-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 9999;
+}
+
+.ni-markdown-editor-tollbar {
+    margin-bottom: 10px;
+}
+
+.fs-header {
+    padding: 7px;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 51px;
+    z-index: 99999;
+    border-bottom: 1px solid #eee;
+}
+
+.fs-header > button {
+    float: right;
+}
+
+.fs-container {
+    display: flex;
+    height: 100%;
+    padding-top:51px;
+}
+
+.fs-editor,
+.fs-preview {
+    flex-grow: 1;
+    flex: 0 0 50%;
+    background: #fff;
+}
+
+.fs-preview {
+    padding: 15px;
+    overflow: auto;
+}

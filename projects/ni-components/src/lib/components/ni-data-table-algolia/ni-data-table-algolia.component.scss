@@ -1,0 +1,229 @@
+:host {
+    .tabsJoined .top-tabs {
+        margin-bottom: 0 !important;
+    }
+
+    .ni-table.tabsJoined {
+        //border-top: 1px solid $border-color;
+    }
+}
+
+.ni-data-table {
+    height: 100%;
+}
+
+.ni-search-input {
+    background: transparent;
+    outline: 0;
+    border: none;
+    display: block;
+    width: 100%;
+    font-size: 1rem;
+    opacity: .6;
+    height: 56px;
+    color: inherit;
+    font-family: inherit;
+    &:focus{
+        outline: 0;
+    }
+    &::-webkit-input-placeholder {
+        font-weight: 300;
+    }
+}
+
+.ni-table-filter-section {
+    height: 56px;
+    padding: 0 24px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    display: flex;
+    align-items: center;
+    //transition: background .2s $animation, color .2s $animation;
+}
+
+.data-loading-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.data-loading-shade-edit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    /*background: rgba(0, 0, 0, 0.15);*/
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+.data-rate-limit-reached {
+    color: #980000;
+    max-width: 360px;
+    text-align: center;
+}
+
+/* Structure Ni Table */
+.ni-table {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.no-results-table {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.no-results-table i {
+    font-size: 3rem !important;
+    display: block;
+}
+
+.no-results-table span{
+    display: block;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.ni-table-body-wrapper {
+    height: 100%;
+}
+
+.ni-table-body {
+    overflow: auto;
+    width: 100%;
+    max-width: 100%;
+    height: calc(100% - 112px);
+}
+
+.ni-table-body table {
+    width: 100%
+}
+
+.width2 {
+    min-width: 350px;
+}
+
+.chip-span {
+    font-weight: 500;
+}
+
+.table-paginator {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    left: 0;
+    bottom: 0;
+    border-top-width: 1px;
+    border-top-style: solid;
+}
+
+.table-actions,
+mat-paginator {
+    flex-grow: 1;
+}
+
+.table-actions {
+    padding: 0 24px;
+}
+
+.table-actions-dropdown {
+    max-width: 150px;
+}
+
+.f-menu {
+    display: flex;
+    text-align: left;
+    cursor: pointer;
+    flex-grow: 1;
+    margin-left: 5px;
+    position: relative;
+}
+
+.filters-controls {
+    padding: 5px 0;
+}
+
+.filter-control {
+    display: block;
+    padding: 7px 20px;
+    font-weight: 500;
+}
+
+.f-active {
+    position: absolute;
+    border-radius: 50%;
+    height: 8px;
+    left: 14px;
+    top: 2px;
+    width: 8px;
+}
+
+.ni-cell,
+td {
+    vertical-align: middle;
+    padding: 8px 0 !important;
+}
+
+tr td:nth-child(1){
+    padding-left: 24px !important;
+}
+
+tr th:nth-child(1),
+tr th:last-child{
+    width: 64px !important;
+    max-width: 64px !important;
+    min-width: 64px !important;
+}
+
+tr th {
+    min-width: 200px !important;
+}
+
+tr td:last-child {
+    padding-right: 10px !important;
+}
+
+.ni-cell > div {
+    line-height: 1;
+}
+
+.sub-title-cell {
+    flex: 1 0 100%;
+}
+
+.filter-body {
+    overflow: auto;
+    max-height: 250px;
+}
+
+.ni-filter-footer {
+    border-top-width: 1px;
+    border-top-style: solid;
+    padding: 10px 20px 2px;
+    display: flex;
+}
+
+.row-actions > button {
+    margin-left: auto;
+}

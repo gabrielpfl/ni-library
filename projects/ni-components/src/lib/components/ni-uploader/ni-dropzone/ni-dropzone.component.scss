@@ -1,0 +1,20 @@
+.dropzone { 
+    //display: flex;
+    //align-items: center;
+    //justify-content: center;
+    //flex-direction: column; 
+    border: 2px solid transparent;
+    &.hovering {
+        border: 2px solid #f16624;
+        color: #dadada !important;
+    }
+  
+    .file-label {
+        font-size: 1.2em;
+    }
+  }
+
+.uploading {
+    width: 100% !important;
+}
+  

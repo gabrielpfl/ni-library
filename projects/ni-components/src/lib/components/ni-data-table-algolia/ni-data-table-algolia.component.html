@@ -1,0 +1,125 @@
+<div class="ni-data-table">
+	<div class="ni-table" [ngClass]="{'tabsJoined': tabsStyle && tabsStyle == 'joined'}">
+		<div class="ni-table-header">
+			<div class="ni-table-filter-section">
+				<input class="ni-search-input" [placeholder]="searchLabel ? searchLabel : 'Search'" [formControl]="search ? search : ''">
+				<button *ngIf="search.value" mat-icon-button (click)="clearInput()">
+					<mat-icon>close</mat-icon>
+				</button>
+			</div>
+		</div>
+		<div class="ni-table-body-wrapper" [ngStyle]="{'position': 'relative'}">
+			<div class="ni-table-body">
+				<div class="data-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
+					<mat-progress-spinner *ngIf="isLoadingResults" [color]="'accent'" [mode]="'indeterminate'" [diameter]="'50'" value="50" [strokeWidth]="'3'"></mat-progress-spinner>
+					<div class="data-rate-limit-reached" *ngIf="isRateLimitReached">
+						Rate limit has been reached. It will be reset in one minute.
+					</div>
+				</div>
+				<table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortActive" matSortDisableClear [matSortDirection]="sortDirection">
+					
+					<!-- Select Column -->
+					<ng-container matColumnDef="select">
+						<th mat-header-cell *matHeaderCellDef [ngClass]="'checkboxCell'"> 
+							<mat-checkbox (change)="$event ? masterToggle() : null"
+								[checked]="selection.hasValue() && isAllSelected()"
+								[indeterminate]="selection.hasValue() && !isAllSelected()">
+							</mat-checkbox>
+						</th>
+						<td mat-cell *matCellDef="let service" [ngClass]="'checkboxCell'">
+							<mat-checkbox (click)="$event.stopPropagation()"
+								(change)="$event ? selection.toggle(service) : null"
+								[checked]="selection.isSelected(service)">
+							</mat-checkbox>
+						</td>
+					</ng-container>
+				
+					<!-- Columns -->
+					<ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
+						<th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sorting ? column.key : null" [disabled]="!column.sorting ? true : false" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}">
+							{{column.label}}
+							<span *ngIf="column.filter" #filtersPanel="matMenuTrigger" [matMenuTriggerFor]="filterMenu" class="f-menu">
+								<i class="material-icons">filter_list</i>
+								<span *ngIf="column.hasOwnProperty('filtered') && column.filtered" class="f-active"></span>
+							</span>
+							<mat-menu #filterMenu="matMenu" xPosition="before">
+								<div class="filter-body">
+									<div *ngIf="column.filter" class="filters-controls" (click)="$event.stopPropagation()">
+										<mat-checkbox 
+											*ngFor="let option of column.filter.data.controls" 
+											[formControl]="option.controls.selected"
+											(change)="runFilters()" 
+											class="filter-control"
+										>{{option.value.label}}</mat-checkbox>
+									</div>
+								</div>
+								<div *ngIf="column.filter" class="ni-filter-footer">
+									<button mat-stroked-button (click)="clearFiltersCol(column)" [disabled]="column.filter.hasOwnProperty('canFilter') && !column.filter.canFilter ? true : false">Clear Filters</button>
+								</div>
+							</mat-menu>
+						</th>
+						<td mat-cell *matCellDef="let doc" class="ni-cell" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}">
+
+							<!-- <div *ngIf="column.type === 'link'">
+								<a [routerLink]="column.getLink(doc)" class="row-table-link h6">{{doc[column.key]}}</a>
+							</div>
+							<div *ngIf="column.type === 'pipe'">
+								<span *ngIf="column.chipsColors" class="chip-icon-color {{column.chipsColors[(( deepColKey(doc, column.key) | cellDocPipe: column.pipeArgs) | async)]}}-bg-color"></span><span [ngClass]="{'chip-span': column.chipsColors}">{{ (( deepColKey(doc, column.key) | cellDocPipe: column.pipeArgs) | async) }}</span>
+							</div>
+							<div *ngIf="column.type === 'chip'">
+								<span class="chip-icon-color {{column.chipsColors[doc[column.key]]}}-bg-color"></span><span class="chip-span">{{doc[column.key]}}</span>
+							</div> -->
+							<div>
+								<span [innerHTML]="sanitizer.bypassSecurityTrustHtml(column.content ? column.content(doc) : '')" (click)="column.onClick ? column.onClick(doc) : ''"></span>
+							</div>
+							<!-- <div *ngIf="column.sub" class="sub-title-cell"><small>{{doc[column.sub.key]}}</small></div> -->
+
+						</td>
+					</ng-container>
+
+					<!-- Actions Column -->
+					<ng-container matColumnDef="row-actions">
+						<th mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !rowActions}"></th>
+						<td mat-cell *matCellDef="let doc, let i = index" [ngClass]="{'hidden': !rowActions}"> 
+							<div *ngIf="rowActions && rowActions.length > 0" class="row-actions">
+								<button mat-icon-button [matMenuTriggerFor]="actions">
+									<mat-icon>more_vert</mat-icon>
+								</button>
+								<mat-menu #actions="matMenu">
+									<div *ngFor="let action of rowActions">
+										<button mat-menu-item (click)="runRowAction(action, doc, i)" [disabled]="!getRowActionPermissions(action, doc, i)">
+											<span>
+												<mat-icon>{{action.icon}}</mat-icon>
+												<b>{{action.label}}</b>
+											</span>
+										</button>
+									</div>
+								</mat-menu>
+							</div>
+						</td>
+					</ng-container>
+
+					<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="header-row"></tr>
+					<tr mat-row #tableRow *matRowDef="let row; columns: displayedColumns; let x = index" [@removingRow]="dataSource.data[x]['status']"></tr>
+				</table>
+			</div>
+		</div>
+		<div class="table-paginator">
+			<div *ngIf="tableActions" class="table-actions">
+				<div class="table-actions-dropdown">
+					<mat-form-field>
+						<mat-select placeholder="Actions">
+							<mat-option *ngFor="let action of tableActions" (click)="runTableAction(action)" [disabled]="!getTableActionPermissions(action)">
+								<span>
+									<mat-icon>{{action.icon}}</mat-icon>
+									<b>{{action.label}}</b>
+								</span>
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+			</div>
+			<mat-paginator [length]="resultsLength" [pageSizeOptions]="[5, 10, 20, 50]" [pageSize]="searchParams.hitsPerPage" showFirstLastButtons></mat-paginator>
+		</div>
+	</div>
+</div>

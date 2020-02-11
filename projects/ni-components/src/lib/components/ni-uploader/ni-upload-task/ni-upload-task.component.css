@@ -1,0 +1,19 @@
+progress::-webkit-progress-value {
+	transition: width 0.1s ease;
+}
+
+img {
+    width: 250px;
+}
+
+.task-row {
+	display: flex;
+	padding: 15px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+.actions-upload {
+	flex-grow: 1;
+	text-align: right;
+}

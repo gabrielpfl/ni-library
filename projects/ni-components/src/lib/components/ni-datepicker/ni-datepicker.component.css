@@ -1,0 +1,34 @@
+.normal-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.dp-hidden {
+    height: 0 !important;
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    visibility: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.wraper-dp {
+    flex-grow: 1;
+}
+
+.dp-input-normal {
+    cursor: pointer;
+}
+
+.dp-right {
+    margin-left: auto;
+}
+
+.dp-toggle {
+    margin-right: 7px;
+    font-size: 18px;
+    cursor: pointer;
+}

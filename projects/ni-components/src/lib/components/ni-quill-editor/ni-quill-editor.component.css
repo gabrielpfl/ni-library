@@ -1,0 +1,15 @@
+.wrapper-ni-quill-editor {
+    position: relative;
+}
+
+.wrapper-ni-quill-editor:focus {
+    outline: 0;
+}
+
+.editor-overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}

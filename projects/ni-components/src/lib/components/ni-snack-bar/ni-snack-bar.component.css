@@ -1,0 +1,17 @@
+.snack-bar-wraper {
+    display: flex;
+    align-items: center;
+}
+
+.snack-bar-wraper > div {
+    flex-grow: 1;
+}
+
+.snack-bar-icon {
+    display: flex;
+    flex: 0 20px;
+}
+
+.snack-bar-icon i {
+    flex-grow: 1;
+}

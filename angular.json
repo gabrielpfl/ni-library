@@ -1,0 +1,147 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "ni-components": {
+      "projectType": "library",
+      "root": "projects/ni-components",
+      "sourceRoot": "projects/ni-components/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ni-components/tsconfig.lib.json",
+            "project": "projects/ni-components/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ni-components/src/test.ts",
+            "tsConfig": "projects/ni-components/tsconfig.spec.json",
+            "karmaConfig": "projects/ni-components/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ni-components/tsconfig.lib.json",
+              "projects/ni-components/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ni-helper-snippets": {
+      "projectType": "library",
+      "root": "projects/ni-helper-snippets",
+      "sourceRoot": "projects/ni-helper-snippets/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ni-helper-snippets/tsconfig.lib.json",
+            "project": "projects/ni-helper-snippets/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ni-helper-snippets/src/test.ts",
+            "tsConfig": "projects/ni-helper-snippets/tsconfig.spec.json",
+            "karmaConfig": "projects/ni-helper-snippets/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ni-helper-snippets/tsconfig.lib.json",
+              "projects/ni-helper-snippets/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ni-firestore-functions": {
+      "projectType": "library",
+      "root": "projects/ni-firestore-functions",
+      "sourceRoot": "projects/ni-firestore-functions/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ni-firestore-functions/tsconfig.lib.json",
+            "project": "projects/ni-firestore-functions/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ni-firestore-functions/src/test.ts",
+            "tsConfig": "projects/ni-firestore-functions/tsconfig.spec.json",
+            "karmaConfig": "projects/ni-firestore-functions/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ni-firestore-functions/tsconfig.lib.json",
+              "projects/ni-firestore-functions/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ni-algolia-functions": {
+      "projectType": "library",
+      "root": "projects/ni-algolia-functions",
+      "sourceRoot": "projects/ni-algolia-functions/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ni-algolia-functions/tsconfig.lib.json",
+            "project": "projects/ni-algolia-functions/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ni-algolia-functions/src/test.ts",
+            "tsConfig": "projects/ni-algolia-functions/tsconfig.spec.json",
+            "karmaConfig": "projects/ni-algolia-functions/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ni-algolia-functions/tsconfig.lib.json",
+              "projects/ni-algolia-functions/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }},
+  "defaultProject": "ni-components"
+}

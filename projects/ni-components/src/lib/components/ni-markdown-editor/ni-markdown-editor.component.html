@@ -1,0 +1,35 @@
+<div class="wrapper-ni-markdown-editor" [ngClass]="{'fullScreen': fullScreen}">
+	<div *ngIf="!disable" class="ni-markdown-editor-tollbar">
+		<button mat-stroked-button (click)="fullScreen = !fullScreen">
+			<mat-icon>fullscreen</mat-icon>Full Screen
+		</button>&nbsp;
+		<button mat-stroked-button (click)="preview = !preview">
+			<mat-icon *ngIf="!preview">remove_red_eye</mat-icon>
+			<mat-icon *ngIf="preview">edit</mat-icon>
+			&nbsp;{{ preview ? 'Editor ' : 'Preview' }}
+		</button>
+	</div>
+	<div *ngIf="!preview && !disable" class="editor">
+		<div ace-editor [(text)]="value" [options]="options" style="min-height: 200px; height: auto; width:100%; overflow: auto"></div>
+	</div>
+	<div *ngIf="preview || disable" class="preview">
+		<markdown [data]="value"></markdown>
+	</div>
+
+	<div *ngIf="fullScreen" class="full-screen">
+		<div class="fs-header">
+			<button mat-stroked-button (click)="fullScreen = !fullScreen">
+				<mat-icon>fullscreen_exit</mat-icon> Exit Full Screen
+			</button>
+		</div>
+		<div class="fs-container">
+			<div class="fs-editor">
+				<div ace-editor [(text)]="value" [options]="optionsFullScreen" style="min-height: 100%; height: auto; width:100%; overflow: auto"></div>
+			</div>
+			<div class="fs-preview">
+				<markdown [data]="value"></markdown>
+			</div>
+		</div>
+	</div>
+	<markdown #markDown [data]="value" [ngStyle]="{'display': 'none'}"></markdown>
+</div>

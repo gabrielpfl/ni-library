@@ -1,0 +1,12 @@
+<div class="sidebar-title"><h4>{{title}}</h4></div>
+<div class="page-nav">
+  <div 
+    *ngFor="let item of menu"
+    #rla="routerLinkActive"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{exact: false}"
+    routerLink="{{item.routing}}"
+    [ngClass]="{'active': rla.isActive}" 
+    class="page-nav-item"
+    >{{item.title}}</div>
+</div>

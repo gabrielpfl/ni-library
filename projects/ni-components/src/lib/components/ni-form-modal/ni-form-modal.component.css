@@ -1,0 +1,16 @@
+.label-radio-list {
+    margin-bottom: 10px;
+    display: block;
+}
+
+.radio-list mat-radio-button {
+    display: block;
+}
+
+.checkbox-item {
+    display: block;
+}
+
+.field-control {
+    margin-bottom: 15px;
+}

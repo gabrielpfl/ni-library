@@ -1,0 +1,49 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "ni-components": [
+        "dist/ni-components"
+      ],
+      "ni-components/*": [
+        "dist/ni-components/*"
+      ],
+      "ni-helper-snippets": [
+        "dist/ni-helper-snippets"
+      ],
+      "ni-helper-snippets/*": [
+        "dist/ni-helper-snippets/*"
+      ],
+      "ni-firestore-functions": [
+        "dist/ni-firestore-functions"
+      ],
+      "ni-firestore-functions/*": [
+        "dist/ni-firestore-functions/*"
+      ],
+      "ni-algolia-functions": [
+        "dist/ni-algolia-functions"
+      ],
+      "ni-algolia-functions/*": [
+        "dist/ni-algolia-functions/*"
+      ]
+    }
+  }
+}

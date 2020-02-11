@@ -1,0 +1,14 @@
+{
+  "name": "ni-algolia-functions",
+  "version": "0.0.2",
+  "description": "Simple functions for angular to query and update data in algolia indices",
+  "peerDependencies": {
+    "@angular/common": "^8.2.14",
+    "@angular/core": "^8.2.14"
+  },
+  "author": "Braulio David",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brauliodavid/ni-library/tree/master/projects/ni-algolia-functions"
+  }
+}

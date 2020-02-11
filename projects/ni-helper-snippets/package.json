@@ -1,0 +1,14 @@
+{
+  "name": "ni-helper-snippets",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^8.2.14",
+    "@angular/core": "^8.2.14"
+  },
+  "description": "Some helpers for angular development",
+  "author": "Braulio David",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brauliodavid/ni-library/tree/master/projects/ni-helper-snippets"
+  }
+}

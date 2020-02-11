@@ -1,0 +1,5 @@
+<div class="top-tabs mat-elevation-z">
+	<mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="changeTab($event)">
+		<mat-tab *ngFor="let tab of tabs" [label]="tab.label"></mat-tab>
+	</mat-tab-group>
+</div>

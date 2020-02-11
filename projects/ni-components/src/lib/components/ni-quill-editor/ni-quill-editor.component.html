@@ -1,0 +1,46 @@
+<div class="wrapper-ni-quill-editor">
+	<quill-editor
+		*ngIf="!disable && active && !uploader"
+		#editor 
+		theme="bubble"
+		[placeholder]="placeholder"
+		[bounds]="bounds"
+		[format]="format"
+		[style.display]="hide ? 'none' : 'block'"
+		[(ngModel)]="value"
+		[ngStyle]="{'min-height': minHeight}"
+		[modules]="modules ? modules : null"
+		(onSelectionChanged)="onSelectionChanged($event)"
+		(onContentChanged)="onContentChanged($event)"
+		(onFocus)="onFocusEvent($event)"
+		(onEditorCreated)="created($event)"
+	>
+	</quill-editor>
+
+	<ni-dropzone *ngIf="!disable && active && uploader" [collection]="uploader.filesCollection" [fileObj]="uploader.fileObj" [path]="uploader.filesPath" [dropzone]="uploader.dropzone ? uploader.dropzone : false" [hiddenUploader]="hiddenUploader" (uploaded)="uploaded($event)">
+		<div [ngStyle]="{'min-height': minHeight}">
+			<quill-editor
+				#editor 
+				theme="bubble"
+				[placeholder]="placeholder"
+				[bounds]="bounds"
+				[format]="format"
+				[style.display]="hide ? 'none' : 'block'"
+				[(ngModel)]="value"
+				[ngStyle]="{'min-height': minHeight}"
+				[modules]="modules ? modules : null"
+				(onSelectionChanged)="onSelectionChanged($event)"
+				(onContentChanged)="onContentChanged($event)"
+				(onFocus)="onFocusEvent($event)"
+				(onEditorCreated)="created($event)"
+			>
+			</quill-editor>
+		</div>
+	</ni-dropzone>
+
+	<div *ngIf="disable || !active" class="ql-bubble">
+		<div [innerHTML]="sanitizer.bypassSecurityTrustHtml(value)" class="ql-editor"></div>
+	</div>
+
+	<span *ngIf="!active" class="editor-overlay" (click)="onFocusable()"></span>
+</div>

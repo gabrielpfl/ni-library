@@ -1,0 +1,31 @@
+<div class="ni-table-filter-section" [formGroup]="tableFilters">
+	<input class="ni-search-input" [placeholder]="searchLabel ? searchLabel : 'Search'" formControlName="search">
+	<button *ngIf="filtered || tableFilters.get('search').value" mat-icon-button (click)="clearInput()">
+		<mat-icon>close</mat-icon>
+	</button>
+	<div *ngIf="filters" formGroupName="filtersSections">
+		<button mat-icon-button [matMenuTriggerFor]="filters">
+			<mat-icon>filter_list</mat-icon>
+			<span *ngIf="activeFilters && activeFilters.length > 0" class="filtered"></span>
+		</button>
+		<mat-menu #filters="matMenu" [class]="'ni-table-filters'">
+			<div (click)="$event.stopPropagation()">
+				<div *ngFor="let section of tableFilters.get('filtersSections').controls, let i = index" [formGroupName]="i" class="ni-filter-section">
+					<div class="ni-filter-header" (click)="showFilterSection(i)">{{section.value.label}}</div>
+					<div class="ni-filter-body" [ngClass]="{ 'opened' : section.value.open }">
+						<div *ngIf="section.value.type === 'radio'">
+							<mat-radio-group formControlName="value">
+								<mat-radio-button *ngFor="let choice of section.get('choices').controls" value="{{choice.value.id}}" class="ni-radio-choice">{{choice.value.name}}</mat-radio-button>
+							</mat-radio-group>
+						</div>
+					</div>
+				</div>
+				<div class="ni-filter-footer">
+					<button mat-button (click)="clearFilters()" class="ni-btn-filter-clear">Clear</button>
+					<button mat-button (click)="cancelFilters()" class="ni-btn-filter-cancel">Cancel</button>
+					<button mat-raised-button color="primary" class="ni-btn-filter-apply" (click)="runFilters()">Apply</button>
+				</div>
+			</div>
+		</mat-menu>
+	</div>
+</div>

@@ -1,0 +1,12 @@
+<div class="snack-bar-wraper">
+	<span class="snack-bar-icon">
+		<i class="material-icons" [ngClass]="{'info' : !type || type == 'info', 'error': type === 'error', 'success': type === 'success'}">
+			{{ !type || type == 'info' ? 'error' : ''}}
+			{{ type == 'error' ? 'error' : ''}}
+			{{ type == 'success' ? 'check_circle' : ''}}
+		</i>
+	</span>
+	<div>
+		<b>{{message}}</b>
+	</div>
+</div> 

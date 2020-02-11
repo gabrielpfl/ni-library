@@ -1,0 +1,14 @@
+<mat-form-field>
+    <mat-select placeholder="{{placeholder}}" [value]="selectValue" (selectionChange)="onChange($event)" [multiple]="multiple" (openedChange)="openedChanges()" [disabled]="disableSelect">
+        <input NiSelectInput #searchOptions class="search-select" placeholder="{{inputPlaceholder ? inputPlaceholder : 'Search...'}}" [formControl]="searchCtrl">
+        <mat-progress-bar mode="indeterminate" class="select-loader" [ngClass]="{ 'show' : showLoader == true}"></mat-progress-bar>
+        <div class="no-results-select" [ngClass]="{ 'show' : (filteredData.length == 0 && filteredGroupData.length == 0)}">No results found.</div>
+        <mat-option [ngStyle]="{'display': 'none'}"></mat-option>
+        <mat-option *ngFor="let option of filteredData" [value]="option.value">{{ option.viewValue }}</mat-option>
+        <mat-optgroup *ngFor="let group of filteredGroupData" [label]="group.label">
+            <mat-option *ngFor="let option of group.data" [value]="option.value">
+                {{ option.viewValue }}
+            </mat-option>
+        </mat-optgroup>
+    </mat-select>
+</mat-form-field>

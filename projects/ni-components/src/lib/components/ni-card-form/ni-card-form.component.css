@@ -1,0 +1,13 @@
+.dp {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.text-area-field {
+    min-height: 200px;
+}
+
+.hidden {
+    display: none;
+}
