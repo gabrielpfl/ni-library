@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, forwardRef } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
   selector: 'ni-chips-select',

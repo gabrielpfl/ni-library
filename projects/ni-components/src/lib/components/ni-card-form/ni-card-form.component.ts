@@ -22,7 +22,7 @@ export class NiCardFormComponent implements OnInit {
 	editFields = []
 
 	dateFieldControl = new FormControl()
-	@ViewChild('dateField', { static: false }) dateField
+	@ViewChild('dateField') dateField
 
     constructor(
 		public functions: NiHelperSnippetsService,

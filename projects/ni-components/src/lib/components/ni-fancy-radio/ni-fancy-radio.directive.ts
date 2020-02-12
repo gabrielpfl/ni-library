@@ -6,7 +6,7 @@ import { NiFancyRadioComponent } from './ni-fancy-radio.component';
 })
 export class FancyRadioChoiceDirective implements OnInit, OnDestroy, AfterContentInit {
     @Input() value
-    @ContentChild(FancyRadioChoiceDirective, { read: ElementRef, static: false }) choice: ElementRef
+    @ContentChild(FancyRadioChoiceDirective, { read: ElementRef }) choice: ElementRef
 
     constructor(private fancyRadio:NiFancyRadioComponent){
     }

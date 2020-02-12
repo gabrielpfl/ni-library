@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, Output, EventEmitter } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material'
+import { MatTableDataSource } from '@angular/material/table'
+import { MatSort } from '@angular/material/sort'
+import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, Subject, merge, of as observableOf } from 'rxjs'
 import { catchError, map, startWith, switchMap, takeUntil, debounceTime } from 'rxjs/operators'
 import { SelectionModel } from '@angular/cdk/collections'
@@ -75,7 +77,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	isRateLimitReached = false;
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild(MatSort, { static: true }) sort: MatSort;
-	@ViewChild(NiTopTabs, { static: false }) topTabs: NiTopTabs;
+	@ViewChild(NiTopTabs, { static: true }) topTabs: NiTopTabs;
 
 	filter = new BehaviorSubject<any>(null)
 

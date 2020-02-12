@@ -1,8 +1,9 @@
 import { Inject, Injectable, Optional, NgModule } from '@angular/core';
-import { MAT_DATE_LOCALE, MatDatepickerModule, MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';   
+import { MatDatepickerModule } from '@angular/material/datepicker';   
 import { MomentDateAdapter, MatMomentDateAdapterOptions, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { Moment } from 'moment';
 import * as _moment from 'moment-timezone';
+import { MAT_DATE_LOCALE, MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 const moment = _moment
 
 // See the Moment.js docs for the meaning of these formats:

@@ -17,7 +17,7 @@ export class NiAlgoliaFunctionsModule {
 		}
 	}
 
-	static forRoot(config: NiAlgoliaConfig): ModuleWithProviders {
+	static forRoot(config: NiAlgoliaConfig): ModuleWithProviders<NiAlgoliaFunctionsModule> {
 		return {
 			ngModule: NiAlgoliaFunctionsModule,
 			providers: [

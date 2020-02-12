@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, Output, EventEmitter, Pipe, PipeTransform } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material'
+import { MatTableDataSource } from '@angular/material/table'
+import { MatSort } from '@angular/material/sort'
+import { MatPaginator } from '@angular/material/paginator';
 import { Subject, Observable, merge, of as observableOf } from 'rxjs'
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators'
 import { SelectionModel } from '@angular/cdk/collections'

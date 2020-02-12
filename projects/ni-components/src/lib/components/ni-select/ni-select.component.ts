@@ -15,7 +15,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NiHelperSnippetsService } from 'ni-helper-snippets'
 import { FormControl } from '@angular/forms'
 
-import {MatSelectChange, MatSelect} from '@angular/material';
+import {MatSelectChange, MatSelect} from '@angular/material/select';
 
 @Component({
 	selector: 'ni-option',

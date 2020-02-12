@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core'
-import { MatDialog, MatSnackBar, MatDialogRef, MatSnackBarRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NiSnackBar } from './components/ni-snack-bar/ni-snack-bar.component';
-import { Observable } from 'rxjs';
 import { NiConfirmModal } from './components/ni-confirm-modal/ni-confirm-modal.component';
 import { NiFormModal, NiFormData } from './components/ni-form-modal/ni-form-modal.component';
 import { NiGlobalLoaderModal } from './components/ni-global-loader-modal/ni-global-loader-modal.component';
+import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'

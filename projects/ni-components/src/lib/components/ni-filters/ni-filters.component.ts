@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy } 
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { BehaviorSubject, Subject, Observable} from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { MatMenuTrigger } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'ni-filters',
@@ -17,7 +17,7 @@ export class NiFilters implements OnInit, OnDestroy {
 	@Input() algoliaIndex: string
 	@Input() searchLabel: string
 
-	@ViewChild(MatMenuTrigger, { static: false }) dropdown: MatMenuTrigger;
+	@ViewChild(MatMenuTrigger) dropdown: MatMenuTrigger;
 
 	tableFilters: FormGroup
 

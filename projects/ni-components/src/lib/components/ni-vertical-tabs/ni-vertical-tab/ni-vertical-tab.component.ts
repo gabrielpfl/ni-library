@@ -12,7 +12,7 @@ export class NiVerticalTab implements OnInit {
 	@Input() scroll: boolean = false
 	active: boolean = false
 
-	@ContentChild(NiVerticalTabLabelDirective, { read: TemplateRef, static: false }) niTabLabelTemplate;
+	@ContentChild(NiVerticalTabLabelDirective, { read: TemplateRef }) niTabLabelTemplate;
 
 	constructor() { }
 

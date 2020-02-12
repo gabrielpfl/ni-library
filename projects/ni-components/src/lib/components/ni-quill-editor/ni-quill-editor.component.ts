@@ -40,8 +40,8 @@ export class NiQuillEditor implements ControlValueAccessor, OnInit {
 	@Input() minHeight: string = '0px'
 	@Output() onFocus = new EventEmitter()
 	@Output() upload = new EventEmitter()
-	@ViewChild('editor', { static: false }) editor: QuillEditorComponent
-	@ViewChild(NiDropzoneComponent, { static: false }) dropzone: NiDropzoneComponent
+	@ViewChild('editor') editor: QuillEditorComponent
+	@ViewChild(NiDropzoneComponent) dropzone: NiDropzoneComponent
 
 	editorInstance
 	range
