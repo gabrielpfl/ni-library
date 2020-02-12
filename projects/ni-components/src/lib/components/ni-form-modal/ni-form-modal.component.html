@@ -36,7 +36,7 @@
 				</mat-error>
 			</mat-form-field>-->
 			<ni-datepicker *ngIf="field.value.type === 'date'" formControlName="value" [placeholder]="field.value.label"></ni-datepicker>
-			<ni-select *ngIf="field.value.type === 'select'" [placeholder]="field.value.label" formControlName="value" (opened)="field.value.hasOwnProperty('onOpen') ? field.value['onOpen']() : ''">
+			<ni-select *ngIf="field.value.type === 'select'" [placeholder]="field.value.label" [multiple]="field.value.multiple" formControlName="value" (opened)="field.value.hasOwnProperty('onOpen') ? field.value['onOpen']() : ''">
 				<ni-option *ngFor="let choice of field.value.choices" [value]="choice.value" [viewValue]="choice.label"></ni-option>
 			</ni-select>
 			<div *ngIf="field.value.type === 'radio'">

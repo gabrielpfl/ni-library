@@ -50,7 +50,8 @@ import { SgCalendarBodyComponent } from './calendar-body/calendar-body.component
 
     SgDatepickerComponent,
     SgDatepickerInputDirective,
-    SgDatepickerContentComponent],
+    SgDatepickerContentComponent
+  ],
   entryComponents: [
     MatDatepicker,
     MatDatepickerToggle,

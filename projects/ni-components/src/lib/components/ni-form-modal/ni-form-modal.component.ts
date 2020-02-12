@@ -30,6 +30,7 @@ export interface NiFormField {
 	startAt?: any
 	permissions?: boolean
 	fieldClass?: string
+	multiple?: boolean
 	onOpen?(): void
 	onLoad?(value: any): void
 	onChange?(value: any): void
@@ -119,6 +120,10 @@ export class NiFormModal implements OnDestroy {
 
 			if(field.startAt){
 				group.addControl('startAt', new FormControl(field.startAt))
+			}
+
+			if(field.multiple){
+				group.addControl('multiple', new FormControl(field.multiple))
 			}
 
 			if(field.fieldClass){
