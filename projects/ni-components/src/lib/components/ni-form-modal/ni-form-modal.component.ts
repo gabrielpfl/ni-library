@@ -6,6 +6,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import * as _moment from 'moment'
 import { Subject, Observable } from 'rxjs';
 import { takeUntil, take, switchAll, switchMap } from 'rxjs/operators';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 const moment = _moment
 
@@ -192,23 +193,19 @@ export class NiFormModal implements OnDestroy {
 		})
 	}
 
-	checkedChoice(field: FormGroup, index): boolean {
-		let value = field.get('value').value
+	checkedChoice(field: FormGroup, choice, index): boolean {
+		const value = field.get('value').value
 
-		if(value.includes(index)){
-			return true
-		}
-
-		return false
+		return value.some(v => v == choice.value)
 	}
 
-	changeCheckbox(field: FormGroup, index){
+	changeCheckbox(event: MatCheckboxChange, field: FormGroup, choice, index){
 		let value = field.get('value').value
 
-		if(value.includes(index)){
-			value = this.functions.removeElement(value, index)
+		if(!event.checked){
+			value = value.filter(v => v != choice.value)
 		}else{
-			value.push(index)
+			value.push(choice.value)
 		}
 
 		field.get('value').setValue(value)
