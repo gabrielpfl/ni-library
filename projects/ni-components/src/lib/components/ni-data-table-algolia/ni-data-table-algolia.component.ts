@@ -13,6 +13,7 @@ import { NiAlgoliaService } from 'ni-algolia-functions'
 import { NiTopTabs } from '../ni-top-tabs/ni-top-tabs.component'
 
 import { FormControl, FormGroup } from '@angular/forms'
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'ni-data-table-algolia',
@@ -78,12 +79,16 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild(MatSort, { static: true }) sort: MatSort;
 	@ViewChild(NiTopTabs, { static: true }) topTabs: NiTopTabs;
+	@ViewChild('filterPanel', { static: false } ) filterMenu: MatMenuTrigger
 
 	filter = new BehaviorSubject<any>(null)
 
 	previousPageIndex
 	activeTab
 	statusFiltered: boolean = false
+
+	contextMenuPosition = { x: '0px', y: '0px' }
+	currentFilter
 
 	private unsubscribe = new Subject<void>()
 
@@ -178,21 +183,42 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 
 				//the filters in the columns
 				this.columns.map(column => {
-					let ORFilters = []
-					if(column.filter){
-						column.filter.data.getRawValue().map(option => {
-							if(option.selected){
-								ORFilters = [...ORFilters, {
-									key: column.filter.key,
-									value: option.value,
-									operator: column.filter.operator
-								}]
+					if(column.filters && column.filters.length){
+						column.filters.map(filter => {
+							let ORFilters = []
+							if(filter.type === 'checkbox'){
+								filter.choices.getRawValue().map(choice => {
+									if(choice.selected){
+										ORFilters = [...ORFilters, {
+											key: filter.key,
+											value: choice.value,
+											operator: filter.operator
+										}]
+									}
+								})
+								filter['filtered'] = filter.choices.getRawValue().some(choice => choice.selected)
+							} else if(filter.type === 'daterange'){
+								if(filter.from.value && filter.to.value){
+									filters = [...filters, 
+										[{
+											key: filter.key,
+											value: filter.from.value.unix()*1000,
+											operator: '>='
+										}],
+										[{
+											key: filter.key,
+											value: filter.to.value.add(1, 'd').unix()*1000,
+											operator: '<='
+										}]
+									]
+								}
+								filter['filtered'] = filter.from.value && filter.to.value
+							}
+
+							if(ORFilters.length){
+								filters = [...filters, ORFilters]
 							}
 						})
-						column['filtered'] = column.filter.data.getRawValue().some(option => option.selected)
-					}
-					if(ORFilters.length){
-						filters = [...filters, ORFilters]
 					}
 				})
 				
@@ -232,6 +258,19 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 			this.dataSource.data = data
 			return;
 		})
+	}
+
+	openFilter(event, filter, filterPanel){
+		event.preventDefault();
+		this.currentFilter = filter
+    	this.contextMenuPosition.x = event.clientX + 'px';
+    	this.contextMenuPosition.y = event.clientY + 'px';
+		filterPanel.openMenu()
+		return false
+	}
+
+	filterClosed(event){
+		this.currentFilter = null
 	}
 
 	runFilters(){
@@ -290,16 +329,22 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 		this.search.setValue('')
 	}
 
-	clearFiltersCol(column){
-		column.filter.data.controls.map((filter: FormGroup, i) => {
-			if(!filter.get('selected').disabled){
-				filter.get('selected').setValue(false)
-			}
-			
-			if(i === (column.filter.data.controls.length - 1)){
-				this.filter.next('filter')
-			}
-		})
+	clearFiltersCol(filter){
+		if(filter.type === 'checkbox'){
+			filter.choices.controls.map((choiceForm: FormGroup, i) => {
+				if(!choiceForm.get('selected').disabled){
+					choiceForm.get('selected').setValue(false)
+				}
+				
+				if(i === (filter.choices.controls.length - 1)){
+					this.filter.next('filter')
+				}
+			})
+		}else if(filter.type === 'daterange'){
+			filter.from.setValue(null)
+			filter.to.setValue(null)
+			this.filter.next('filter')
+		}
 	}
 
 	ngOnDestroy() {

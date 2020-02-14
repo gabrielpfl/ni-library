@@ -227,3 +227,17 @@ tr td:last-child {
 .row-actions > button {
     margin-left: auto;
 }
+
+.filters {
+    display: flex;
+}
+
+.range-field-flex {
+    display: flex;
+    padding: 15px;
+}
+
+.range-field-flex .range-control {
+    padding: 10px;
+    max-width: 150px;
+}

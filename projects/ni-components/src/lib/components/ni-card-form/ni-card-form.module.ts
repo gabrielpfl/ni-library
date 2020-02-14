@@ -8,6 +8,7 @@ import { MaterialModule } from '../../material.module';
 
 import { NiCardFormComponent } from './ni-card-form.component';
 import { NiDatepickerModule } from '../ni-datepicker/ni-datepicker.module';
+import { NiSelectModule } from '../ni-select/ni-select.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { NiDatepickerModule } from '../ni-datepicker/ni-datepicker.module';
     ReactiveFormsModule,
     MaterialModule,
     BrowserAnimationsModule,
-    NiDatepickerModule
+    NiDatepickerModule,
+    NiSelectModule
   ],
   declarations: [
     NiCardFormComponent

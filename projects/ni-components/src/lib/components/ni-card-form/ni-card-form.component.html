@@ -1,19 +1,19 @@
-<div [ngClass]="{'ni-card-bodered': type === 'bordered', 'ni-card-fancy': type === 'fancy'}">
-    <div *ngIf="type !== 'fancy' && title" class="card-title"></div>
+<div class="{{cardClass}}">
+    <div *ngIf="type !== 'fancy' && title" class="card-title">{{title}}</div>
     <div *ngIf="type === 'fancy'" class="item-detail">
         <div class="item-detail-body">
             <div class="item-detail-label">{{title}}</div>
             <div class="h6 item-detail-title">{{description}}</div>
         </div>
         <div class="item-detail-icon">
-            <button mat-mini-fab class="mini-fab-style-2"><mat-icon>folder_shared</mat-icon></button>
+            <button mat-mini-fab class="mini-fab-style-2"><mat-icon>{{cardIcon}}</mat-icon></button>
         </div>
     </div>
-    <div class="p-0" [ngClass]="{'ni-card-fancy-body': type === 'fancy', 'ni-card-body-2': type === 'bordered'}">
+    <div class="p-0" class="ni-card-body">
         <div class="ni-list pt-20 pb-20" [ngClass]="{'ni-list-block': listStyle === 'block'}">
             <div *ngFor="let field of fields" class="ni-list-item" [ngClass]="{'ni-list-item-hover': field.edit, 'hidden': !field.visible}" (click)="onFieldClick($event, editFieldsPanel, field)">
                 <span>{{field.label}}</span>
-                <span>{{displayFieldValue(field)}}</span>
+                <span class="ni-list-item-value"><span>{{displayFieldValue(field)}}</span></span>
             </div>
         </div>
     </div>
@@ -26,8 +26,8 @@
 			<div *ngIf="field.type === 'text'" class="input-group">
 				<label>{{field.label}}</label>
 				<div class="input-group">
-					<div *ngIf="field.preprend" class="input-group-prepend">
-						<span class="input-group-text">{{field.preprend}}</span>
+					<div *ngIf="field.prepend" class="input-group-prepend">
+						<span class="input-group-text">{{field.prepend}}</span>
 					</div>
 					<input type="text" autocomplete="off" [formControl]="field.control" class="form-control">
 				</div>
@@ -35,8 +35,8 @@
 			<div *ngIf="field.type === 'number'">
 				<label>{{field.label}}</label>
 				<div class="input-group">
-					<div *ngIf="field.preprend" class="input-group-prepend">
-						<span class="input-group-text">{{field.preprend}}</span>
+					<div *ngIf="field.prepend" class="input-group-prepend">
+						<span class="input-group-text">{{field.prepend}}</span>
 					</div>
 					<input type="number" autocomplete="off" [formControl]="field.control" class="form-control">
 				</div>
@@ -46,12 +46,9 @@
 				<textarea [formControl]="field.control" rows="10" class="text-area-field"></textarea>
 			</div>
 			<div *ngIf="field.type === 'select'">
-				<mat-form-field>
-					<mat-label>{{field.label}}</mat-label>
-					<mat-select [formControl]="field.control">
-					  	<mat-option *ngFor="let choice of field.choices" [value]="choice.value">{{choice.label}}</mat-option>
-					</mat-select>
-				</mat-form-field>
+				<ni-select [placeholder]="field.label" [formControl]="field.control">
+					<ni-option *ngFor="let choice of field.choices" [value]="choice.value" [viewValue]="choice.label"></ni-option>
+				</ni-select>
 			</div>
 			<div *ngIf="field.ownControl" class="text-right">
 				<div class="gap-20"></div>

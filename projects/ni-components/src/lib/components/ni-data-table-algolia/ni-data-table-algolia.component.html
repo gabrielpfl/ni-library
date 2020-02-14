@@ -38,25 +38,12 @@
 					<ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
 						<th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sorting ? column.key : null" [disabled]="!column.sorting ? true : false" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}">
 							{{column.label}}
-							<span *ngIf="column.filter" #filtersPanel="matMenuTrigger" [matMenuTriggerFor]="filterMenu" class="f-menu">
-								<i class="material-icons">filter_list</i>
-								<span *ngIf="column.hasOwnProperty('filtered') && column.filtered" class="f-active"></span>
-							</span>
-							<mat-menu #filterMenu="matMenu" xPosition="before">
-								<div class="filter-body">
-									<div *ngIf="column.filter" class="filters-controls" (click)="$event.stopPropagation()">
-										<mat-checkbox 
-											*ngFor="let option of column.filter.data.controls" 
-											[formControl]="option.controls.selected"
-											(change)="runFilters()" 
-											class="filter-control"
-										>{{option.value.label}}</mat-checkbox>
-									</div>
-								</div>
-								<div *ngIf="column.filter" class="ni-filter-footer">
-									<button mat-stroked-button (click)="clearFiltersCol(column)" [disabled]="column.filter.hasOwnProperty('canFilter') && !column.filter.canFilter ? true : false">Clear Filters</button>
-								</div>
-							</mat-menu>
+							<div *ngIf="column.filters && column.filters.length" class="filters">
+								<span *ngFor="let filter of column.filters"  (click)="openFilter($event, filter, filterPanel)" class="f-menu">
+									<i class="material-icons" [matTooltip]="filter.tooltip ? filter.tooltip : ''">filter_list</i>
+									<span *ngIf="filter.hasOwnProperty('filtered') && filter.filtered" class="f-active"></span>
+								</span>
+							</div>
 						</th>
 						<td mat-cell *matCellDef="let doc" class="ni-cell" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}">
 
@@ -123,3 +110,35 @@
 		</div>
 	</div>
 </div>
+
+<div style="position: fixed" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" #filterPanel="matMenuTrigger" [matMenuTriggerFor]="filterMenu"></div>
+<mat-menu #filterMenu="matMenu" (closed)="filterClosed($event)">
+	<div *ngIf="currentFilter as filter" (click)="$event.stopPropagation()">
+		<div class="filter-body">
+			<div class="filters-controls">
+				<div *ngIf="filter.type === 'checkbox'">
+					<mat-checkbox 
+						*ngFor="let choice of filter.choices.controls" 
+						[formControl]="choice.controls.selected"
+						(change)="runFilters()" 
+						class="filter-control"
+					>{{choice.value.label}}</mat-checkbox>
+				</div>
+				<div *ngIf="filter.type === 'daterange'" class="range-field-flex">
+					<mat-form-field>
+						<input matInput (focus)="dpTo.open()" [matDatepicker]="dpTo" type="text" [formControl]="filter.from" placeholder="From" autocomplete="off">
+						<sg-datepicker #dpTo touchUi="false"></sg-datepicker>
+					</mat-form-field>
+					<mat-form-field>
+						<input matInput (focus)="dpTo.open()" [sgDatepicker]="dpTo" type="text" [formControl]="filter.to" placeholder="To" autocomplete="off">
+						<mat-datepicker-toggle matSuffix [for]="dpTo"></mat-datepicker-toggle>
+					</mat-form-field>
+				</div>
+			</div>
+		</div>
+		<div class="ni-filter-footer">
+			<button mat-stroked-button (click)="runFilters(); filterPanel.closeMenu()" [disabled]="filter.hasOwnProperty('canFilter') && !filter.canFilter ? true : false">Apply</button>&nbsp;
+			<button mat-stroked-button (click)="clearFiltersCol(filter); filterPanel.closeMenu()" [disabled]="filter.hasOwnProperty('canFilter') && !filter.canFilter ? true : false">Clear Filters</button>
+		</div>
+	</div>
+</mat-menu>

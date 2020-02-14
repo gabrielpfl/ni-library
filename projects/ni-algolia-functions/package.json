@@ -1,6 +1,6 @@
 {
   "name": "ni-algolia-functions",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Simple functions for angular to query and update data in algolia indices",
   "peerDependencies": {
     "@angular/common": "^8.2.14",

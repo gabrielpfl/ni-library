@@ -1,5 +1,7 @@
 import { Injectable, Optional } from '@angular/core'
 import * as algoliasearch_ from 'algoliasearch';
+import { async, TestBed } from '@angular/core/testing';
+import { NiAlgoliaFunctionsComponent } from './ni-algolia-functions.component';
 const algoliasearch = algoliasearch_;
 
 export class NiAlgoliaConfig {
@@ -48,24 +50,42 @@ export class NiAlgoliaService {
 			});
 		}
 		if(args.search.filters){
-			let filters = []
-			let filtersString
+			const filters = []
 			args.search.filters.map(AND => {
-				let filterValues = []
-				let filterString
+				const filterValues = []
 				AND.map(OR => {
 					if(OR.operator === '=='){
 						filterValues.push(`${OR.key}:${OR.value}`)
-					}if(OR.operator === '!='){
+					}else if(OR.operator === '!='){
 						filterValues.push(`NOT ${OR.key}:${OR.value}`)
+					}else if(OR.operator === '>'){
+						filterValues.push(`${OR.key} > ${OR.value}`)
+					}else if(OR.operator === '<'){
+						filterValues.push(`${OR.key} < ${OR.value}`)
+					}else if(OR.operator === '>='){
+						filterValues.push(`${OR.key} >= ${OR.value}`)
+					}else if(OR.operator === '<='){
+						filterValues.push(`${OR.key} <= ${OR.value}`)
+					}else if(OR.operator === 'BETWEEN'){
+						filterValues.push(`${OR.key}:${OR.from} TO ${OR.to}`)
+					}else if(OR.operator === 'IN'){
+						const inVals = []
+						if(OR.value && Array.isArray(OR.value)){
+							OR.value.map(v => {
+								inVals.push(`(${OR.key}:${OR.v})`)
+							})
+						}
+						if(inVals.length){
+							filterValues.push(`(${inVals.join(' AND ')})`)
+						}
 					}
 				})
-				filterString = `(${filterValues.join(' OR ')})`
+				const filterString = `(${filterValues.join(' OR ')})`
 				if(filterValues.length){
 					filters.push(filterString)
 				}
 			})
-			filtersString = filters.join(args.search.filterComparator ? args.search.filterComparator : ' AND ')
+			const filtersString = filters.join(args.search.filterComparator ? args.search.filterComparator : ' AND ')
 			delete args.search['filterComparator']
 			args.search.filters = filtersString
 		}

@@ -16,6 +16,8 @@ export class NiCardFormComponent implements OnInit {
 	@Input() title: string
 	@Input() description: string
 	@Input() listStyle: string
+	@Input() cardClass: string
+	@Input() cardIcon: string
 
 	contextMenuPosition = { x: '0px', y: '0px' }
 

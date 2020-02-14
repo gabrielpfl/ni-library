@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { NiAlgoliaService } from './ni-algolia-functions.service';
 
-describe('NiAlgoliaFunctionsService', () => {
+describe('NiAlgoliaService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
