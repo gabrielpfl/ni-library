@@ -25,7 +25,7 @@ export interface NiFormField {
 	label: string
 	required?: boolean
 	instructions?: string
-	choices?: NiFormFieldChoice[] | Promise<NiFormFieldChoice[]> | Observable<NiFormFieldChoice[]>
+	choices?: NiFormFieldChoice[] | string[] | Promise<NiFormFieldChoice[] | string[]> | Observable<NiFormFieldChoice[] | string[]>
 	value?: any
 	minDate?: any
 	startAt?: any
