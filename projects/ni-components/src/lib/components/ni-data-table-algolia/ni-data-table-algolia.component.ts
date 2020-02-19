@@ -56,7 +56,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	@Input() rowActions: any[]
 	@Input() height: string
 	@Input() searchLabel: string
-	@Input() firestoreCollection: any
+	@Input() rowClass: any
 	@Input() searchParams: any = {
 		page: 0,
         hitsPerPage: 20
@@ -160,79 +160,12 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 				return Promise.resolve()
 			}),
 			switchMap(() => {
-				this.isLoadingResults = true;
-				this.isRateLimitReached = false;
+				this.isLoadingResults = true
+				this.isRateLimitReached = false
 				
-				let args = {
-					index: this.index,
-					search: {
-						page: this.paginator.pageIndex,
-						hitsPerPage: this.searchParams.hitsPerPage ? this.paginator.pageSize : 0,
-					}
-				}
-
-				if(this.search.value){
-					args.search['query'] = this.search.value
-				}
-
-				args['orderBy'] = this.sort ? this.sort.active : null
-				args['order'] = this.sort ? this.sort.direction : null
-
-				//Start the filters set up
-				let filters = [...this.filters]
-
-				//the filters in the columns
-				this.columns.map(column => {
-					if(column.filters && column.filters.length){
-						column.filters.map(filter => {
-							let ORFilters = []
-							if(filter.type === 'checkbox'){
-								filter.choices.getRawValue().map(choice => {
-									if(choice.selected){
-										ORFilters = [...ORFilters, {
-											key: filter.key,
-											value: choice.value,
-											operator: filter.operator
-										}]
-									}
-								})
-								filter['filtered'] = filter.choices.getRawValue().some(choice => choice.selected)
-							} else if(filter.type === 'daterange'){
-								if(filter.from.value && filter.to.value){
-									filters = [...filters, 
-										[{
-											key: filter.key,
-											value: filter.from.value.unix()*1000,
-											operator: '>='
-										}],
-										[{
-											key: filter.key,
-											value: filter.to.value.add(1, 'd').unix()*1000,
-											operator: '<='
-										}]
-									]
-								}
-								filter['filtered'] = filter.from.value && filter.to.value
-							}
-
-							if(ORFilters.length){
-								filters = [...filters, ORFilters]
-							}
-						})
-					}
-				})
-				
-				//the predefined filters
-				if(filters && filters.length){
-					args.search['filters'] = filters
-					args.search['filterComparator'] = this.filterComparator
-				}
+				const args = this.buildParams()
 
 				return this.algoliaService.search(args)
-				.then(responses => {
-					//console.log(responses.hits);
-					return responses
-				});
 			}),
 			map((data: any) => {
 				// Flip flag to show that loading has finished.
@@ -258,6 +191,75 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 			this.dataSource.data = data
 			return;
 		})
+	}
+
+	buildParams(){
+		let args = {
+			index: this.index,
+			search: {
+				page: this.paginator.pageIndex,
+				hitsPerPage: this.searchParams.hitsPerPage ? this.paginator.pageSize : 0,
+			}
+		}
+
+		if(this.search.value){
+			args.search['query'] = this.search.value
+		}
+
+		args['orderBy'] = this.sort ? this.sort.active : null
+		args['order'] = this.sort ? this.sort.direction : null
+
+		//Start the filters set up
+		let filters = [...this.filters]
+
+		//the filters in the columns
+		this.columns.map(column => {
+			if(column.filters && column.filters.length){
+				column.filters.map(filter => {
+					let ORFilters = []
+					if(filter.type === 'checkbox'){
+						filter.choices.getRawValue().map(choice => {
+							if(choice.selected){
+								ORFilters = [...ORFilters, {
+									key: filter.key,
+									value: choice.value,
+									operator: filter.operator
+								}]
+							}
+						})
+						filter['filtered'] = filter.choices.getRawValue().some(choice => choice.selected)
+					} else if(filter.type === 'daterange'){
+						if(filter.from.value && filter.to.value){
+							filters = [...filters, 
+								[{
+									key: filter.key,
+									value: filter.from.value.unix()*1000,
+									operator: '>='
+								}],
+								[{
+									key: filter.key,
+									value: filter.to.value.add(1, 'd').unix()*1000,
+									operator: '<='
+								}]
+							]
+						}
+						filter['filtered'] = filter.from.value && filter.to.value
+					}
+
+					if(ORFilters.length){
+						filters = [...filters, ORFilters]
+					}
+				})
+			}
+		})
+		
+		//the predefined filters
+		if(filters && filters.length){
+			args.search['filters'] = filters
+			args.search['filterComparator'] = this.filterComparator
+		}
+
+		return args
 	}
 
 	openFilter(event, filter, filterPanel){

@@ -104,14 +104,14 @@
 }
 
 .ni-table-body-wrapper {
-    height: 100%;
+    height: calc(100% - 57px);
 }
 
 .ni-table-body {
     overflow: auto;
     width: 100%;
     max-width: 100%;
-    height: calc(100% - 112px);
+    height: calc(100% - 56px);
 }
 
 .ni-table-body table {

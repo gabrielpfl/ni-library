@@ -69,6 +69,7 @@ export class NiSelect implements ControlValueAccessor, OnInit, AfterContentInit 
 	@Input() exclude = []
 	@Input() placeholder: string
 	@Input() inputPlaceholder: string
+	@Input() instructions: string
 	@Output() selectionChange = new EventEmitter()
 	@Output() opened = new EventEmitter()
 	@Output() afterInputEnter = new EventEmitter()

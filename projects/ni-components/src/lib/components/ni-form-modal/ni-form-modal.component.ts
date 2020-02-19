@@ -7,6 +7,7 @@ import * as _moment from 'moment'
 import { Subject, Observable } from 'rxjs';
 import { takeUntil, take, switchAll, switchMap } from 'rxjs/operators';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { DomSanitizer } from '@angular/platform-browser';
 
 const moment = _moment
 
@@ -69,7 +70,8 @@ export class NiFormModal implements OnDestroy {
 	constructor(
 		@Inject(MAT_DIALOG_DATA) private data: NiFormData,
 		public dialogRef: MatDialogRef<NiFormModal>,
-		private functions: NiHelperSnippetsService
+		private functions: NiHelperSnippetsService,
+		public sanitizer: DomSanitizer,
 	) {
 		this.title = data.title
 		this.notes = data.notes ? data.notes : []

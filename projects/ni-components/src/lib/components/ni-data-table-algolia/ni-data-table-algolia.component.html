@@ -87,7 +87,7 @@
 					</ng-container>
 
 					<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="header-row"></tr>
-					<tr mat-row #tableRow *matRowDef="let row; columns: displayedColumns; let x = index" [@removingRow]="dataSource.data[x]['status']"></tr>
+					<tr mat-row #tableRow *matRowDef="let row; columns: displayedColumns; let x = index" [ngClass]="rowClass ? rowClass(row) : ''" [@removingRow]="dataSource.data[x]['status']"></tr>
 				</table>
 			</div>
 		</div>

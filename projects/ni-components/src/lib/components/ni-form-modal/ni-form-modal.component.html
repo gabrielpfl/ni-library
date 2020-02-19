@@ -6,6 +6,7 @@
 		</div>
 		<div class="dialog-content" [formGroup]="fieldsArray">
 			<div *ngFor="let field of fieldsArray.controls, let i =index" [formGroupName]="i" class="field-control {{field.value.fieldClass}}">
+				
 				<mat-form-field *ngIf="field.value.type === 'text'">
 					<input matInput [placeholder]="field.value.label" formControlName="value" autocomplete="off">
 					<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
@@ -13,6 +14,7 @@
 						{{field.value.label}} is <strong>required</strong>
 					</mat-error>
 				</mat-form-field>
+
 				<mat-form-field *ngIf="field.value.type === 'number'">
 					<input matInput type="number" [placeholder]="field.value.label" formControlName="value" autocomplete="off">
 					<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
@@ -20,6 +22,7 @@
 						{{field.value.label}} is <strong>required</strong>
 					</mat-error>
 				</mat-form-field>
+
 				<mat-form-field *ngIf="field.value.type === 'textarea'">
 					<textarea matInput [placeholder]="field.value.label" formControlName="value"></textarea>
 					<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
@@ -27,6 +30,7 @@
 						{{field.value.label}} is <strong>required</strong>
 					</mat-error>
 				</mat-form-field>
+
 				<!--<mat-form-field *ngIf="field.value.type === 'date'">
 					<input matInput [matDatepicker]="dpField" [placeholder]="field.value.label" [min]="getMinDate(field)" formControlName="value">
 					<mat-datepicker-toggle matSuffix [for]="dpField"></mat-datepicker-toggle>
@@ -36,23 +40,36 @@
 						{{field.value.label}} is <strong>required</strong>
 					</mat-error>
 				</mat-form-field>-->
+
 				<ni-datepicker *ngIf="field.value.type === 'date'" formControlName="value" [placeholder]="field.value.label"></ni-datepicker>
+				
 				<ni-select *ngIf="field.value.type === 'select'" [placeholder]="field.value.label" [multiple]="field.value.multiple" formControlName="value" (opened)="field.value.hasOwnProperty('onOpen') ? field.value['onOpen']() : ''">
 					<ni-option *ngFor="let choice of field.value.choices" [value]="choice.value" [viewValue]="choice.label"></ni-option>
 				</ni-select>
+
 				<div *ngIf="field.value.type === 'radio'">
 					<label class="label-radio-list">{{field.value.label}}</label>
 					<mat-radio-group formControlName="value" class="radio-list">
 						<mat-radio-button *ngFor="let choice of field.value.choices" [value]="choice.value">{{choice.label}}</mat-radio-button>
 					</mat-radio-group>
 				</div>
+
 				<ni-chips-select *ngIf="field.value.type === 'chips-select'" formControlName="value" [placeholder]="field.value.label" [instructions]="field.value.instructions" [choices]="field.value.choices"></ni-chips-select>
+				
 				<div *ngIf="field.value.type === 'checkbox'">
 					<label class="label-radio-list">{{field.value.label}}</label>
 					<div class="checkbox-choices">
 						<mat-checkbox *ngFor="let choice of field.value.choices, let c = index" [checked]="checkedChoice(field, choice, c)" (change)="changeCheckbox($event, field, choice, c)" class="checkbox-item">{{choice.label}}</mat-checkbox>
 					</div>
 				</div>
+
+				<div *ngIf="field.value.type === 'html'" class="plain-html">
+					<div [innerHTML]="sanitizer.bypassSecurityTrustHtml(field.value.value)"></div>
+				</div>
+
+				<ni-alert *ngIf="field.value.type === 'note'" [type]="field.value.noteType">{{field.value.value}}</ni-alert>
+
+				<mat-slide-toggle *ngIf="field.value.type === 'slide-toggle'" formControlName="value">{{field.value.label}}</mat-slide-toggle>
 			</div>
 		</div>
 		<div class="dialog-actions">
