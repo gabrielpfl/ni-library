@@ -2,7 +2,7 @@
 	<quill-editor
 		*ngIf="!disable && active && !uploader"
 		#editor 
-		theme="bubble"
+		[theme]="bubble ? 'bubble' : ''"
 		[placeholder]="placeholder"
 		[bounds]="bounds"
 		[format]="format"
@@ -21,7 +21,7 @@
 		<div [ngStyle]="{'min-height': minHeight}">
 			<quill-editor
 				#editor 
-				theme="bubble"
+				[theme]="bubble ? 'bubble' : ''"
 				[placeholder]="placeholder"
 				[bounds]="bounds"
 				[format]="format"

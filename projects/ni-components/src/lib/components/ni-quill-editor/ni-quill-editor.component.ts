@@ -31,6 +31,7 @@ export class NiQuillEditor implements ControlValueAccessor, OnInit {
 
 	@Input() _value // notice the '_'
 	@Input() placeholder: string
+	@Input() bubble: boolean = false
 	@Input() bounds: any
 	@Input() format: string = 'html' // html | object | text | json
 	@Input() activeOnFocus: boolean = false

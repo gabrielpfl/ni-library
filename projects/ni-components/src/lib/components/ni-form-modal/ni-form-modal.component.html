@@ -67,9 +67,22 @@
 					<div [innerHTML]="sanitizer.bypassSecurityTrustHtml(field.value.value)"></div>
 				</div>
 
-				<ni-alert *ngIf="field.value.type === 'note'" [type]="field.value.noteType">{{field.value.value}}</ni-alert>
+				<ni-alert *ngIf="field.value.type === 'note'">{{field.value.value}}</ni-alert>
 
 				<mat-slide-toggle *ngIf="field.value.type === 'slide-toggle'" formControlName="value">{{field.value.label}}</mat-slide-toggle>
+
+				<quill-editor *ngIf="field.value.type === 'editor'" formControlName="value" [styles]="{height: '200px'}"></quill-editor>
+
+				<div *ngIf="field.value.type === 'daterange'" formGroupName="range">
+					<mat-form-field>
+						<input matInput [matDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="from" (change)="onRangeChange(field)" placeholder="From" [startAt]="field.value.startAt ? field.value.startAt : false" [min]="field.value.minDate">
+						<sg-datepicker #dpTo touchUi="false"></sg-datepicker>
+					</mat-form-field>
+					<mat-form-field>
+						<input matInput [sgDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="to" (change)="onRangeChange(field)" placeholder="To">
+						<mat-datepicker-toggle matSuffix [for]="dpTo"></mat-datepicker-toggle>
+					</mat-form-field>
+				</div>
 			</div>
 		</div>
 		<div class="dialog-actions">

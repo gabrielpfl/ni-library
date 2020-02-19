@@ -23,7 +23,7 @@ export interface NiFormData {
 export interface NiFormField {
 	type: string
 	name: string
-	label: string
+	label?: string
 	required?: boolean
 	instructions?: string
 	choices?: NiFormFieldChoice[] | string[] | Promise<NiFormFieldChoice[] | string[]> | Observable<NiFormFieldChoice[] | string[]>
@@ -133,6 +133,13 @@ export class NiFormModal implements OnDestroy {
 				group.addControl('fieldClass', new FormControl(field.fieldClass))
 			}
 
+			if(field.type === 'daterange'){
+				group.addControl('range', new FormGroup({
+					from: new FormControl(),
+					to: new FormControl()
+				}))
+			}
+
 			if(field.choices){
 				if(Array.isArray(field.choices)){
 					group.get('choices').setValue(field.choices, {emitEvent: false})
@@ -213,20 +220,9 @@ export class NiFormModal implements OnDestroy {
 		field.get('value').setValue(value)
 	}
 
-	getMinDate(field: FormGroup){
-		if(!field.value.hasOwnProperty('minDate')) return;
-
-		if(field.value.minDate instanceof Date){
-			return field.get('minDate').value
-		}
-
-		const findMinField = this.fieldsArray.value.filter(f => f.name === field.get('minDate').value)
-
-		if(findMinField.length){
-			return findMinField[0].value
-		}
-		
-		return false
+	onRangeChange(field: FormGroup){
+		const value = (<FormGroup>field.get('range')).getRawValue()
+		field.get('value').setValue(value)
 	}
 
 	ngOnDestroy() {
