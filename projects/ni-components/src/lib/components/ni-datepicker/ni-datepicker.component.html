@@ -1,19 +1,19 @@
 <mat-form-field *ngIf="materialInput" (click)="picker.open()">
 	<span *ngIf="prefix" matPrefix>{{prefix}} &nbsp;</span>
-	<input matInput [placeholder]="placeholder" [value]="displayDate(value)" [disabled]="disable">
-	<input #dp1 type="hidden" [matDatepicker]="picker" [(ngModel)]="value">
-	<mat-datepicker-toggle matSuffix [for]="!disable ? picker : ''"></mat-datepicker-toggle>
-	<mat-datepicker #picker [touchUi]="touchUi" [disabled]="disable"></mat-datepicker>
+	<input matInput [placeholder]="placeholder" [value]="displayDate(value)" [disabled]="disable" (focus)="picker.open()">
+	<input #dp1 type="hidden" [matDatepicker]="picker" [min]="min" [max]="max" [(ngModel)]="value">
+	<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+	<mat-datepicker #picker [touchUi]="touchUi" [startAt]="startAt" [disabled]="disable"></mat-datepicker>
 	<mat-hint *ngIf="description" align="start">{{description}}</mat-hint>
 	<span *ngIf="suffix" matSuffix>{{suffix}}</span>
 </mat-form-field>
 
 <div *ngIf="!materialInput" class="normal-input">
 	<!--<i class="dp-toggle icon-calendar" [ngClass]="{'dp-right': position === 'right'}" (click)="!disable ? picker.open() : ''"></i>-->
-	<input #dp2 type="text" [matDatepicker]="picker" [(ngModel)]="value" class="dp-hidden">
+	<input #dp2 type="text" [matDatepicker]="picker" [(ngModel)]="value" [min]="min" [max]="max" class="dp-hidden">
 	<div class="wraper-dp" (click)="!disable ? picker.open() : ''">
 		<input [value]="displayDate(value)" [ngStyle]="inputStyle" class="dp-input-normal" [placeholder]="placeholder" disabled>
 	</div>
 	<mat-datepicker-toggle matSuffix [for]="!disable ? picker : ''" class="toggle-picker"></mat-datepicker-toggle>
-	<mat-datepicker #picker></mat-datepicker>
+	<mat-datepicker #picker [startAt]="startAt"></mat-datepicker>
 </div>

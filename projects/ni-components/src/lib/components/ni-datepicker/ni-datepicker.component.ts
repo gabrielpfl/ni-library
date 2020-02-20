@@ -25,6 +25,9 @@ export class NiDatepicker implements ControlValueAccessor, OnInit {
 	@Input() inputStyle: any
 	@Input() position: string
 	@Input() touchUi: boolean = false
+	@Input() min: Date
+	@Input() max: Date
+	@Input() startAt: Date
 
 	@ViewChild('picker') picker: any
 

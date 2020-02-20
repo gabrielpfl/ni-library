@@ -29,6 +29,7 @@ export interface NiFormField {
 	choices?: NiFormFieldChoice[] | string[] | Promise<NiFormFieldChoice[] | string[]> | Observable<NiFormFieldChoice[] | string[]>
 	value?: any
 	minDate?: any
+	maxDate?: any
 	startAt?: any
 	permissions?: boolean
 	fieldClass?: string
@@ -119,6 +120,10 @@ export class NiFormModal implements OnDestroy {
 
 			if(field.minDate){
 				group.addControl('minDate', new FormControl(field.minDate))
+			}
+
+			if(field.maxDate){
+				group.addControl('maxDate', new FormControl(field.maxDate))
 			}
 
 			if(field.startAt){
