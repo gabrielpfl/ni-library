@@ -75,11 +75,11 @@
 
 				<div *ngIf="field.value.type === 'daterange'" formGroupName="range">
 					<mat-form-field>
-						<input matInput [matDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="from" (change)="onRangeChange(field)" placeholder="From" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''">
+						<input matInput [matDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="from" placeholder="From" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" autocomplete="off">
 						<sg-datepicker #dpTo touchUi="false" [startAt]="field.value.startAt ? field.value.startAt : false"></sg-datepicker>
 					</mat-form-field>
 					<mat-form-field>
-						<input matInput [sgDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="to" (change)="onRangeChange(field)" placeholder="To">
+						<input matInput [sgDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="to" placeholder="To" autocomplete="off" (dateChange)="onRangeChange(field)">
 						<mat-datepicker-toggle matSuffix [for]="dpTo"></mat-datepicker-toggle>
 					</mat-form-field>
 				</div>

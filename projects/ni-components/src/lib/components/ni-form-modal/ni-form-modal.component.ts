@@ -186,7 +186,7 @@ export class NiFormModal implements OnDestroy {
 		if(this.fieldsArray.valid){
 			this.dialogRef.close(this.fieldsArray.getRawValue());
 		}else{
-			this.functions.validateForm(this.fieldsArray); 
+			this.functions.validateForm(this.fieldsArray);
 		}
 	}
 
