@@ -6,7 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from '../../material.module';
 
-import { NiCardFormComponent } from './ni-card-form.component';
+import { NiCardForm } from './ni-card-form.component';
 import { NiDatepickerModule } from '../ni-datepicker/ni-datepicker.module';
 import { NiSelectModule } from '../ni-select/ni-select.module';
 
@@ -21,10 +21,10 @@ import { NiSelectModule } from '../ni-select/ni-select.module';
     NiSelectModule
   ],
   declarations: [
-    NiCardFormComponent
+    NiCardForm
   ],
   exports: [
-    NiCardFormComponent
+    NiCardForm
   ],
   entryComponents: [
   ],

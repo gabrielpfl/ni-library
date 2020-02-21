@@ -8,7 +8,7 @@ import { NiDatepicker } from '../ni-datepicker/ni-datepicker.component';
   templateUrl: './ni-card-form.component.html',
   styleUrls: ['./ni-card-form.component.css']
 })
-export class NiCardFormComponent implements OnInit {
+export class NiCardForm implements OnInit {
 
 	@Input() type: string = 'bordered'
 	@Input() form: FormGroup | FormArray

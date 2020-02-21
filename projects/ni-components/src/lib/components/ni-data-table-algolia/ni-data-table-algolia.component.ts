@@ -42,7 +42,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
 export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 
 	@Input() index: string
-	@Input() firestorePath: any
 	@Input() tabs: any[]
 	@Input() tabsStyle: string // default | joined
 	@Input() filters: any[] = []
