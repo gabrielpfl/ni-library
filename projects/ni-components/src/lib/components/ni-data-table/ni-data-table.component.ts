@@ -53,7 +53,7 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	@Input() height: string = '500px'
 	@Input() searchKey: string
 	@Input() algoliaIndex: string
-	@Input() searchLabel: string
+	@Input() searchPlaceholder: string
 
 	@Output() rowAction = new EventEmitter()
 	@Output() tableAction = new EventEmitter()

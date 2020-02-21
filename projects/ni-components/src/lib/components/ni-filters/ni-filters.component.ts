@@ -15,7 +15,7 @@ export class NiFilters implements OnInit, OnDestroy {
 	@Output() filter = new EventEmitter()
 	@Input() searchKey: string
 	@Input() algoliaIndex: string
-	@Input() searchLabel: string
+	@Input() searchPlaceholder: string
 
 	@ViewChild(MatMenuTrigger) dropdown: MatMenuTrigger;
 

@@ -2,7 +2,7 @@
 	<div class="ni-table" [ngClass]="{'tabsJoined': tabsStyle && tabsStyle == 'joined'}">
 		<div class="ni-table-header">
 			<div class="ni-table-filter-section">
-				<input class="ni-search-input" [placeholder]="searchLabel ? searchLabel : 'Search'" [formControl]="search ? search : ''">
+				<input class="ni-search-input" [placeholder]="searchPlaceholder ? searchPlaceholder : 'Search'" [formControl]="search ? search : ''">
 				<button *ngIf="search.value" mat-icon-button (click)="clearInput()">
 					<mat-icon>close</mat-icon>
 				</button>

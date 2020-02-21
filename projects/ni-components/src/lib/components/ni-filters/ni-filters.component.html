@@ -1,5 +1,5 @@
 <div class="ni-table-filter-section" [formGroup]="tableFilters">
-	<input class="ni-search-input" [placeholder]="searchLabel ? searchLabel : 'Search'" formControlName="search">
+	<input class="ni-search-input" [placeholder]="searchPlaceholder ? searchPlaceholder : 'Search'" formControlName="search">
 	<button *ngIf="filtered || tableFilters.get('search').value" mat-icon-button (click)="clearInput()">
 		<mat-icon>close</mat-icon>
 	</button>

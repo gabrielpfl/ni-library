@@ -4,7 +4,7 @@
 
 	<div class="ni-table" [ngClass]="{'tabsJoined': tabsStyle && tabsStyle == 'joined'}">
 		<div class="ni-table-header">
-			<ni-filters [filters]="filtersSections" [searchKey]="searchKey" [algoliaIndex]="algoliaIndex" [ngClass]="{'hidden': hideSearchSection}" [searchLabel]="searchLabel"></ni-filters>
+			<ni-filters [filters]="filtersSections" [searchKey]="searchKey" [algoliaIndex]="algoliaIndex" [ngClass]="{'hidden': hideSearchSection}" [searchPlaceholder]="searchPlaceholder"></ni-filters>
 		</div>
 		<div class="ni-table-body-wrapper" [ngStyle]="{'position': 'relative'}">
 			<div class="ni-table-body">

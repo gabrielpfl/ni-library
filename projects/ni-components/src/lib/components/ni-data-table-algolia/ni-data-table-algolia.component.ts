@@ -54,14 +54,13 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	@Input() tableActions: any[]
 	@Input() rowActions: any[]
 	@Input() height: string
-	@Input() searchLabel: string
+	@Input() searchPlaceholder: string
 	@Input() rowClass: any
 	@Input() searchParams: any = {
 		page: 0,
         hitsPerPage: 20
 	}
-	
-	@Input() beforeTable: any
+
 	@Output() onSearch = new EventEmitter()
 	@Output() rowAction = new EventEmitter()
 	@Output() tableAction = new EventEmitter()
@@ -141,23 +140,6 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 		merge(this.sort.sortChange, this.paginator.page, this.filter)
 		.pipe(
 			startWith({}),
-			/*switchMap(() => {
-				this.isLoadingResults = true;
-				this.isRateLimitReached = false;
-
-				if(this.firestorePath){
-					return this.firestoreService.getCollection(this.firestorePath)
-				}
-
-				return []
-			}),*/
-			debounceTime(100),
-			switchMap(async () => {
-				if(this.beforeTable){
-					await this.beforeTable()
-				}
-				return Promise.resolve()
-			}),
 			switchMap(() => {
 				this.isLoadingResults = true
 				this.isRateLimitReached = false

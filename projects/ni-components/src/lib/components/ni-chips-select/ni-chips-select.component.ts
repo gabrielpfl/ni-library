@@ -19,11 +19,11 @@ import { MatChipInputEvent } from '@angular/material/chips';
 ]
 })
 export class NiChipsSelectComponent implements OnInit {
-	@Input() _chips: string[] = []; // notice the '_'
+	@Input() _value: string[] = []; // notice the '_'
 	@Input() choices: string[] = [];
 	@Input() placeholder: string
 	@Input() instructions: string
-	@Input() onEnter: boolean = false // when hints enter for non searcheables values
+	@Input() addOnKeyEnter: boolean = false // when hints enter for non searcheables values
 
 	//for chips field
 	visible = true;
@@ -43,13 +43,13 @@ export class NiChipsSelectComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	get chips(): any {
-		return this._chips
+	get value(): any {
+		return this._value
 	}
 
-	set chips(val) {
-		this._chips = val
-		this.propagateChange(this._chips);
+	set value(val) {
+		this._value = val
+		this.propagateChange(this._value);
 	}
 
 	chipsFilter(){
@@ -59,14 +59,14 @@ export class NiChipsSelectComponent implements OnInit {
 	}
 
 	add(event: MatChipInputEvent): void {
-		if(!this.onEnter) return;
+		if(!this.addOnKeyEnter) return;
 
 		const input = event.input;
 		const value = event.value;
 	
 		// Add our chip
 		if ((value || '').trim()) {
-		  this.chips.push(value.trim());
+		  this.value.push(value.trim());
 		}
 	
 		// Reset the input value
@@ -78,15 +78,15 @@ export class NiChipsSelectComponent implements OnInit {
 	}
 	
 	remove(chip: string): void {
-		const index = this.chips.indexOf(chip);
+		const index = this.value.indexOf(chip);
 	
 		if (index >= 0) {
-		  this.chips.splice(index, 1);
+		  this.value.splice(index, 1);
 		}
 	}
 	
 	selected(event: MatAutocompleteSelectedEvent): void {
-		this.chips.push(event.option.viewValue);
+		this.value.push(event.option.viewValue);
 		this.chipInput.nativeElement.value = '';
 		this.chipCtrl.setValue(null);
 	}
@@ -95,7 +95,7 @@ export class NiChipsSelectComponent implements OnInit {
 		const filterValue = value.toLowerCase();
 	
 		return this.choices.filter(chip => {
-			if(this.chips.includes(chip)){
+			if(this.value.includes(chip)){
 				return false;
 			}
 			return chip.toLowerCase().indexOf(filterValue) === 0
@@ -103,13 +103,13 @@ export class NiChipsSelectComponent implements OnInit {
 	}
 
 	private _filterSelected(): string[] {
-		return this.choices.filter(chip => !this.chips.includes(chip))
+		return this.choices.filter(chip => !this.value.includes(chip))
 	}
 
 	//For ControlValueAccessor
 	writeValue(value: any) {
 		if (value !== undefined) {
-			this.chips = value;
+			this.value = value;
 		}
 	}
 	
