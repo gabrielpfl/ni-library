@@ -42,17 +42,17 @@ import { MatMenuTrigger } from '@angular/material/menu';
 export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 
 	@Input() index: string
-	@Input() tabs: any[]
+	@Input() tabs: any[] = []
 	@Input() tabsStyle: string // default | joined
 	@Input() filters: any[] = []
 	@Input() filterComparator: string = 'AND'
 	@Input() hideSearchSection: boolean
 	@Input() hidePaginator: boolean
-	@Input() columns: any[]
+	@Input() columns: any[] = []
 	@Input() sortActive: string
 	@Input() sortDirection: string
-	@Input() tableActions: any[]
-	@Input() rowActions: any[]
+	@Input() tableActions: any[] = []
+	@Input() rowActions: any[] = []
 	@Input() height: string
 	@Input() searchPlaceholder: string
 	@Input() rowClass: any

@@ -38,8 +38,8 @@
 					<ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
 						<th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sorting ? column.key : null" [disabled]="!column.sorting ? true : false" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}">
 							{{column.label}}
-							<div *ngIf="column.filters && column.filters.length" class="filters">
-								<span *ngFor="let filter of column.filters"  (click)="openFilter($event, filter, filterPanel)" class="f-menu">
+							<div *ngIf="column.filters && column.filters.length" class="filters" (click)="$event.stopPropagation()">
+								<span *ngFor="let filter of column.filters"  (click)="openFilter($event, filter, filterPanel); $event.stopPropagation()" class="f-menu">
 									<i class="material-icons" [matTooltip]="filter.tooltip ? filter.tooltip : ''">filter_list</i>
 									<span *ngIf="filter.hasOwnProperty('filtered') && filter.filtered" class="f-active"></span>
 								</span>
