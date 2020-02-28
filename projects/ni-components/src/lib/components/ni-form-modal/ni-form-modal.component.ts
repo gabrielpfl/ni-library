@@ -17,7 +17,7 @@ export interface NiFormData {
 	okLabel?: string,
 	fields?: NiFormField[]
 	notes?: NiFormNote[]
-	formClass?: string
+	formClass?: string | string[] | Set<string> | { [klass: string]: any; }
 }
 
 export interface NiFormField {
@@ -32,7 +32,7 @@ export interface NiFormField {
 	maxDate?: any
 	startAt?: any
 	permissions?: boolean
-	fieldClass?: string
+	fieldClass?: string | string[] | Set<string> | { [klass: string]: any; }
 	multiple?: boolean
 	onOpen?(): void
 	onLoad?(value: any): void
@@ -62,7 +62,7 @@ export class NiFormModal implements OnDestroy {
 	notes: NiFormNote[] = []
 	cancelLabel: string
 	okLabel: string
-	formClass: string
+	formClass: string | string[] | Set<string> | { [klass: string]: any; }
 
 	fieldsArray = new FormArray([])
 

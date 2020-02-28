@@ -1,11 +1,11 @@
 <mat-dialog-content>
-	<div class="{{formClass}}">
+	<div [ngClass]="formClass">
 		<div class="dialog-header">
 			<h5>{{title}}</h5>
 			<ni-alert *ngFor="let note of notes" [type]="note.type">{{note.content}}</ni-alert>
 		</div>
 		<div class="dialog-content" [formGroup]="fieldsArray">
-			<div *ngFor="let field of fieldsArray.controls, let i =index" [formGroupName]="i" class="field-control {{field.value.fieldClass}}">
+			<div *ngFor="let field of fieldsArray.controls, let i =index" [formGroupName]="i" class="field-control" [ngClass]="field.value.fieldClass">
 				
 				<mat-form-field *ngIf="field.value.type === 'text'">
 					<input matInput [placeholder]="field.value.label" formControlName="value" autocomplete="off">

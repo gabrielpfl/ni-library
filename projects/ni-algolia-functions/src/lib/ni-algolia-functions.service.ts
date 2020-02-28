@@ -43,18 +43,18 @@ export class NiAlgoliaService {
 	}
 
 	search(args): Promise<any[]>{
-		let algoliaIndex = this.client.initIndex(args.index);
+		let algoliaIndex = this.client.initIndex(args.index)
 		if(args.orderBy && args.order){
 			const replicaIndexName = `${args.index}_${args.orderBy}_${args.order}`
-			// algoliaIndex.setSettings({
-			// 	replicas: [
-			// 		replicaIndexName
-			// 	]
-			// })
-			algoliaIndex = this.client.initIndex(replicaIndexName);
-			algoliaIndex.setSettings({'ranking': [`${args.order}(${args.orderBy})`]}, (err, content) => {
-				if (err) throw err;
-			});
+			// // algoliaIndex.setSettings({
+			// // 	replicas: [
+			// // 		replicaIndexName
+			// // 	]
+			// // })
+			algoliaIndex = this.client.initIndex(replicaIndexName)
+			// algoliaIndex.setSettings({'ranking': [`${args.order}(${args.orderBy})`]}, (err, content) => {
+			// 	if (err) throw err;
+			// });
 		}
 		if(args.search.filters){
 			const filters = []

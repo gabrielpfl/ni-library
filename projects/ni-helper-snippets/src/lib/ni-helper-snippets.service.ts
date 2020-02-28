@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormArray, FormControl, AbstractControl, Valida
 import { difference, differenceWith, isEqual, transform, isObject, round, differenceBy, filter } from 'lodash'
 
 import * as _moment from 'moment-timezone'
+import { Observable } from 'rxjs';
 const moment = _moment
 
 @Injectable({
@@ -84,6 +85,24 @@ export class NiHelperSnippetsService {
                     }
                 }
 			}
+        })
+    }
+
+    setFormStatus(form: AbstractControl, canActivate: Observable<boolean> | Promise<boolean> | boolean): Promise<void>{
+        return new Promise(async (resolve, reject) => {
+            let perm: boolean
+            if(canActivate instanceof Promise){
+                perm = await canActivate
+            }else if(canActivate instanceof Observable){
+                perm = await canActivate.toPromise()
+            }else if(canActivate === true || canActivate === false){
+                perm = canActivate
+            }
+            if(perm === true){
+                resolve(form.enable({emitEvent: false}))
+            }else{
+                resolve(form.disable({emitEvent: false}))
+            }
         })
     }
 
