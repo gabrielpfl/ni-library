@@ -103,7 +103,7 @@ export class NiFormModal implements OnDestroy {
 				type: new FormControl(field.type),
 				name: new FormControl(field.name),
 				choices: new FormControl([]),
-				value: new FormControl(field.value ? field.value : null, validators)
+				value: new FormControl(field.value || field.value === false ? field.value : null, validators)
 			})
 
 			if(field.label){

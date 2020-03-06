@@ -93,15 +93,28 @@ export class NiHelperSnippetsService {
             let perm: boolean
             if(canActivate instanceof Promise){
                 perm = await canActivate
-            }else if(canActivate instanceof Observable){
-                perm = await canActivate.toPromise()
             }else if(canActivate === true || canActivate === false){
                 perm = canActivate
             }
+
             if(perm === true){
-                resolve(form.enable({emitEvent: false}))
-            }else{
-                resolve(form.disable({emitEvent: false}))
+                form.enable({emitEvent: false})
+                
+            }else if(perm === false){
+                form.disable({emitEvent: false})
+            }
+
+            resolve()
+            
+            if(canActivate instanceof Observable){
+                canActivate.subscribe(perm => {
+                    if(perm === true){
+                        form.enable({emitEvent: false})
+                    }else if(perm === false){
+                        form.disable({emitEvent: false})
+                    }
+                    resolve()
+                })
             }
         })
     }
