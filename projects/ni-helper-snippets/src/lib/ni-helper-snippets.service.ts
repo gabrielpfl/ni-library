@@ -12,7 +12,9 @@ const moment = _moment
 })
 export class NiHelperSnippetsService {
 
-	async setForm(formGroup: AbstractControl, obj: any, disabled?: any){
+	setForm(formGroup: AbstractControl, obj: any, opts?: any){
+		const { disabled = false, emitEvent = true} = opts
+
         if(!obj) return;
 
         let keys = []
@@ -30,7 +32,7 @@ export class NiHelperSnippetsService {
             }
         }
 
-		await keys.map(async (key, i) => {
+		keys.map(async (key, i) => {
             if(formGroup instanceof FormArray){
                 key = i
             }
@@ -42,9 +44,9 @@ export class NiHelperSnippetsService {
                     value = value.toDate()
                 }
 				if(control && control.value !== value){
-                    control.patchValue(value, { emitEvent: false });
+                    control.patchValue(value, { emitEvent });
 				}else if(!control){
-                    control = new FormControl({value: value, disabled: disabled === true ? true : false})
+                    control = new FormControl({value: value, disabled})
 					if(formGroup instanceof FormGroup){
 						formGroup.addControl(key, control);
 					}else if(formGroup instanceof FormArray){
@@ -61,10 +63,10 @@ export class NiHelperSnippetsService {
 			}else if(isObject(value) && !Array.isArray(value) && !(value instanceof Date) && !this.isValidTimeStamp(value)){
 				let group = formGroup['controls'][key];
 				if(group){
-					await this.setForm(group, value, disabled)
+					this.setForm(group, value, opts)
 				}else if(!group){
 					group = new FormGroup({});
-					await this.setForm(group, value, disabled);
+					this.setForm(group, value, opts);
 					if(formGroup instanceof FormGroup){
 						formGroup.addControl(key, group);
 					}else if(formGroup instanceof FormArray){
@@ -74,10 +76,10 @@ export class NiHelperSnippetsService {
 			}else if(Array.isArray(value)){
                 let array = formGroup['controls'][key];
                 if(array){
-                    await this.setForm(array, value, disabled);
+                    this.setForm(array, value, opts);
                 }else{
                     array = new FormArray([]);
-                    await this.setForm(array, value, disabled);
+                    this.setForm(array, value, opts);
                     if(formGroup instanceof FormGroup){
                         formGroup.addControl(key, array);
                     }else if(formGroup instanceof FormArray){
