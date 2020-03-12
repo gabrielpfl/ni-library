@@ -12,7 +12,7 @@ const moment = _moment
 })
 export class NiHelperSnippetsService {
 
-	setForm(formGroup: AbstractControl, obj: any, opts?: any){
+	setForm(formGroup: AbstractControl, obj: any, opts: any = { disabled: false, emitEvent: true}){
 		const { disabled = false, emitEvent = true} = opts
 
         if(!obj) return;
