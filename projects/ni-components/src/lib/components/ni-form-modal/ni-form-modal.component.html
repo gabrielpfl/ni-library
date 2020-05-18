@@ -7,24 +7,27 @@
 		<div class="dialog-content" [formGroup]="fieldsArray">
 			<div *ngFor="let field of fieldsArray.controls, let i =index" [formGroupName]="i" class="field-control" [ngClass]="field.value.fieldClass">
 				
-				<mat-form-field *ngIf="field.value.type === 'text'">
-					<input matInput [placeholder]="field.value.label" formControlName="value" autocomplete="off">
+				<mat-form-field *ngIf="field.value.type === 'text'" [appearance]="field.value.appearance">
+					<mat-label>{{field.value.label}}</mat-label>
+					<input matInput [placeholder]="field.value.placeholder" formControlName="value" autocomplete="off">
 					<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
 					<mat-error *ngIf="field.get('value').hasError('required')">
 						{{field.value.label}} is <strong>required</strong>
 					</mat-error>
 				</mat-form-field>
 
-				<mat-form-field *ngIf="field.value.type === 'number'">
-					<input matInput type="number" [placeholder]="field.value.label" formControlName="value" autocomplete="off">
+				<mat-form-field *ngIf="field.value.type === 'number'" [appearance]="field.value.appearance">
+					<mat-label>{{field.value.label}}</mat-label>
+					<input matInput type="number" [placeholder]="field.value.placeholder" formControlName="value" autocomplete="off">
 					<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
 					<mat-error *ngIf="field.get('value').hasError('required')">
 						{{field.value.label}} is <strong>required</strong>
 					</mat-error>
 				</mat-form-field>
 
-				<mat-form-field *ngIf="field.value.type === 'textarea'">
-					<textarea matInput [placeholder]="field.value.label" formControlName="value"></textarea>
+				<mat-form-field *ngIf="field.value.type === 'textarea'" [appearance]="field.value.appearance">
+					<mat-label>{{field.value.label}}</mat-label>
+					<textarea matInput [placeholder]="field.value.placeholder" formControlName="value"></textarea>
 					<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
 					<mat-error *ngIf="field.get('value').hasError('required')">
 						{{field.value.label}} is <strong>required</strong>
@@ -41,9 +44,9 @@
 					</mat-error>
 				</mat-form-field>-->
 
-				<ni-datepicker *ngIf="field.value.type === 'date'" formControlName="value" [materialInput]="true" [placeholder]="field.value.label"  [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" [startAt]="field.value.startAt ? field.value.startAt : ''"></ni-datepicker>
+				<ni-datepicker *ngIf="field.value.type === 'date'" formControlName="value" [materialInput]="true" [label]="field.value.label" [placeholder]="field.value.placeholder"  [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" [startAt]="field.value.startAt ? field.value.startAt : ''" [appearance]="field.value.appearance"></ni-datepicker>
 				
-				<ni-select *ngIf="field.value.type === 'select'" [placeholder]="field.value.label" [multiple]="field.value.multiple" formControlName="value" (opened)="field.value.hasOwnProperty('onOpen') ? field.value['onOpen']() : ''">
+				<ni-select *ngIf="field.value.type === 'select'" [label]="field.value.label" [placeholder]="field.value.placeholder" [multiple]="field.value.multiple" formControlName="value" (opened)="field.value.hasOwnProperty('onOpen') ? field.value['onOpen']() : ''" [appearance]="field.value.appearance">
 					<ni-option *ngFor="let choice of field.value.choices" [value]="choice.value" [viewValue]="choice.label"></ni-option>
 				</ni-select>
 
@@ -54,7 +57,7 @@
 					</mat-radio-group>
 				</div>
 
-				<ni-chips-select *ngIf="field.value.type === 'chips-select'" formControlName="value" [placeholder]="field.value.label" [instructions]="field.value.instructions" [choices]="field.value.choices"></ni-chips-select>
+				<ni-chips-select *ngIf="field.value.type === 'chips-select'" formControlName="value" [label]="field.value.label" [placeholder]="field.value.placeholder" [instructions]="field.value.instructions" [choices]="field.value.choices" [appearance]="field.value.appearance"></ni-chips-select>
 				
 				<div *ngIf="field.value.type === 'checkbox'">
 					<label class="label-radio-list">{{field.value.label}}</label>
@@ -71,15 +74,20 @@
 
 				<mat-slide-toggle *ngIf="field.value.type === 'slide-toggle'" formControlName="value">{{field.value.label}}</mat-slide-toggle>
 
-				<quill-editor *ngIf="field.value.type === 'editor'" formControlName="value" [styles]="{height: '200px'}"></quill-editor>
+				<div *ngIf="field.value.type === 'editor'">
+					<div *ngIf="field.value.label">{{field.value.label}}</div>
+					<quill-editor formControlName="value" [styles]="{height: '180px'}" [modules]="editorModules"></quill-editor>
+				</div>
 
 				<div *ngIf="field.value.type === 'daterange'" formGroupName="range">
-					<mat-form-field>
-						<input matInput [matDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="from" placeholder="From" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" autocomplete="off">
-						<sg-datepicker #dpTo touchUi="false" [startAt]="field.value.startAt ? field.value.startAt : false"></sg-datepicker>
+					<mat-form-field [appearance]="field.value.appearance">
+						<mat-label>From</mat-label>
+						<input matInput [matDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="from" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" autocomplete="off">
+						<mat-daterangepicker #dpTo touchUi="false" [startAt]="field.value.startAt ? field.value.startAt : false"></mat-daterangepicker>
 					</mat-form-field>
-					<mat-form-field>
-						<input matInput [sgDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="to" placeholder="To" autocomplete="off" (dateChange)="onRangeChange(field)">
+					<mat-form-field [appearance]="field.value.appearance">
+						<mat-label>To</mat-label>
+						<input matInput [matDaterangepickerEnd]="dpTo" (focus)="dpTo.open()" type="text" formControlName="to" autocomplete="off" (dateChange)="onRangeChange(field)">
 						<mat-datepicker-toggle matSuffix [for]="dpTo"></mat-datepicker-toggle>
 					</mat-form-field>
 				</div>

@@ -86,8 +86,8 @@
 						</td>
 					</ng-container>
 
-					<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="header-row"></tr>
-					<tr mat-row #tableRow *matRowDef="let row; columns: displayedColumns; let x = index" [ngClass]="rowClass ? rowClass(row) : ''" [@removingRow]="dataSource.data[x]['status']"></tr>
+					<tr mat-header-row *matHeaderRowDef="getColumns(); sticky: true" class="ni-header-row"></tr>
+					<tr mat-row #tableRow *matRowDef="let row; columns: getColumns(); let x = index" [ngClass]="rowClass ? rowClass(row) : ''" [@removingRow]="dataSource.data[x]['status']"></tr>
 				</table>
 			</div>
 		</div>
@@ -126,11 +126,11 @@
 				</div>
 				<div *ngIf="filter.type === 'daterange'" class="range-field-flex">
 					<mat-form-field>
-						<input matInput (focus)="dpTo.open()" [matDatepicker]="dpTo" type="text" [formControl]="filter.from" placeholder="From" autocomplete="off">
-						<sg-datepicker #dpTo touchUi="false"></sg-datepicker>
+						<input matInput (focus)="dpTo.open()" [matDatepicker]="dpTo" type="text" [formControl]="filter.from" (change)="changed('from')" placeholder="From" autocomplete="off">
+						<mat-daterangepicker #dpTo touchUi="false" [dualView]="true" [showCustomRanges]="true"></mat-daterangepicker>
 					</mat-form-field>
 					<mat-form-field>
-						<input matInput (focus)="dpTo.open()" [sgDatepicker]="dpTo" type="text" [formControl]="filter.to" placeholder="To" autocomplete="off">
+						<input matInput (focus)="dpTo.open()" [matDaterangepickerEnd]="dpTo" type="text" [formControl]="filter.to" (change)="changed('to')" placeholder="To" autocomplete="off">
 						<mat-datepicker-toggle matSuffix [for]="dpTo"></mat-datepicker-toggle>
 					</mat-form-field>
 				</div>

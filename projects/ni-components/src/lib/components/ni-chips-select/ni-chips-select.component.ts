@@ -20,7 +20,9 @@ import { MatChipInputEvent } from '@angular/material/chips';
 })
 export class NiChipsSelectComponent implements OnInit {
 	@Input() _value: string[] = []; // notice the '_'
+	@Input() appearance = 'legacy'
 	@Input() choices: string[] = [];
+	@Input() label: string
 	@Input() placeholder: string
 	@Input() instructions: string
 	@Input() addOnKeyEnter: boolean = false // when hints enter for non searcheables values

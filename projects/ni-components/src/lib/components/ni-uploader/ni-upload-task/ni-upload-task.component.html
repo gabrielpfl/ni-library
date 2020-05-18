@@ -1,4 +1,4 @@
-<div *ngIf="!downloadURL" class="task-row">
+<div *ngIf="!downloadURL && noError" class="task-row">
 	<div *ngIf="percentage | async as pct" class="pct">
 		<progress class="progress is-info" [value]="pct" max="100"></progress>
 		{{ pct | number }}%

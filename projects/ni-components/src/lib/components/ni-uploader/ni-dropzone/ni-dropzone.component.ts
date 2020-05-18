@@ -7,14 +7,15 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class NiDropzoneComponent {
 
-	@Input() collection: any
 	@Input() fileObj: any
+	@Input() mimeTypes = []
 	@Input() path: string
 	@Input() fileIndex: number = 0
 	@Input() hiddenUploader: boolean = false
 	@Input() disabled: boolean = false
 	@Input() dropzone: boolean = true
 	@Output() uploaded = new EventEmitter()
+	@Output() error = new EventEmitter()
 
 	isHovering: boolean;
 

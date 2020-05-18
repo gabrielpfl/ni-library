@@ -1,0 +1,7 @@
+{
+    "bundlerOptions": {
+        "entryFile": "./projects/mat-daterangepicker/src/lib/datepicker-content/datepicker-content.component.scss",
+        "outFile": "./dist/mat-daterangepicker/mat-daterangepicker.theme.scss",
+        "includePaths": ["projects/shared-styles"]
+    }
+}

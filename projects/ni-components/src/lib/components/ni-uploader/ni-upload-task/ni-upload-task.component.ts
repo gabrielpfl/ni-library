@@ -11,10 +11,11 @@ import { tap, finalize } from 'rxjs/operators';
 export class NiUploadTaskComponent implements OnInit {
 
 	@Input() file: File;
-	@Input() collection: any
+	@Input() mimeTypes = []
 	@Input() fileObj: any
 	@Input() path: string = '/'
 	@Input() fileIndex: number = 0
+	@Output() error = new EventEmitter()
 	@Output() uploaded = new EventEmitter()
 
 	task: AngularFireUploadTask;
@@ -22,6 +23,7 @@ export class NiUploadTaskComponent implements OnInit {
 	percentage: Observable<number>;
 	snapshot: Observable<any>;
 	downloadURL;
+	noError: boolean = true
   
 	constructor(private storage: AngularFireStorage) { }
   
@@ -32,6 +34,15 @@ export class NiUploadTaskComponent implements OnInit {
 	startUpload() {
 
 		if(!this.path) return;
+
+		if(this.mimeTypes.length && !this.mimeTypes.filter(type => -1 !== [this.file.type].indexOf(type)).length){
+			this.noError = false
+			this.error.emit({
+				type: 'no-suppported-file',
+				body: 'No supported file'
+			})
+			return;
+		}
   
 		// The storage path
 		const path = `${this.path}${Date.now()}_${this.file.name}`;
@@ -57,10 +68,6 @@ export class NiUploadTaskComponent implements OnInit {
 					filename: this.file.name,
 					path, 
 					order: this.fileIndex
-				}
-
-				if(this.collection){
-					this.collection.add(this.fileObj).then(res => console.log(res));
 				}
 
 				this.uploaded.emit(this.fileObj);

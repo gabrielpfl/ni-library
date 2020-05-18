@@ -64,9 +64,11 @@ export class NiSelect implements ControlValueAccessor, OnInit, AfterContentInit 
 
 	@Input() _selectValue; // notice the '_'
 	@Input() multiple: boolean = false
+	@Input() appearance = 'legacy'
 	@Input() onKeyUp: boolean = true //Search on input change
 	@Input() value: any
 	@Input() exclude = []
+	@Input() label: string
 	@Input() placeholder: string
 	@Input() inputPlaceholder: string
 	@Input() instructions: string
@@ -174,7 +176,7 @@ export class NiSelect implements ControlValueAccessor, OnInit, AfterContentInit 
 	filterChoicesGroup(name: string){
 		let groups = this.dataGroup.map(this.copy).filter((group: NiOptGroup) => {
 			return group.data = group.data.map(this.copy).filter((option: NiOption) => {
-				return option.viewValue.toLowerCase().indexOf(name.toLowerCase()) !== -1
+				return option.viewValue ? option.viewValue.toLowerCase().indexOf(name.toLowerCase()) !== -1 : false
 			})
 		})
 
@@ -185,7 +187,7 @@ export class NiSelect implements ControlValueAccessor, OnInit, AfterContentInit 
 
 	filterChoices(name: string) {
 		return this.data.filter((option: NiOption) =>
-			option.viewValue.toLowerCase().indexOf(name.toLowerCase()) !== -1
+			option.viewValue ? option.viewValue.toLowerCase().indexOf(name.toLowerCase()) !== -1 : false
 		);
 	}
 	

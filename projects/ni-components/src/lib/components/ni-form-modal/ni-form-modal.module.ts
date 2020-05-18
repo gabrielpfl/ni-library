@@ -9,10 +9,10 @@ import { MaterialModule } from '../../material.module';
 import { NiFormModal } from './ni-form-modal.component';
 import { NiAlertModule } from '../ni-alert/ni-alert.module';
 import { NiDatepickerModule } from '../ni-datepicker/ni-datepicker.module';
-import { NiDaterangepickerModule } from '../ni-daterangepicker/daterangepicker.module';
 import { NiSelectModule } from '../ni-select/ni-select.module';
 import { NiChipsSelectModule } from '../ni-chips-select/ni-chips-select.module';
 import { QuillModule } from 'ngx-quill';
+import { MatDaterangepickerModule } from 'mat-daterangepicker';
 
 @NgModule({
   imports: [
@@ -25,7 +25,7 @@ import { QuillModule } from 'ngx-quill';
     NiDatepickerModule,
     NiSelectModule,
     NiChipsSelectModule,
-    NiDaterangepickerModule,
+    MatDaterangepickerModule,
     QuillModule
   ],
   declarations: [

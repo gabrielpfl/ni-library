@@ -4,7 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "npm run ni-components:build && npm run web-app:build",
+    "ni-components:build": "ng build ni-components --prod && scss-bundle -c projects/ni-components/src/scss-bundle.config.json",
+    "mat-daterangepicker:build": "ng build mat-daterangepicker --prod && scss-bundle -c projects/mat-daterangepicker/src/scss-bundle.config.json",
+    "web-app:build": "ng build web-app",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -17,7 +20,7 @@
     "@angular/compiler": "~9.0.0",
     "@angular/core": "~9.0.0",
     "@angular/forms": "~9.0.0",
-    "@angular/material": "^9.0.0",
+    "@angular/material": "^9.2.3",
     "@angular/material-moment-adapter": "^9.0.0",
     "@angular/platform-browser": "~9.0.0",
     "@angular/platform-browser-dynamic": "~9.0.0",
@@ -29,6 +32,8 @@
     "ng2-ace-editor": "^0.3.9",
     "ngx-markdown": "^8.2.2",
     "ngx-quill": "^7.3.12",
+    "ni-firestore-functions": "0.0.2",
+    "ni-helper-snippets": "^0.1.1",
     "npm": "^6.13.7",
     "quill": "^1.3.7",
     "quill-image-resize-module": "^3.0.0",
@@ -61,6 +66,7 @@
     "ng-packagr": "^9.0.0",
     "ni-algolia-functions": "0.0.2",
     "protractor": "~5.4.0",
+    "scss-bundle": "^3.1.2",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.7.5"

@@ -231,7 +231,7 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 
 		//remove documents
 		if(this.dataSource.data.length > 0 && diff1 && diff1.length > 0){
-			diff1.map(doc => {
+			diff1.map((doc: any) => {
 				this.dataSource.data = this.functions.removeObject(this.dataSource.data, 'id', doc.id)
 			})
 		}
@@ -274,7 +274,7 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	runRowAction(action, doc, i){
 		const dataRow = {
 			index: i,
-			row: this.dataSource.data[i],
+			data: this.dataSource.data[i],
 		}
 		action.action(dataRow)
 		this.rowAction.emit(dataRow)
@@ -283,7 +283,7 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	getRowActionPermissions({canActivate}, row, i) {
 		const dataRow = {
 			index: i,
-			row,
+			data: row,
 		}
 		if(typeof canActivate === 'boolean'){
 			return canActivate

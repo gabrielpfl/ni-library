@@ -1,0 +1,7 @@
+{
+    "bundlerOptions": {
+        "entryFile": "./projects/ni-components/src/lib/components/ni-daterangepicker/datepicker-content/datepicker-content.component.scss",
+        "outFile": "./dist/ni-components/test-lib.theme.scss",
+        "includePaths": ["projects/shared-styles"]
+    }
+}

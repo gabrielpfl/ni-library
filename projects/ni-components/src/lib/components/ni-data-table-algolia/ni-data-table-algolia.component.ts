@@ -67,8 +67,6 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 
 	search: FormControl = new FormControl()
 
-	displayedColumns = ['select']
-
 	dataSource: any
 	selection = new SelectionModel<Element>(true, []);
 	resultsLength = 0;
@@ -100,12 +98,6 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	ngOnInit() {
 		this.isLoadingResults = true
 
-		this.columns.map(column => {
-			this.displayedColumns.push(column.key)
-		})
-
-		this.displayedColumns.push('row-actions')
-
 		this.search.valueChanges.pipe(
 			map(() => {
 				this.onSearch.emit()
@@ -135,7 +127,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 			if(this.searchParams.hitsPerPage !== this.paginator.pageSize){
 				this.paginator.pageIndex = 0
 			}
-		});
+		})
 
 		merge(this.sort.sortChange, this.paginator.page, this.filter)
 		.pipe(
@@ -198,6 +190,9 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 			if(column.filters && column.filters.length){
 				column.filters.map(filter => {
 					let ORFilters = []
+					if(filter.hasOwnProperty('canFilter')){
+						if(!filter.canFilter) return;
+					}
 					if(filter.type === 'checkbox'){
 						filter.choices.getRawValue().map(choice => {
 							if(choice.selected){
@@ -279,7 +274,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	runRowAction(action, doc, i){
 		const dataRow = {
 			index: i,
-			row: this.dataSource.data[i],
+			data: this.dataSource.data[i],
 		}
 		action.action(dataRow)
 		this.rowAction.emit(dataRow)
@@ -288,7 +283,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	getRowActionPermissions({canActivate}, row, i) {
 		const dataRow = {
 			index: i,
-			row,
+			data: row,
 		}
 		if(typeof canActivate === 'boolean'){
 			return canActivate
@@ -328,6 +323,17 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 			filter.to.setValue(null)
 			this.filter.next('filter')
 		}
+	}
+
+	getColumns(){
+		const columns = this.columns.filter(column => column.display).map(column => column.key)
+		columns.unshift('select')
+		columns.push('row-actions')
+		return columns
+	}
+
+	changed(val){
+		console.log(val)
 	}
 
 	ngOnDestroy() {

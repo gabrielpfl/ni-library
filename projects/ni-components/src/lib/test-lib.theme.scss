@@ -1,0 +1,5 @@
+@import 'components/ni-daterangepicker/datepicker-content/datepicker-content.component.scss';
+
+@mixin test-lib-theme($test-app-theme) {
+  @include test-component-theme($test-app-theme);
+}

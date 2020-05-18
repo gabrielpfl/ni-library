@@ -43,6 +43,10 @@
       ],
       "ni-algolia-functions/*": [
         "dist/ni-algolia-functions/*"
+      ],
+      "mat-daterangepicker": [
+        "dist/mat-daterangepicker/mat-daterangepicker",
+        "dist/mat-daterangepicker"
       ]
     }
   }

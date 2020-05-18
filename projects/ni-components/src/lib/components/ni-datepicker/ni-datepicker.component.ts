@@ -19,7 +19,8 @@ const moment = _moment;
 export class NiDatepicker implements ControlValueAccessor, OnInit {
 
 	@Input() _value // notice the '_'
-	@Input() placeholder: string = ''
+	@Input() label: string
+	@Input() placeholder: string
 	@Input() dateformat: string = 'MMM DD, YYYY'
 	@Input() materialInput: boolean
 	@Input() inputStyle: any

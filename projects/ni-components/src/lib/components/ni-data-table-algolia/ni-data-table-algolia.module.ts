@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../../material.module';
 
 import { NiDataTableAlgolia } from './ni-data-table-algolia.component';
-import { NiDaterangepickerModule } from '../ni-daterangepicker/daterangepicker.module';
+import { MatDaterangepickerModule } from 'mat-daterangepicker';
 
 @NgModule({
   imports: [
@@ -16,7 +16,7 @@ import { NiDaterangepickerModule } from '../ni-daterangepicker/daterangepicker.m
     ReactiveFormsModule,
     MaterialModule,
     BrowserAnimationsModule,
-    NiDaterangepickerModule
+    MatDaterangepickerModule
   ],
   declarations: [
     NiDataTableAlgolia

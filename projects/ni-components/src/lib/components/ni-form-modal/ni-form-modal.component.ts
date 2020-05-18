@@ -23,11 +23,16 @@ export interface NiFormData {
 export interface NiFormField {
 	type: string
 	name: string
+	disabled?: boolean
+	appearance?: string
+	placeholder?: string
 	label?: string
 	required?: boolean
 	instructions?: string
 	choices?: NiFormFieldChoice[] | string[] | Promise<NiFormFieldChoice[] | string[]> | Observable<NiFormFieldChoice[] | string[]>
 	value?: any
+	min?: number
+	max?: number
 	minDate?: any
 	maxDate?: any
 	startAt?: any
@@ -66,6 +71,17 @@ export class NiFormModal implements OnDestroy {
 
 	fieldsArray = new FormArray([])
 
+	editorModules = {
+		toolbar: {
+			container: [
+				['bold', 'italic', 'underline', 'strike'], // toggled buttons
+				[{ 'color': [] }], // dropdown with defaults from theme
+				['clean'], // remove formatting button
+				['link'], // link and image, video
+			],
+		}
+	}
+
 	private unsubscribe = new Subject<void>()
   
 	constructor(
@@ -99,15 +115,26 @@ export class NiFormModal implements OnDestroy {
 			if(field.type === 'checkbox'){
 				validators = [...validators, Validators.minLength(1)]
 			}
+			if(field.min){
+				validators = [...validators, Validators.min(field.min)]
+			}
+			if(field.max){
+				validators = [...validators, Validators.min(field.max)]
+			}
 			const group = new FormGroup({
 				type: new FormControl(field.type),
 				name: new FormControl(field.name),
+				appearance: new FormControl(field.appearance ? field.appearance : 'legacy'),
 				choices: new FormControl([]),
-				value: new FormControl(field.value || field.value === false ? field.value : null, validators)
+				value: new FormControl({value: field.value || field.value === false ? field.value : null, disabled: field.disabled}, validators)
 			})
 
 			if(field.label){
 				group.addControl('label', new FormControl(field.label))
+			}
+
+			if(field.placeholder){
+				group.addControl('placeholder', new FormControl(field.placeholder))
 			}
 
 			if(field.instructions){

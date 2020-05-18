@@ -5,7 +5,7 @@
 	[class.hovering]="!disabled ? isHovering : ''"
 >
 	<div *ngFor="let file of files, let i = index" class="uploading" [ngClass]="{'hidden': hiddenUploader}">
-		<ni-upload-task [file]="file" [collection]="collection" [fileObj]="fileObj" [fileIndex]="getFileIndex(i)" [path]="path" (uploaded)="uploaded.emit($event)"></ni-upload-task>
+		<ni-upload-task [file]="file" [fileObj]="fileObj" [fileIndex]="getFileIndex(i)" [path]="path" [mimeTypes]="mimeTypes" (uploaded)="uploaded.emit($event)" (error)="error.emit($event)"></ni-upload-task>
 	</div>
 	<ng-content></ng-content>
 </div>

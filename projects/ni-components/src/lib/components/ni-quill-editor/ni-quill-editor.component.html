@@ -17,7 +17,7 @@
 	>
 	</quill-editor>
 
-	<ni-dropzone *ngIf="!disable && active && uploader" [collection]="uploader.filesCollection" [fileObj]="uploader.fileObj" [path]="uploader.filesPath" [dropzone]="uploader.dropzone ? uploader.dropzone : false" [hiddenUploader]="hiddenUploader" (uploaded)="uploaded($event)">
+	<ni-dropzone *ngIf="!disable && active && uploader" [fileObj]="uploader.fileObj" [path]="uploader.filesPath" [dropzone]="uploader.dropzone ? uploader.dropzone : false" [hiddenUploader]="hiddenUploader" (uploaded)="uploaded($event)">
 		<div [ngStyle]="{'min-height': minHeight}">
 			<quill-editor
 				#editor 

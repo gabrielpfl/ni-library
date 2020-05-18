@@ -18,13 +18,13 @@ import {
   MatCalendarHeader  
 } from '@angular/material/datepicker';
 
-import { SgDatepickerComponent } from './datepicker/datepicker.component';
-import { SgDatepickerInputDirective } from './datepicker/datepicker-input.directive';
-import { SgDatepickerContentComponent } from './datepicker-content/datepicker-content.component';
+import { MatDaterangepicker } from './datepicker/datepicker.component';
+import { MatDaterangepickerInputEnd } from './datepicker/datepicker-input.directive';
+import { MatDaterangepickerContent } from './datepicker-content/datepicker-content.component';
 import { CommonModule } from '@angular/common';
-import { SgCalendarComponent } from './calendar/calendar.component';
-import { SgMonthViewComponent } from './month-view/month-view.component';
-import { SgCalendarBodyComponent } from './calendar-body/calendar-body.component';
+import { MatDaterangeCalendar } from './calendar/calendar.component';
+import { MatDaterangeMonthView } from './month-view/month-view.component';
+import { MatDaterangeCalendarBody } from './calendar-body/calendar-body.component';
 
 @NgModule({
   imports: [
@@ -38,19 +38,19 @@ import { SgCalendarBodyComponent } from './calendar-body/calendar-body.component
     MatNativeDateModule
   ],
   declarations: [
-    SgDatepickerComponent,
-    SgDatepickerInputDirective,
-    SgDatepickerContentComponent,
-    SgCalendarComponent,
-    SgMonthViewComponent,
-    SgCalendarBodyComponent
+    MatDaterangepicker,
+    MatDaterangepickerInputEnd,
+    MatDaterangepickerContent,
+    MatDaterangeCalendar,
+    MatDaterangeMonthView,
+    MatDaterangeCalendarBody
   ],
   exports: [
     MatDatepickerModule,
 
-    SgDatepickerComponent,
-    SgDatepickerInputDirective,
-    SgDatepickerContentComponent
+    MatDaterangepicker,
+    MatDaterangepickerInputEnd,
+    MatDaterangepickerContent
   ],
   entryComponents: [
     MatDatepicker,
@@ -61,7 +61,7 @@ import { SgCalendarBodyComponent } from './calendar-body/calendar-body.component
     MatCalendarBody,
     MatCalendarHeader,
 
-    SgDatepickerContentComponent
+    MatDaterangepickerContent
   ]
 })
 export class NiDaterangepickerModule {
