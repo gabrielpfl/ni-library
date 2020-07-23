@@ -1,7 +1,7 @@
 import { Injectable, Directive, Input } from '@angular/core'
 import { NgControl } from '@angular/forms';
 import { FormBuilder, FormGroup, FormArray, FormControl, AbstractControl, ValidationErrors } from '@angular/forms'
-import { difference, differenceWith, isEqual, transform, isObject, round, differenceBy, filter } from 'lodash'
+import { difference, differenceWith, isEqual, transform, isObject, round, differenceBy, filter, intersection } from 'lodash'
 
 import * as _moment from 'moment-timezone'
 import { Observable } from 'rxjs';
@@ -39,14 +39,14 @@ export class NiHelperSnippetsService {
             let value = obj[key]
 
 			if((!isObject(value) && !Array.isArray(value)) || this.isValidTimeStamp(value) || moment.isMoment(value) || value instanceof Date){
-                let control = formGroup['controls'][key];
+                let control: FormControl = formGroup['controls'][key];
                 if(this.isValidTimeStamp(value) || moment.isMoment(value)){
                     value = value.toDate()
                 }
 				if(control && control.value !== value){
                     control.patchValue(value, { emitEvent });
 				}else if(!control){
-                    control = new FormControl({value: value, disabled})
+                    control = new FormControl({value, disabled})
 					if(formGroup instanceof FormGroup){
 						formGroup.addControl(key, control);
 					}else if(formGroup instanceof FormArray){
@@ -54,9 +54,9 @@ export class NiHelperSnippetsService {
 					}
                 }
                 if(control){
-                    if(disabled === true){
+                    if(disabled === true && !control.disabled){
                         control.disable({emitEvent: false})
-                    }else if(disabled === false){
+                    }else if(disabled === false && control.disabled){
                         control.enable({emitEvent: false})
                     }
                 }
@@ -101,7 +101,6 @@ export class NiHelperSnippetsService {
 
             if(perm === true){
                 form.enable({emitEvent: false})
-                
             }else if(perm === false){
                 form.disable({emitEvent: false})
             }
@@ -675,12 +674,12 @@ export class NiHelperSnippetsService {
         return obj1
     }
 
-    string_to_slug(str) {
+    string_to_slug(str, dash = '-') {
         str = str.replace(/^\s+|\s+$/g, ""); // trim
         str = str.toLowerCase();
       
         // remove accents, swap ñ for n, etc
-        var from = "åàáãäâèéëêìíïîòóöôùúüûñç·/_,:;";
+        var from = `åàáãäâèéëêìíïîòóöôùúüûñç·/${dash},:;`;
         var to = "aaaaaaeeeeiiiioooouuuunc------";
       
         for (var i = 0, l = from.length; i < l; i++) {
@@ -689,8 +688,8 @@ export class NiHelperSnippetsService {
       
         str = str
           .replace(/[^a-z0-9 -]/g, "") // remove invalid chars
-          .replace(/\s+/g, "-") // collapse whitespace and replace by -
-          .replace(/-+/g, "-") // collapse dashes
+          .replace(/\s+/g, dash) // collapse whitespace and replace by -
+          .replace(/-+/g, dash) // collapse dashes
           .replace(/^-+/, "") // trim - from start of text
           .replace(/-+$/, ""); // trim - from end of text
       
@@ -702,5 +701,55 @@ export class NiHelperSnippetsService {
             if (src.hasOwnProperty(key)) obj[key] = src[key];
         }
         return obj;
+    }
+
+    addLabels(labels: string[], newlabels: string[]){
+		newlabels.map(label => {
+			if(!intersection(labels, [label]).length){
+				labels.push(label)
+			}
+		})
+		return labels
+	}
+
+	deleteLabels(labels: string[], toDeleteLabels: string[]){
+		toDeleteLabels.map(label => {
+			labels = labels.filter(l => l !== label)
+		})
+		return labels
+	}
+
+	hasLabels(labels: string[], toFindLabels: string[]): boolean {
+		return intersection(labels, toFindLabels).length ? true : false
+	}
+
+	hasLabel(labels: string[], label: string): boolean {
+		return intersection(labels, [label]).length ? true : false
+    }
+    
+    b64toBlob(dataURI){
+		const parts = dataURI.split(',')
+		const byteString = atob(parts[1])
+		const ab = new ArrayBuffer(byteString.length)
+		const ia = new Uint8Array(ab)
+	
+		for (var i = 0; i < byteString.length; i++) {
+			ia[i] = byteString.charCodeAt(i)
+		}
+		return new Blob([ab], { type: parts[0].split(';')[0].split(':')[1] })
+    }
+    
+    dataURLtoFile(dataurl, filename) {
+        let arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), 
+            n = bstr.length, 
+            u8arr = new Uint8Array(n);
+            
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        
+        return new File([u8arr], filename, {type:mime});
     }
 }

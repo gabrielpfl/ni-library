@@ -73,7 +73,7 @@
 					</ng-container>
 
 					<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="ni-header-row"></tr>
-					<tr mat-row #tableRow *matRowDef="let row; columns: displayedColumns; let x = index" [@removingRow]="dataSource.data[x]['status']"></tr>
+					<tr mat-row #tableRow *matRowDef="let row; columns: displayedColumns; let x = index" class="ni-body-row" [@removingRow]="dataSource.data[x]['status']"></tr>
 				</table>
 			</div>
 		</div>
@@ -92,7 +92,7 @@
 					</mat-form-field>
 				</div>
 			</div>
-			<mat-paginator [length]="resultsLength" [pageSizeOptions]="[5, 10, 20, 50]" [pageSize]="10" [hidePageSize]="filters && filters.filtered" [ngClass]="{'filtered-paginator': filters && filters.filtered || dataSource.data.length < 1 || hidePaginator || statusFiltered}"></mat-paginator>
+			<mat-paginator [length]="resultsLength" [pageSizeOptions]="[5, 10, 20, 50]" [pageSize]="20" [hidePageSize]="filters && filters.filtered" [ngClass]="{'filtered-paginator': filters && filters.filtered || dataSource.data.length < 1 || hidePaginator || statusFiltered}"></mat-paginator>
 		</div>
 	</div>
 </div>

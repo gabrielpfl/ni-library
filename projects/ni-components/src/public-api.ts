@@ -27,6 +27,7 @@ export * from './lib/components/ni-snack-bar/ni-snack-bar.module';
 export * from './lib/components/ni-top-tabs/ni-top-tabs.module';
 export * from './lib/components/ni-uploader/ni-uploader.module';
 export * from './lib/components/ni-vertical-tabs/ni-vertical-tabs.module';
+export * from './lib/components/ni-image-box/ni-image-box.module';
 
 export * from './lib/components/ni-alert/ni-alert.component';
 export * from './lib/components/ni-card-form/ni-card-form.component';
@@ -64,3 +65,7 @@ export * from './lib/components/ni-uploader/ni-upload-task/ni-upload-task.compon
 export * from './lib/components/ni-vertical-tabs/ni-vertical-tab-group/ni-vertical-tab-group.component';
 export * from './lib/components/ni-vertical-tabs/ni-vertical-tab-group/ni-vertical-tab-group.directive';
 export * from './lib/components/ni-vertical-tabs/ni-vertical-tab/ni-vertical-tab.component';
+
+export * from './lib/components/ni-image-box/ni-image-box.component';
+export * from './lib/components/ni-image-box/ni-image-box.service';
+export * from './lib/components/ni-image-box/ni-image-box.tokens';

@@ -3,6 +3,12 @@
   "dest": "../../dist/ni-components",
   "lib": {
     "entryFile": "src/public-api.ts",
-    "styleIncludePaths": ["../shared-styles"]
+    "styleIncludePaths": ["../shared-styles"],
+    "umdModuleIds": {
+      "quill": "quill",
+      "quill-table-module": "quill-table-module",
+      "quill-image-resize-module": "quill-image-resize-module",
+      "ngx-quill": "ngx-quill"
+    }
   }
 }

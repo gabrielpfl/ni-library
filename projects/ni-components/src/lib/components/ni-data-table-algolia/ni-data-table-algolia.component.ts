@@ -7,13 +7,15 @@ import { catchError, map, startWith, switchMap, takeUntil, debounceTime } from '
 import { SelectionModel } from '@angular/cdk/collections'
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
-
+import { Moment } from 'moment';
+import * as _moment from 'moment-timezone'
 import { NiAlgoliaService } from 'ni-algolia-functions'
 
 import { NiTopTabs } from '../ni-top-tabs/ni-top-tabs.component'
 
 import { FormControl, FormGroup } from '@angular/forms'
 import { MatMenuTrigger } from '@angular/material/menu';
+const moment = _moment;
 
 @Component({
   selector: 'ni-data-table-algolia',
@@ -62,6 +64,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	@Output() onSearch = new EventEmitter()
+	@Output() onFilter = new EventEmitter()
 	@Output() rowAction = new EventEmitter()
 	@Output() tableAction = new EventEmitter()
 
@@ -85,6 +88,9 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 
 	contextMenuPosition = { x: '0px', y: '0px' }
 	currentFilter
+
+	rowSelected
+	rowSelectedIndex = -1
 
 	private unsubscribe = new Subject<void>()
 
@@ -198,7 +204,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 							if(choice.selected){
 								ORFilters = [...ORFilters, {
 									key: filter.key,
-									value: choice.value,
+									value: filter.operator === 'IN' ? [choice.value] : choice.value,
 									operator: filter.operator
 								}]
 							}
@@ -209,17 +215,17 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 							filters = [...filters, 
 								[{
 									key: filter.key,
-									value: filter.from.value.unix()*1000,
+									value: moment(filter.from.value.format('YYYY-MM-DDTHH:mm:ss')).unix()*1000,
 									operator: '>='
 								}],
 								[{
 									key: filter.key,
-									value: filter.to.value.add(1, 'd').unix()*1000,
-									operator: '<='
+									value: moment(filter.to.value.format('YYYY-MM-DDTHH:mm:ss')).add(1, 'd').unix()*1000,
+									operator: '<'
 								}]
 							]
 						}
-						filter['filtered'] = filter.from.value && filter.to.value
+						filter['filtered'] = filter.from.value && filter.to.value ? true : false
 					}
 
 					if(ORFilters.length){
@@ -253,6 +259,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 
 	runFilters(){
 		this.filter.next('filter')
+		this.onFilter.emit()
 	}
 
 	//Whether the number of selected elements matches the total number of rows.
@@ -328,12 +335,26 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	getColumns(){
 		const columns = this.columns.filter(column => column.display).map(column => column.key)
 		columns.unshift('select')
-		columns.push('row-actions')
+		// columns.push('row-actions')
 		return columns
 	}
 
-	changed(val){
-		console.log(val)
+	filterFiltered(filter){
+		return filter.hasOwnProperty('filtered') && filter.filtered
+	}
+
+	onRightClick(event, actionsPanel, data, index){
+		event.preventDefault();
+		this.rowSelected = data
+		this.rowSelectedIndex = index
+    	this.contextMenuPosition.x = event.clientX + 'px';
+		this.contextMenuPosition.y = event.clientY + 'px';
+		actionsPanel.openMenu()
+	}
+
+	actionsClosed(event){
+		this.rowSelected = null
+		this.rowSelectedIndex = -1
 	}
 
 	ngOnDestroy() {

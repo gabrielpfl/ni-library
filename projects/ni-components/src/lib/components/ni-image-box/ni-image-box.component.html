@@ -1,0 +1,5 @@
+<div class="ni-image-box" [style.top]="image.y + 'px'" [style.left]="image.x + 'px'" cdkDrag>
+	<div class="close-box" (click)="closeBox()"><span class="material-icons">close</span></div>
+	<img *ngIf="image" [src]="image.url" class="img-box">
+	<div *ngIf="!image">No Image</div>
+</div>

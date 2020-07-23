@@ -38,10 +38,10 @@
 					<ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
 						<th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sorting ? column.key : null" [disabled]="!column.sorting ? true : false" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}">
 							{{column.label}}
-							<div *ngIf="column.filters && column.filters.length" class="filters" (click)="$event.stopPropagation()">
+							<div *ngIf="column.hasOwnProperty('filters') && column.filters && column.filters.length" class="filters" (click)="$event.stopPropagation()">
 								<span *ngFor="let filter of column.filters"  (click)="openFilter($event, filter, filterPanel); $event.stopPropagation()" class="f-menu">
 									<i class="material-icons" [matTooltip]="filter.tooltip ? filter.tooltip : ''">filter_list</i>
-									<span *ngIf="filter.hasOwnProperty('filtered') && filter.filtered" class="f-active"></span>
+									<span *ngIf="filterFiltered(filter)" class="f-active"></span>
 								</span>
 							</div>
 						</th>
@@ -65,7 +65,7 @@
 					</ng-container>
 
 					<!-- Actions Column -->
-					<ng-container matColumnDef="row-actions">
+					<!-- <ng-container matColumnDef="row-actions">
 						<th mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !rowActions}"></th>
 						<td mat-cell *matCellDef="let doc, let i = index" [ngClass]="{'hidden': !rowActions}"> 
 							<div *ngIf="rowActions && rowActions.length > 0" class="row-actions">
@@ -84,10 +84,10 @@
 								</mat-menu>
 							</div>
 						</td>
-					</ng-container>
+					</ng-container> -->
 
 					<tr mat-header-row *matHeaderRowDef="getColumns(); sticky: true" class="ni-header-row"></tr>
-					<tr mat-row #tableRow *matRowDef="let row; columns: getColumns(); let x = index" [ngClass]="rowClass ? rowClass(row) : ''" [@removingRow]="dataSource.data[x]['status']"></tr>
+					<tr mat-row #tableRow *matRowDef="let row; columns: getColumns(); let x = index" [ngClass]="rowClass ? rowClass(row) : ''" class="ni-body-row {{this.rowSelected?.objectID === row.objectID ? 'selected' : ''}}" [@removingRow]="dataSource.data[x]['status']" (contextmenu)="onRightClick($event, actionsPanel, row, x)" ></tr>
 				</table>
 			</div>
 		</div>
@@ -126,19 +126,33 @@
 				</div>
 				<div *ngIf="filter.type === 'daterange'" class="range-field-flex">
 					<mat-form-field>
-						<input matInput (focus)="dpTo.open()" [matDatepicker]="dpTo" type="text" [formControl]="filter.from" (change)="changed('from')" placeholder="From" autocomplete="off">
-						<mat-daterangepicker #dpTo touchUi="false" [dualView]="true" [showCustomRanges]="true"></mat-daterangepicker>
+						<input matInput (focus)="dpTo.open()" [matDatepicker]="dpTo" type="text" [formControl]="filter.from" placeholder="From" autocomplete="off">
+						<mat-daterangepicker #dpTo [touchUi]="false" [dualView]="true" [showCustomRanges]="true"></mat-daterangepicker>
 					</mat-form-field>
 					<mat-form-field>
-						<input matInput (focus)="dpTo.open()" [matDaterangepickerEnd]="dpTo" type="text" [formControl]="filter.to" (change)="changed('to')" placeholder="To" autocomplete="off">
+						<input matInput (focus)="dpTo.open()" [matDaterangepickerEnd]="dpTo" type="text" [formControl]="filter.to" placeholder="To" autocomplete="off">
 						<mat-datepicker-toggle matSuffix [for]="dpTo"></mat-datepicker-toggle>
 					</mat-form-field>
 				</div>
 			</div>
 		</div>
 		<div class="ni-filter-footer">
-			<button mat-stroked-button (click)="runFilters(); filterPanel.closeMenu()" [disabled]="filter.hasOwnProperty('canFilter') && !filter.canFilter ? true : false">Apply</button>&nbsp;
-			<button mat-stroked-button (click)="clearFiltersCol(filter); filterPanel.closeMenu()" [disabled]="filter.hasOwnProperty('canFilter') && !filter.canFilter ? true : false">Clear Filters</button>
+			<button mat-button (click)="clearFiltersCol(filter); filterPanel.closeMenu()" [disabled]="filter.hasOwnProperty('canFilter') && !filter.canFilter ? true : false">Clear Filters</button>&nbsp;&nbsp;
+			<button mat-stroked-button (click)="runFilters(); filterPanel.closeMenu()" [disabled]="filter.hasOwnProperty('canFilter') && !filter.canFilter ? true : false">Apply</button>
+		</div>
+	</div>
+</mat-menu>
+
+<div style="position: fixed" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" #actionsPanel="matMenuTrigger" [matMenuTriggerFor]="actionsMenu"></div>
+<mat-menu #actionsMenu="matMenu" (closed)="actionsClosed($event)">
+	<div *ngIf="rowActions.length" class="row-actions">
+		<div *ngIf="rowSelected as doc">
+			<button *ngFor="let action of rowActions" mat-menu-item (click)="runRowAction(action, doc, rowSelectedIndex)" [disabled]="!getRowActionPermissions(action, doc, rowSelectedIndex)">
+				<span>
+					<mat-icon>{{action.icon}}</mat-icon>
+					<b>{{action.label}}</b>
+				</span>
+			</button>
 		</div>
 	</div>
 </mat-menu>

@@ -1,4 +1,5 @@
-<mat-form-field *ngIf="materialInput" (click)="picker.open()">
+<mat-form-field *ngIf="materialInput" (click)="picker.open()" [appearance]="appearance">
+	<mat-label>{{label}}</mat-label>
 	<span *ngIf="prefix" matPrefix>{{prefix}} &nbsp;</span>
 	<input matInput [placeholder]="placeholder" [value]="displayDate(value)" [disabled]="disable" (focus)="picker.open()">
 	<input #dp1 type="hidden" [matDatepicker]="picker" [min]="min" [max]="max" [(ngModel)]="value">

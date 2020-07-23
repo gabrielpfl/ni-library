@@ -26,6 +26,7 @@ import {MatSelectChange, MatSelect} from '@angular/material/select';
 export class NiOption{
 	@Input() value: any
 	@Input() viewValue: string
+	@Input() disabled: boolean
 }
 
 @Component({

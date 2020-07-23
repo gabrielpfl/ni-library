@@ -10,7 +10,7 @@
 		</button>
 	</div>
 	<div *ngIf="!preview && !disable" class="editor">
-		<div ace-editor [(text)]="value" [options]="options" style="min-height: 200px; height: auto; width:100%; overflow: auto"></div>
+		<!-- <div ace-editor [(text)]="value" [options]="options" style="min-height: 200px; height: auto; width:100%; overflow: auto"></div> -->
 	</div>
 	<div *ngIf="preview || disable" class="preview">
 		<markdown [data]="value"></markdown>
@@ -24,7 +24,7 @@
 		</div>
 		<div class="fs-container">
 			<div class="fs-editor">
-				<div ace-editor [(text)]="value" [options]="optionsFullScreen" style="min-height: 100%; height: auto; width:100%; overflow: auto"></div>
+				<!-- <div ace-editor [(text)]="value" [options]="optionsFullScreen" style="min-height: 100%; height: auto; width:100%; overflow: auto"></div> -->
 			</div>
 			<div class="fs-preview">
 				<markdown [data]="value"></markdown>

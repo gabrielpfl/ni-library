@@ -29,6 +29,7 @@ export class NiDatepicker implements ControlValueAccessor, OnInit {
 	@Input() min: Date
 	@Input() max: Date
 	@Input() startAt: Date
+	@Input() appearance: string = 'standard'
 
 	@ViewChild('picker') picker: any
 

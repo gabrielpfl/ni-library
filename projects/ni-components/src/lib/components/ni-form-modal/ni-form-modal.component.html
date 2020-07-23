@@ -7,7 +7,7 @@
 		<div class="dialog-content" [formGroup]="fieldsArray">
 			<div *ngFor="let field of fieldsArray.controls, let i =index" [formGroupName]="i" class="field-control" [ngClass]="field.value.fieldClass">
 				
-				<mat-form-field *ngIf="field.value.type === 'text'" [appearance]="field.value.appearance">
+				<mat-form-field *ngIf="field.value.type === 'text' || field.value.type === 'email'" [appearance]="field.value.appearance">
 					<mat-label>{{field.value.label}}</mat-label>
 					<input matInput [placeholder]="field.value.placeholder" formControlName="value" autocomplete="off">
 					<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
@@ -44,16 +44,16 @@
 					</mat-error>
 				</mat-form-field>-->
 
-				<ni-datepicker *ngIf="field.value.type === 'date'" formControlName="value" [materialInput]="true" [label]="field.value.label" [placeholder]="field.value.placeholder"  [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" [startAt]="field.value.startAt ? field.value.startAt : ''" [appearance]="field.value.appearance"></ni-datepicker>
+				<ni-datepicker *ngIf="field.value.type === 'date'" formControlName="value" [materialInput]="true" [label]="field.value.label" [placeholder]="field.value.placeholder" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" [startAt]="field.value.startAt ? field.value.startAt : ''" [appearance]="field.value.appearance"></ni-datepicker>
 				
 				<ni-select *ngIf="field.value.type === 'select'" [label]="field.value.label" [placeholder]="field.value.placeholder" [multiple]="field.value.multiple" formControlName="value" (opened)="field.value.hasOwnProperty('onOpen') ? field.value['onOpen']() : ''" [appearance]="field.value.appearance">
-					<ni-option *ngFor="let choice of field.value.choices" [value]="choice.value" [viewValue]="choice.label"></ni-option>
+					<ni-option *ngFor="let choice of field.value.choices" [value]="getChoiceValue(choice)" [viewValue]="getChoiceLabel(choice)" [disabled]="choice && choice.hasOwnProperty('disabled') ? choice.disabled : false"></ni-option>
 				</ni-select>
 
 				<div *ngIf="field.value.type === 'radio'">
 					<label class="label-radio-list">{{field.value.label}}</label>
 					<mat-radio-group formControlName="value" class="radio-list">
-						<mat-radio-button *ngFor="let choice of field.value.choices" [value]="choice.value">{{choice.label}}</mat-radio-button>
+						<mat-radio-button *ngFor="let choice of field.value.choices" [value]="getChoiceValue(choice)">{{getChoiceLabel(choice)}}</mat-radio-button>
 					</mat-radio-group>
 				</div>
 
@@ -62,7 +62,7 @@
 				<div *ngIf="field.value.type === 'checkbox'">
 					<label class="label-radio-list">{{field.value.label}}</label>
 					<div class="checkbox-choices">
-						<mat-checkbox *ngFor="let choice of field.value.choices, let c = index" [checked]="checkedChoice(field, choice, c)" (change)="changeCheckbox($event, field, choice, c)" class="checkbox-item">{{choice.label}}</mat-checkbox>
+						<mat-checkbox *ngFor="let choice of field.value.choices, let c = index" [checked]="checkedChoice(field, choice, c)" (change)="changeCheckbox($event, field, choice, c)" class="checkbox-item">{{getChoiceLabel(choice)}}</mat-checkbox>
 					</div>
 				</div>
 
@@ -83,13 +83,37 @@
 					<mat-form-field [appearance]="field.value.appearance">
 						<mat-label>From</mat-label>
 						<input matInput [matDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="from" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" autocomplete="off">
-						<mat-daterangepicker #dpTo touchUi="false" [startAt]="field.value.startAt ? field.value.startAt : false"></mat-daterangepicker>
+						<mat-daterangepicker #dpTo [touchUi]="false" [startAt]="field.value.startAt ? field.value.startAt : false"></mat-daterangepicker>
 					</mat-form-field>
 					<mat-form-field [appearance]="field.value.appearance">
 						<mat-label>To</mat-label>
 						<input matInput [matDaterangepickerEnd]="dpTo" (focus)="dpTo.open()" type="text" formControlName="to" autocomplete="off" (dateChange)="onRangeChange(field)">
 						<mat-datepicker-toggle matSuffix [for]="dpTo"></mat-datepicker-toggle>
 					</mat-form-field>
+				</div>
+
+				<div *ngIf="field.value.type === 'file'">
+					<div *ngIf="field.value.label">{{field.value.label}}</div>
+					<div *ngIf="field.getRawValue().value.length" class="files">
+						<div *ngFor="let file of field.value.value; let f = index" class="file">
+							<div *ngIf="isImage(file.downloadURL)" class="image-file">
+								<img [src]="sanitizer.bypassSecurityTrustUrl(file.downloadURL)">
+								<div class="remove-file" (click)="removeFile(field, f)">
+									<span class="material-icons">close</span>
+								</div>
+							</div>
+							<div *ngIf="!isImage(file.downloadURL)"  class="attachment-file">
+								<span class="material-icons">insert_drive_file</span>&nbsp;{{file.filename}}
+								<div class="remove-file" (click)="removeFile(field, f)">
+									<span class="material-icons">close</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div [ngClass]="{'dropzone': field.value.dropzone}" (drop)="field.value.dropzone ? onDrop(field, $event) : ''" (dragover)="onDragOver($event)">
+						<input #fileInput hidden="true" class="hidden" type="file" (change)="selectFiles(field, $event.target.files)" [accept]="field.value.accept" [multiple]="field.value.multiple"/>
+            			<button mat-stroked-button color="primary" (click)="fileInput.click()" [disabled]="field.value.hasOwnProperty('disabled') ? field.value.disabled : false"><mat-icon>add</mat-icon> Select File{{field.value.multiple ? 's' : ''}}</button>  
+					</div>
 				</div>
 			</div>
 		</div>
@@ -103,3 +127,6 @@
 		</div>
 	</div>
 </mat-dialog-content>
+<div *ngIf="loading" class="loading-shape">
+	<mat-spinner color="primary" mode="indeterminate" [strokeWidth]="3" [diameter]="70"></mat-spinner>
+</div>

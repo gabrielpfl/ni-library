@@ -38,7 +38,6 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	@Input() collection: string
 	@Input() path: any[]
 	//@Input() parentDoc: any
-	@Input() total: number
 	@Input() tabs: any[]
 	@Input() tabsStyle: string // default | joined
 	@Input() filtered: any[]
@@ -165,7 +164,7 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 
 				args['orderBy'] = this.sort ? this.sort.active : null
 				args['order'] = this.sort ? this.sort.direction : null
-				args['limit'] = this.paginator ? this.paginator.pageSize : 10,
+				args['limit'] = this.paginator ? this.paginator.pageSize : 20,
 				args['paginator'] = {
 					page: this.paginator ? this.paginator.pageIndex : 0,
 					previousPage: this.previousPageIndex,
@@ -181,9 +180,9 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 			}),
 			map((res: any) => {
 				// Flip flag to show that loading has finished.
-				this.isLoadingResults = false;
-				this.isRateLimitReached = false;
-				this.resultsLength = this.total ? this.total : 10 // total found (default to 10)
+				this.isLoadingResults = false
+				this.isRateLimitReached = false
+				this.resultsLength = res.data().length
 				this.previousPageIndex = this.paginator ? this.paginator.pageIndex : 0
 				this.pageSize = this.paginator ? this.paginator.pageSize : 0
 				this.activeTab = this.topTabs.selectedTab

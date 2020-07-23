@@ -62,9 +62,9 @@ export class NiAlgoliaService {
 				const filterValues = []
 				AND.map(OR => {
 					if(OR.operator === '=='){
-						filterValues.push(`${OR.key}:${OR.value}`)
+						filterValues.push(`${OR.key}:"${OR.value}"`)
 					}else if(OR.operator === '!='){
-						filterValues.push(`NOT ${OR.key}:${OR.value}`)
+						filterValues.push(`NOT ${OR.key}:"${OR.value}"`)
 					}else if(OR.operator === '>'){
 						filterValues.push(`${OR.key} > ${OR.value}`)
 					}else if(OR.operator === '<'){
@@ -79,11 +79,27 @@ export class NiAlgoliaService {
 						const inVals = []
 						if(OR.value && Array.isArray(OR.value)){
 							OR.value.map(v => {
-								inVals.push(`(${OR.key}:${OR.v})`)
+								inVals.push(`(${OR.key}:"${v}")`)
 							})
 						}
 						if(inVals.length){
 							filterValues.push(`(${inVals.join(' AND ')})`)
+						}
+					}else if(OR.operator === 'NOT_IN'){
+						const notInVals = []
+						if(OR.value && Array.isArray(OR.value)){
+							OR.value.map(v => {
+								notInVals.push(`(NOT ${OR.key}:"${v}")`)
+							})
+						}
+						if(notInVals.length){
+							filterValues.push(`(${notInVals.join(' AND ')})`)
+						}
+					}else if(OR.operator === 'ANY'){
+						if(OR.value && Array.isArray(OR.value)){
+							OR.value.map(v => {
+								filterValues.push(`(${OR.key}:"${v}")`)
+							})
 						}
 					}
 				})

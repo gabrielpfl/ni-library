@@ -45,7 +45,7 @@ export class NiUploadTaskComponent implements OnInit {
 		}
   
 		// The storage path
-		const path = `${this.path}${Date.now()}_${this.file.name}`;
+		const path = `${this.path}/${Date.now()}_${this.file.name}`;
 	
 		// Reference to storage bucket
 		const ref = this.storage.ref(path);

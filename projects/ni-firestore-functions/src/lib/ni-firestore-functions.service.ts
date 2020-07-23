@@ -147,7 +147,6 @@ export class NiFirestoreService {
 				})
 
 				return collectionRef.valueChanges({idField: 'id'})
-
 			}),
 			map((actions: any) => {
 				let data = actions
@@ -267,9 +266,7 @@ export class NiFirestoreService {
 		let ref: any = this.afs
 		if(path instanceof AngularFirestoreDocument){
 			ref = path
-			return path
-		}
-		if(!Array.isArray(path) && path instanceof String){
+		}else if(!Array.isArray(path) && (typeof path === 'string')){
 			const pathSplited = path.split('/').filter(v => v != '')
 			path = pathSplited.map((val, i) => {
 				if(i % 2){
@@ -281,11 +278,13 @@ export class NiFirestoreService {
 				return false
 			}).filter(v => v !== false)
 		}
+
 		if(Array.isArray(path)){
 			path.map(p => {
 				ref = ref.collection(p.collection).doc(p.id)
 			})
 		}
+
 		return ref
 	}
 

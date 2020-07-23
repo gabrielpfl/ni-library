@@ -1,11 +1,10 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors } from '@angular/forms'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormGroup, FormArray, FormControl, Validators, ValidationErrors } from '@angular/forms'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NiHelperSnippetsService } from 'ni-helper-snippets'
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core'
 import * as _moment from 'moment'
 import { Subject, Observable } from 'rxjs';
-import { takeUntil, take, switchAll, switchMap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -18,6 +17,7 @@ export interface NiFormData {
 	fields?: NiFormField[]
 	notes?: NiFormNote[]
 	formClass?: string | string[] | Set<string> | { [klass: string]: any; }
+	onSubmit?(fields): Promise<any>
 }
 
 export interface NiFormField {
@@ -36,9 +36,11 @@ export interface NiFormField {
 	minDate?: any
 	maxDate?: any
 	startAt?: any
+	accept?: string
 	permissions?: boolean
 	fieldClass?: string | string[] | Set<string> | { [klass: string]: any; }
 	multiple?: boolean
+	dropzone?: boolean
 	onOpen?(): void
 	onLoad?(value: any): void
 	onChange?(value: any): void
@@ -53,6 +55,11 @@ export interface NiFormNote {
 	type: string
 	content: string
 }
+
+function isDataURL(s) {
+	return !!s.match(isDataURL.regex);
+}
+isDataURL.regex = /^\s*data:([a-z]+\/[a-z]+(;[a-z\-]+\=[a-z\-]+)?)?(;base64)?,[a-z0-9\!\$\&\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*$/i;
 
 
 @Component({
@@ -81,6 +88,8 @@ export class NiFormModal implements OnDestroy {
 			],
 		}
 	}
+
+	loading = false
 
 	private unsubscribe = new Subject<void>()
   
@@ -112,15 +121,23 @@ export class NiFormModal implements OnDestroy {
 	buildForm(){
 		this.fields.map(field => {
 			let validators =  [field.required ? Validators.required : Validators.nullValidator]
-			if(field.type === 'checkbox'){
+
+			if((field.type === 'checkbox' || field.type === 'file') && field.required){
 				validators = [...validators, Validators.minLength(1)]
 			}
+
 			if(field.min){
 				validators = [...validators, Validators.min(field.min)]
 			}
+
 			if(field.max){
 				validators = [...validators, Validators.min(field.max)]
 			}
+
+			if(field.type === 'email'){
+				validators = [...validators, Validators.email]
+			}
+
 			const group = new FormGroup({
 				type: new FormControl(field.type),
 				name: new FormControl(field.name),
@@ -128,6 +145,10 @@ export class NiFormModal implements OnDestroy {
 				choices: new FormControl([]),
 				value: new FormControl({value: field.value || field.value === false ? field.value : null, disabled: field.disabled}, validators)
 			})
+
+			if(field.hasOwnProperty('disabled') && field.disabled == true || field.disabled == false){
+				group.addControl('disabled', new FormControl(field.disabled))
+			}
 
 			if(field.label){
 				group.addControl('label', new FormControl(field.label))
@@ -165,6 +186,14 @@ export class NiFormModal implements OnDestroy {
 				group.addControl('fieldClass', new FormControl(field.fieldClass))
 			}
 
+			if(field.accept){
+				group.addControl('accept', new FormControl(field.accept))
+			}
+
+			if(field.dropzone){
+				group.addControl('dropzone', new FormControl(field.dropzone))
+			}
+
 			if(field.type === 'daterange'){
 				group.addControl('range', new FormGroup({
 					from: new FormControl(),
@@ -179,7 +208,7 @@ export class NiFormModal implements OnDestroy {
 					field.choices.then(data => {
 						group.get('choices').setValue(data, {emitEvent: false})
 					})
-				}else{
+				}else if(field.choices instanceof Observable){
 					field.choices.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
 						group.get('choices').setValue(data, {emitEvent: false})
 					})
@@ -195,7 +224,7 @@ export class NiFormModal implements OnDestroy {
 			//value changes for each field
 			if(field.onChange){
 				group.get('value').valueChanges.pipe(takeUntil(this.unsubscribe)).subscribe(value => {
-					field['onChange'](value)
+					field['onChange'](this.fieldsArray)
 				})
 			}
 
@@ -206,14 +235,24 @@ export class NiFormModal implements OnDestroy {
 	}
   
 	onNoClick(): void {
-	  	this.dialogRef.close(false);
+	  	this.dialogRef.close(false)
 	}
 
-	onClick(): void {
-		if(this.fieldsArray.valid){
-			this.dialogRef.close(this.fieldsArray.getRawValue());
-		}else{
-			this.functions.validateForm(this.fieldsArray);
+	async onClick() {
+		try{
+			if(this.fieldsArray.valid){
+				this.loading = true
+				if(this.data.hasOwnProperty('onSubmit')){
+					await this.data.onSubmit(this.fieldsArray.getRawValue())
+				}
+				this.dialogRef.close(this.fieldsArray.getRawValue())
+				this.loading = false
+			}else{
+				this.functions.validateForm(this.fieldsArray)
+			}
+		}catch(e){
+			console.error(e)
+			this.loading = false
 		}
 	}
 
@@ -236,17 +275,18 @@ export class NiFormModal implements OnDestroy {
 
 	checkedChoice(field: FormGroup, choice, index): boolean {
 		const value = field.get('value').value
-
-		return value.some(v => v == choice.value)
+		const choiceValue = this.getChoiceValue(choice)
+		return value.some(v => v == choiceValue)
 	}
 
 	changeCheckbox(event: MatCheckboxChange, field: FormGroup, choice, index){
 		let value = field.get('value').value
+		const choiceValue = this.getChoiceValue(choice)
 
 		if(!event.checked){
-			value = value.filter(v => v != choice.value)
+			value = value.filter(v => v != choiceValue)
 		}else{
-			value.push(choice.value)
+			value.push(choiceValue)
 		}
 
 		field.get('value').setValue(value)
@@ -257,9 +297,82 @@ export class NiFormModal implements OnDestroy {
 		field.get('value').setValue(value)
 	}
 
+	async selectFiles(field: FormGroup, files){
+		const _files: File[] = Array.from(files)
+
+		if(!_files.length) return;
+
+		const value = field.get('value').value
+
+		_files.map(async file => {
+			const fileEncoded = await this.getBase64(file)
+			const fileName = file.name
+			value.push({filename: fileName, downloadURL: fileEncoded})
+		})
+
+		field.get('value').patchValue(value)
+	}
+
+	removeFile(field: FormGroup, index){
+		let value = field.get('value').value
+		value = value.filter((file, i) => i !== index)
+		field.get('value').setValue(value)
+	}
+
+	isImage(dataURI) {
+		if(isDataURL(dataURI)){
+			const blob = this.b64toBlob(dataURI)
+			return blob.type.search( /^image\//i ) === 0
+		}
+		return this.checkURL(dataURI)
+	}
+
+	b64toBlob(dataURI){
+		const parts = dataURI.split(',')
+		const byteString = atob(parts[1])
+		const ab = new ArrayBuffer(byteString.length)
+		const ia = new Uint8Array(ab)
+	
+		for (var i = 0; i < byteString.length; i++) {
+			ia[i] = byteString.charCodeAt(i)
+		}
+		return new Blob([ab], { type: parts[0].split(';')[0].split(':')[1] })
+	}
+
+	getBase64(file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader()
+			reader.readAsDataURL(file)
+			reader.onload = () => resolve(reader.result)
+			reader.onerror = error => reject(error)
+		})
+	}
+
+	onDrop(field: FormGroup, event){
+		event.preventDefault();
+		this.selectFiles(field, event.dataTransfer.files)
+	}
+
+	onDragOver(event) {
+        event.stopPropagation();
+        event.preventDefault();
+	}
+
+	checkURL(url) {
+		return url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg') || url.includes('.gif')
+	}
+
+	getChoiceValue(choice){
+		return choice && choice.hasOwnProperty('value') ? choice.value : choice
+	}
+
+	getChoiceLabel(choice){
+		return choice && choice.hasOwnProperty('label') ? choice.label : choice
+	}
+
 	ngOnDestroy() {
-		this.unsubscribe.next();
-    	this.unsubscribe.complete();
+		this.unsubscribe.next()
+    	this.unsubscribe.complete()
 	}
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ContentChild, TemplateRef } from '@angular/core';
-import { NiVerticalTabLabelDirective } from '../ni-vertical-tab-group/ni-vertical-tab-group.directive'
+import { NiVerticalTabLabelDirective } from '../ni-vertical-tab-group/ni-vertical-tab-group.directive';
 
 @Component({
   selector: 'ni-vertical-tab',

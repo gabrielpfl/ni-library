@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import 'hammerjs';
-import 'mousetrap';
 import { MatGridListModule } from '@angular/material/grid-list'
 import { MatButtonModule } from '@angular/material/button'
 import { MatCheckboxModule } from '@angular/material/checkbox'
@@ -33,7 +31,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet'
 import { MatSortModule } from '@angular/material/sort';
 
 //import { MatMomentDateModule } from '@angular/material-moment-adapter';
-// import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 // import { MomentTimezoneDateAdapterModule } from '../helpers/moment-timezone-date-adapter';
 
 @NgModule({
@@ -70,7 +68,7 @@ import { MatSortModule } from '@angular/material/sort';
         MatBottomSheetModule,
 
         //MomentTimezoneDateAdapterModule,
-        //DragDropModule
+        DragDropModule
     ],
     declarations: [
 
@@ -108,7 +106,7 @@ import { MatSortModule } from '@angular/material/sort';
         MatBottomSheetModule,
 
         //MomentTimezoneDateAdapterModule,
-        //DragDropModule
+        DragDropModule
     ],
     entryComponents: [
     ],
