@@ -9,6 +9,8 @@ export interface Image {
     url: string
     x: number
     y: number
+    css?: any
+    className?: string
 }
 
 export interface ImageBoxConfig {

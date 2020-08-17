@@ -112,7 +112,7 @@
 					</div>
 					<div [ngClass]="{'dropzone': field.value.dropzone}" (drop)="field.value.dropzone ? onDrop(field, $event) : ''" (dragover)="onDragOver($event)">
 						<input #fileInput hidden="true" class="hidden" type="file" (change)="selectFiles(field, $event.target.files)" [accept]="field.value.accept" [multiple]="field.value.multiple"/>
-            			<button mat-stroked-button color="primary" (click)="fileInput.click()" [disabled]="field.value.hasOwnProperty('disabled') ? field.value.disabled : false"><mat-icon>add</mat-icon> Select File{{field.value.multiple ? 's' : ''}}</button>  
+            			<button mat-stroked-button color="primary" (click)="fileInput.click()" [disabled]="(field.value.hasOwnProperty('disabled') ? field.value.disabled : false) || isMaxLength(field)"><mat-icon>add</mat-icon> Select File{{field.value.multiple ? 's' : ''}}</button>  
 					</div>
 				</div>
 			</div>

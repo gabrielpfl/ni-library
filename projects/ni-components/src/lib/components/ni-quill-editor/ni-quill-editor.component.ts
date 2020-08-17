@@ -2,18 +2,18 @@ import { Component, OnInit, Input, forwardRef, ViewChild, AfterViewInit, Output,
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { QuillEditorComponent } from 'ngx-quill';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { NiDropzoneComponent } from '../ni-uploader/ni-dropzone/ni-dropzone.component';
 import * as randomString_ from 'random-string';
 const randomString = randomString_;
-import Quill from 'quill'
-import { TableCell, TableRow, Table, Contain, TableModule } from 'quill-table-module';
-import ImageResize from 'quill-image-resize-module'
-import { NiDropzoneComponent } from '../ni-uploader/ni-dropzone/ni-dropzone.component';
-Quill.register('modules/imageResize', ImageResize)
-Quill.register(TableCell);
-Quill.register(TableRow);
-Quill.register(Table);
-Quill.register(Contain);
-Quill.register('modules/table', TableModule);
+// import Quill from 'quill'
+// import { TableCell, TableRow, Table, Contain, TableModule } from 'quill-table-module';
+// import ImageResize from 'quill-image-resize-module'
+// Quill.register('modules/imageResize', ImageResize)
+// Quill.register(TableCell);
+// Quill.register(TableRow);
+// Quill.register(Table);
+// Quill.register(Contain);
+// Quill.register('modules/table', TableModule);
 
 @Component({
   selector: 'ni-quill-editor',

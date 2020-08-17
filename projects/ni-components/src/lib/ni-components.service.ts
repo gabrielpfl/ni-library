@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core'
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
 import { NiSnackBar } from './components/ni-snack-bar/ni-snack-bar.component';
 import { NiConfirmModal } from './components/ni-confirm-modal/ni-confirm-modal.component';
 import { NiFormModal, NiFormData } from './components/ni-form-modal/ni-form-modal.component';
 import { NiGlobalLoaderModal } from './components/ni-global-loader-modal/ni-global-loader-modal.component';
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
+
+export interface NiFormDialogConfig extends MatDialogConfig {
+    data: NiFormData
+}
 
 @Injectable({
   providedIn: 'root'
@@ -52,11 +56,11 @@ export class NiComponentsService {
 	 * @param {NiFormData} data the data to open a form modal
 	 * @param {string} width width px string if the dialog
      */
-    openFormModal(data: NiFormData, width: string = '600px'): MatDialogRef<NiFormModal> {
-        return this.dialog.open(NiFormModal, {
-            width: width,
-            data: data
-        })
+    openFormModal(config: NiFormDialogConfig): MatDialogRef<NiFormModal> {
+        const defaultConfig = {
+            width: '500px'
+        }
+        return this.dialog.open(NiFormModal, {...defaultConfig, ...config})
     }
 
     openGlobalLoaderModal(data: any, width: string = '600px'): MatDialogRef<NiGlobalLoaderModal> {

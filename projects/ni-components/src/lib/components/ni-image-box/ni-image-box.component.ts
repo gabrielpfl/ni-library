@@ -10,6 +10,9 @@ import { Image } from './ni-image-box.service';
 })
 export class NiImageBoxComponent {
 
+    width = 'auto'
+    height = 'auto'
+
     contextMenuPosition = { x: '0px', y: '0px' }
 
 	constructor(
@@ -20,4 +23,12 @@ export class NiImageBoxComponent {
     closeBox(){
         this.dialogRef.close()
     }
+
+    loadImage(event){
+        const img = event.target
+        const realWidth = img.naturalWidth
+        const realHeight = img.naturalHeight
+        this.width = `${realWidth}px`
+        // this.height = `${realHeight}px`
+	}
 }

@@ -33,6 +33,8 @@ export interface NiFormField {
 	value?: any
 	min?: number
 	max?: number
+	minLength?: number,
+	maxLength?: number,
 	minDate?: any
 	maxDate?: any
 	startAt?: any
@@ -126,6 +128,14 @@ export class NiFormModal implements OnDestroy {
 				validators = [...validators, Validators.minLength(1)]
 			}
 
+			if(field.minLength){
+				validators = [...validators, Validators.minLength(field.minLength)]
+			}
+
+			if(field.maxLength){
+				validators = [...validators, Validators.min(field.maxLength)]
+			}
+
 			if(field.min){
 				validators = [...validators, Validators.min(field.min)]
 			}
@@ -164,6 +174,14 @@ export class NiFormModal implements OnDestroy {
 			
 			if(field.onOpen){
 				group.addControl('onOpen', new FormControl(field.onOpen))
+			}
+
+			if(field.minLength){
+				group.addControl('minLength', new FormControl(field.minLength))
+			}
+
+			if(field.maxLength){
+				group.addControl('maxLength', new FormControl(field.maxLength))
 			}
 
 			if(field.minDate){
@@ -298,6 +316,11 @@ export class NiFormModal implements OnDestroy {
 	}
 
 	async selectFiles(field: FormGroup, files){
+		const maxLength = this.isMaxLength(field)
+
+		// stop if max files are selected
+		if(maxLength) return;
+
 		const _files: File[] = Array.from(files)
 
 		if(!_files.length) return;
@@ -311,6 +334,16 @@ export class NiFormModal implements OnDestroy {
 		})
 
 		field.get('value').patchValue(value)
+	}
+
+	isMaxLength(field: FormGroup): boolean {
+		const value = field.get('value').value
+		const maxLength = field.value.hasOwnProperty('maxLength') ? field.get('maxLength').value : null
+
+		if(maxLength && value.length === maxLength){
+			return true
+		}
+		return false
 	}
 
 	removeFile(field: FormGroup, index){

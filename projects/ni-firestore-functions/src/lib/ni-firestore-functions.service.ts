@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, AngularFirestoreModule } from '@angular/fire/firestore'
 import { AngularFireStorage, AngularFireStorageModule } from '@angular/fire/storage';
-import { Observable, BehaviorSubject } from 'rxjs'
+import { Observable, BehaviorSubject, of } from 'rxjs'
 import { map, switchMap, combineLatest } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 
@@ -98,7 +98,7 @@ export class NiFirestoreService {
      */
 	getCollection(params: FirestoreCollectionParams): Observable<FirestoreCollection>{
 		const {collection, parent, filters, limit, orderBy, order, paginator} = params
-		const documents = new BehaviorSubject(null);
+		const documents = of([]);
 
 		const queryFilters = new BehaviorSubject<FirestoreQueryFilterOp[]>(null);
 
@@ -110,52 +110,53 @@ export class NiFirestoreService {
 		
 		//Firestore 'documents' collections
         return documents.pipe(
-            combineLatest(
-                queryFilters,
-            ),
-            switchMap(([documents, queryFilters]) => {
-				const collectionRef = ref.collection(collection, ref => {
-					let query : firebase.firestore.Query = ref;
-
-					if(queryFilters){
-						queryFilters.map(filter => {
-							if(filter.key) { query = query.where(filter.key, filter.operator, filter.value) };
+            switchMap((docs) => {
+				return queryFilters.pipe(
+					switchMap((queryFilters) => {
+						const collectionRef = ref.collection(collection, ref => {
+							let query : firebase.firestore.Query = ref;
+		
+							if(queryFilters){
+								queryFilters.map(filter => {
+									if(filter.key) { query = query.where(filter.key, filter.operator, filter.value) };
+								})
+								return query
+							}
+		
+							if(limit){
+								query = query.limit(limit)
+							}
+		
+							if(!paginator || paginator.page == 0){
+								if(orderBy && order){
+									query = query.orderBy(orderBy, order)
+								}
+								return query
+							}
+		
+							if(paginator.lastVisible && paginator.page && paginator.page > paginator.previousPage){
+								query = query.orderBy(orderBy, order).startAfter(paginator.lastVisible[orderBy])
+							}
+		
+							if(paginator.firstVisible && paginator.page && paginator.page < paginator.previousPage){
+								query = query.orderBy(orderBy, order === 'asc' ? 'desc' : 'asc').startAfter(paginator.firstVisible[orderBy])
+							}
+							
+							return query
 						})
-						return query
-					}
-
-					if(limit){
-						query = query.limit(limit)
-					}
-
-					if(!paginator || paginator.page == 0){
-						if(orderBy && order){
-							query = query.orderBy(orderBy, order)
+		
+						return collectionRef.valueChanges({idField: 'id'})
+					}),
+					map((actions: any) => {
+						let data = actions
+						if(paginator && paginator.firstVisible && paginator.page && paginator.page < paginator.previousPage){
+							data = data.reverse()
 						}
-						return query
-					}
-
-					if(paginator.lastVisible && paginator.page && paginator.page > paginator.previousPage){
-						query = query.orderBy(orderBy, order).startAfter(paginator.lastVisible[orderBy])
-					}
-
-					if(paginator.firstVisible && paginator.page && paginator.page < paginator.previousPage){
-						query = query.orderBy(orderBy, order === 'asc' ? 'desc' : 'asc').startAfter(paginator.firstVisible[orderBy])
-					}
-					
-                    return query
-				})
-
-				return collectionRef.valueChanges({idField: 'id'})
+						return new FirestoreCollection(ref.collection(collection), data)
+					})
+				)
 			}),
-			map((actions: any) => {
-				let data = actions
-				if(paginator && paginator.firstVisible && paginator.page && paginator.page < paginator.previousPage){
-					data = data.reverse()
-				}
-				return new FirestoreCollection(ref.collection(collection), data)
-			})
-		);
+		)
 	}
 
 	/**

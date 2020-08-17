@@ -295,7 +295,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 		if(typeof canActivate === 'boolean'){
 			return canActivate
 		}
-		return canActivate(dataRow)
+		return canActivate ? canActivate(dataRow) : true
 	}
 
 	getTableActionPermissions({canActivate}) {
@@ -345,6 +345,9 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 
 	onRightClick(event, actionsPanel, data, index){
 		event.preventDefault();
+		
+		if(!this.rowActions.length) return;
+
 		this.rowSelected = data
 		this.rowSelectedIndex = index
     	this.contextMenuPosition.x = event.clientX + 'px';

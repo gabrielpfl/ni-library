@@ -752,4 +752,11 @@ export class NiHelperSnippetsService {
         
         return new File([u8arr], filename, {type:mime});
     }
+
+    getPlainText(data: string){
+        const newDiv = document.createElement("div")
+        newDiv.innerHTML = data
+        const textPlain = newDiv.innerText
+        return textPlain ? textPlain : null
+    }
 }
