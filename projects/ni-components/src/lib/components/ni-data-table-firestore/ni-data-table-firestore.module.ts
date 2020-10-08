@@ -6,7 +6,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from '../../material.module';
 
-import { NiDataTable } from './ni-data-table.component';
+import { NiDataTableFirestore } from './ni-data-table-firestore.component';
+import { NiTopTabsModule } from '../ni-top-tabs/ni-top-tabs.module';
+import { NiFiltersModule } from '../ni-filters/ni-filters.module';
 
 @NgModule({
   imports: [
@@ -14,15 +16,17 @@ import { NiDataTable } from './ni-data-table.component';
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NiTopTabsModule,
+    NiFiltersModule
   ],
   declarations: [
-    NiDataTable
+    NiDataTableFirestore
   ],
   exports: [
-    NiDataTable
+    NiDataTableFirestore
   ],
   entryComponents: [
   ],
 })
-export class NiDataTableModule { }
+export class NiDataTableFirestoreModule { }

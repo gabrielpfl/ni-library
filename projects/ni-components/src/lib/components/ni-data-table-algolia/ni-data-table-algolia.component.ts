@@ -5,9 +5,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { BehaviorSubject, Subject, merge, of as observableOf } from 'rxjs'
 import { catchError, map, startWith, switchMap, takeUntil, debounceTime } from 'rxjs/operators'
 import { SelectionModel } from '@angular/cdk/collections'
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations'
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
-import { Moment } from 'moment';
+import { trigger, state, style, transition, animate } from '@angular/animations'
+import { DomSanitizer } from '@angular/platform-browser'
 import * as _moment from 'moment-timezone'
 import { NiAlgoliaService } from 'ni-algolia-functions'
 
@@ -72,8 +71,8 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 
 	dataSource: any
 	selection = new SelectionModel<Element>(true, []);
-	resultsLength = 0;
-  	isLoadingResults = false;
+	total = 0;
+  	isLoadingResults = true;
 	isRateLimitReached = false;
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -102,8 +101,6 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	ngOnInit() {
-		this.isLoadingResults = true
-
 		this.search.valueChanges.pipe(
 			map(() => {
 				this.onSearch.emit()
@@ -150,7 +147,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 				// Flip flag to show that loading has finished.
 				this.isLoadingResults = false;
 				this.isRateLimitReached = false;
-				this.resultsLength = this.searchParams.hitsPerPage ? data.nbHits : 0
+				this.total = this.searchParams.hitsPerPage ? data.nbHits : 0
 				this.searchParams.hitsPerPage = data.hitsPerPage
 				this.searchParams.page = this.paginator.pageIndex
 
@@ -168,7 +165,6 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 			takeUntil(this.unsubscribe)
 		).subscribe(data => {
 			this.dataSource.data = data
-			return;
 		})
 	}
 

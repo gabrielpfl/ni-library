@@ -32,6 +32,7 @@ import { MatSortModule } from '@angular/material/sort';
 
 //import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { PortalModule } from '@angular/cdk/portal';
 // import { MomentTimezoneDateAdapterModule } from '../helpers/moment-timezone-date-adapter';
 
 @NgModule({
@@ -68,7 +69,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         MatBottomSheetModule,
 
         //MomentTimezoneDateAdapterModule,
-        DragDropModule
+        DragDropModule,
+        PortalModule
     ],
     declarations: [
 
@@ -106,7 +108,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         MatBottomSheetModule,
 
         //MomentTimezoneDateAdapterModule,
-        DragDropModule
+        DragDropModule,
+        PortalModule
     ],
     entryComponents: [
     ],

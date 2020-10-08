@@ -1,0 +1,17 @@
+<div 
+class="ni-component-box" 
+[style.top]="boxConfig.y + 'px'" 
+[style.left]="boxConfig.x + 'px'" 
+[style.width]="boxConfig.width" 
+[style.height]="boxConfig.height" 
+[ngClass]="boxConfig.className"
+[ngStyle]="boxConfig.css" 
+cdkDrag
+>
+	<div class="close-box" (click)="closeBox()"><span class="material-icons">close</span></div>
+	<div class="drag-handle" cdkDragHandle><span class="material-icons">open_with</span></div>
+
+	<div [style.width]="boxConfig.width" [style.height]="boxConfig.height" class="portal-container">
+		<ng-template [cdkPortalOutlet]="componentPortal" (attached)="loaded($event)"></ng-template>
+	</div>
+</div>

@@ -2,19 +2,23 @@ import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, Output, 
 import { MatTableDataSource } from '@angular/material/table'
 import { MatSort } from '@angular/material/sort'
 import { MatPaginator } from '@angular/material/paginator';
-import { Subject, merge, of as observableOf, BehaviorSubject } from 'rxjs'
-import { catchError, debounceTime, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators'
+import { Subject, Observable, merge, of as observableOf } from 'rxjs'
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators'
 import { SelectionModel } from '@angular/cdk/collections'
 import { trigger, state, style, transition, animate } from '@angular/animations'
-import {  orderBy } from 'lodash'
+import { differenceBy, differenceWith, isEqual } from 'lodash'
 import { DomSanitizer } from '@angular/platform-browser'
-import Fuse from 'fuse.js'
-import { FormControl } from '@angular/forms';
+
+import { NiFirestoreService } from 'ni-firestore-functions'
+import { NiHelperSnippetsService } from 'ni-helper-snippets'
+
+import { NiFilters } from '../ni-filters/ni-filters.component'
+import { NiTopTabs } from '../ni-top-tabs/ni-top-tabs.component'
 
 @Component({
-  selector: 'ni-data-table',
-  templateUrl: './ni-data-table.component.html',
-  styleUrls: ['./ni-data-table.component.scss'],
+  selector: 'ni-data-table-firestore',
+  templateUrl: './ni-data-table-firestore.component.html',
+  styleUrls: ['./ni-data-table-firestore.component.scss'],
   animations: [
     trigger('removingRow', [
 		state('active', style({})),
@@ -29,10 +33,15 @@ import { FormControl } from '@angular/forms';
     ])
   ]
 })
-export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
+export class NiDataTableFirestore implements OnInit, OnDestroy, AfterViewInit {
 
-	@Input() data = new BehaviorSubject<any[]>([])
+	@Input() collection: string
+	@Input() path: any[]
+	//@Input() parentDoc: any
+	@Input() tabs: any[]
+	@Input() tabsStyle: string // default | joined
 	@Input() filtered: any[]
+	@Input() filtersSections: Observable<any[]>
 	@Input() hideSearchSection: boolean
 	@Input() hidePaginator: boolean
 	@Input() columns: any[]
@@ -41,17 +50,16 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	@Input() tableActions: any[]
 	@Input() rowActions: any[]
 	@Input() height: string = '500px'
-	@Input() searchValue: string
+	@Input() searchKey: string
 	@Input() searchPlaceholder: string
 
-	@Output() onSearch = new EventEmitter()
-	@Output() onFilter = new EventEmitter()
 	@Output() rowAction = new EventEmitter()
 	@Output() tableAction = new EventEmitter()
 
-	filter = new BehaviorSubject<any>(null)
-
 	displayedColumns = ['select']
+
+	data: any[]
+	dataCollection: any
 
 	dataSource: any
 	selection = new SelectionModel<Element>(true, []);
@@ -60,6 +68,8 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	isRateLimitReached = false;
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild(MatSort, { static: true }) sort: MatSort;
+	@ViewChild(NiFilters, { static: true }) filters: NiFilters;
+	@ViewChild(NiTopTabs, { static: true }) topTabs: NiTopTabs;
 
 	previousPageIndex
 	pageSize
@@ -71,11 +81,11 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	rowSelected
 	rowSelectedIndex = -1
 
-	search: FormControl = new FormControl()
-
 	private unsubscribe = new Subject<void>()
 
 	constructor(
+		private firestoreService: NiFirestoreService, 
+		private functions: NiHelperSnippetsService,
 		public sanitizer: DomSanitizer
 	) {
 		this.dataSource = new MatTableDataSource()
@@ -85,61 +95,99 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 		this.columns.map(column => {
 			this.displayedColumns.push(column.key)
 		})
-
-		this.search.setValue(this.searchValue, {emitEvent: false})
-
-		this.search.valueChanges.pipe(
-			map(() => {
-				this.onSearch.emit()
-			}),
-			debounceTime(500),
-			takeUntil(this.unsubscribe)
-		).subscribe(() => {
-			this.runFilters()
-		})
 	}
 
 	ngAfterViewInit(){
-		this.buildTable()
+		this.getData()
 	}
 
-	buildTable(){
+	getData(){
 		//Clear Selected rows
 		this.selection.clear()
 
 		this.paginator.pageIndex = 0
 
 		// If the user changes the sort order or pageSize, reset back to the first page.
-		this.filter.pipe(takeUntil(this.unsubscribe)).subscribe(() => this.paginator.pageIndex = 0);
 		this.sort.sortChange.pipe(takeUntil(this.unsubscribe)).subscribe(() => this.paginator.pageIndex = 0);
 		this.paginator.page.pipe(takeUntil(this.unsubscribe)).subscribe(() => {
 			if(this.pageSize !== this.paginator.pageSize){
 				this.paginator.pageIndex = 0
 			}
-		})
+		});
 
-		merge(this.sort.sortChange, this.paginator.page, this.filter, this.data)
+		merge(this.sort.sortChange, this.paginator.page, this.filters.applyFilters, this.topTabs.active)
 		.pipe(
 			startWith({}),
-			switchMap(() => this.data.pipe(take(1))),
-			switchMap((data) => {
+			switchMap(() => {
 				this.isLoadingResults = true;
 				this.isRateLimitReached = false;
 
+				let args = {
+					collection: this.collection,
+					parent: this.path,
+					filters: []
+				}
+
+				/*if(this.parentDoc){
+					args['parentDoc'] = this.parentDoc
+				}*/
+
+				if(this.filtered){
+					this.filtered.map(filter => {
+						args.filters.push(filter)
+					})
+				}
+
+				if(this.tabs){
+					let status = this.tabs[this.topTabs.selectedTab].data
+					if(status && status !== 'any'){
+						this.statusFiltered = true
+						args.filters.push({
+							key: 'status',
+							value: status,
+							operator: '=='
+						})
+					}else{
+						this.statusFiltered = false
+					}
+				}
+
+				if(this.filters.filtered){
+					this.dataSource.data = []
+					this.filters.activeFilters.map(filter => {
+						args.filters.push(filter)
+					})
+
+					return this.firestoreService.getCollection(args)
+				}
+
+				args['orderBy'] = this.sort ? this.sort.active : null
+				args['order'] = this.sort ? this.sort.direction : null
+				args['limit'] = this.paginator ? this.paginator.pageSize : 20,
+				args['paginator'] = {
+					page: this.paginator ? this.paginator.pageIndex : 0,
+					previousPage: this.previousPageIndex,
+					firstVisible: this.data && this.data.length > 0 ? this.data[0] : null,
+					lastVisible: this.data && this.data.length > 0 ? this.data[this.data.length-1] : null
+				}
+				
 				if(this.sort.sortChange || this.paginator.page){
 					this.dataSource.data = []
 				}
 
-				return this.getData(data)
+				return this.firestoreService.getCollection(args)
 			}),
 			map((res: any) => {
 				// Flip flag to show that loading has finished.
 				this.isLoadingResults = false
 				this.isRateLimitReached = false
-				this.total = res.total
+				this.total = res.data().length
+				this.previousPageIndex = this.paginator ? this.paginator.pageIndex : 0
 				this.pageSize = this.paginator ? this.paginator.pageSize : 0
+				this.activeTab = this.topTabs.selectedTab
+				this.dataCollection = res.collection()
 
-				return res.results;
+				return res.data();
 			}),
 			catchError(err => {
 				this.isLoadingResults = false;
@@ -151,44 +199,54 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 				return observableOf([]);
 			}),
 			takeUntil(this.unsubscribe)
-		).subscribe(res => {
-			this.dataSource.data = res
+		).subscribe(data => {
+			this.data = data
+			this.loadCollection()
 		})
 	}
 
-	async getData(data: any[]){
-		let results = data
-		let total = data.length
-
-		if(this.search.value){
-			const options = {
-				threshold: 0.3,
-				location: 0,
-				distance: 100,
-				keys: this.columns.map(column => column.key)
-			}
-	
-			const searcher = new Fuse(results, options)
-			results = searcher.search(this.search.value).map(obj => obj.item)
+	loadCollection(){
+		// load all documents when init
+		if(this.dataSource.data.length <= 0){
+			this.dataSource.data = this.data
+			return
 		}
 
-		if(this.sort){
-			results = orderBy(results, row => row[this.sort.active], [this.sort.direction as any])
+		// add new documents
+		let diff1 = differenceBy(this.dataSource.data, this.data, 'id')
+		let diff2 = differenceBy(this.data, this.dataSource.data, 'id')
+		if(this.dataSource.data.length > 0 && diff2 && diff2.length > 0){
+			diff2.map((doc: any) => {
+				let data = this.dataSource.data.slice();
+				data.unshift(doc);
+				this.dataSource.data = data;
+			})
 		}
 
-		results = this.paginate(results, this.paginator.pageSize, this.paginator.pageIndex)
+		//remove documents
+		if(this.dataSource.data.length > 0 && diff1 && diff1.length > 0){
+			diff1.map((doc: any) => {
+				this.dataSource.data = this.functions.removeObject(this.dataSource.data, 'id', doc.id)
+			})
+		}
 
-		return {total, results}
-	}
-
-	paginate(array, page_size, page_index) {
-		// human-readable page numbers usually start with 1, so we reduce 1 in the first argument
-		return array.slice(page_index * page_size, (page_index+1) * page_size);
-	}
-
-	runFilters(){
-		this.filter.next('filter')
-		this.onFilter.emit()
+		// compare & edit documents
+		let diff = differenceWith(this.data, this.dataSource.data, isEqual)
+		if(diff && diff.length > 0 && diff2.length <= 0){
+			this.dataSource.data.map(doc => {
+				let findDoc = this.functions.findObject(diff, 'id', doc.id)
+				if(findDoc){
+					let keys = Object.keys(doc)
+					keys.map(key => {
+						let val1 = doc[key]
+						let val2 = findDoc[key]
+						if(val1 !== val2){
+							doc[key] = val2
+						}
+					})
+				}
+			})
+		}
 	}
 
 	//Whether the number of selected elements matches the total number of rows.
@@ -254,10 +312,6 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	runTableAction(action){
 		action.action(this.selection.selected)
 		this.tableAction.emit(this.selection.selected)
-	}
-
-	clearInput(){
-		this.search.setValue('')
 	}
 
 	ngOnDestroy() {

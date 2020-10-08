@@ -1,5 +1,5 @@
 <h4>{{data.title}}</h4>
-<div *ngIf="data.hasOwnProperty('counter')" class="loader-counter">{{data.counter}} items processed</div>
+<div *ngIf="data.hasOwnProperty('description')" class="loader-description">{{data.description}}</div>
 <mat-progress-bar
     *ngIf="!data.ended"
     color="primary"

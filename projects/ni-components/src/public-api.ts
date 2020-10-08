@@ -12,6 +12,7 @@ export * from './lib/components/ni-card-form/ni-card-form.module';
 export * from './lib/components/ni-chips-select/ni-chips-select.module';
 export * from './lib/components/ni-confirm-modal/ni-confirm-modal.module';
 export * from './lib/components/ni-data-table/ni-data-table.module';
+export * from './lib/components/ni-data-table-firestore/ni-data-table-firestore.module';
 export * from './lib/components/ni-data-table-algolia/ni-data-table-algolia.module';
 export * from './lib/components/ni-datepicker/ni-datepicker.module';
 export * from './lib/components/ni-daterangepicker/daterangepicker.module';
@@ -28,12 +29,14 @@ export * from './lib/components/ni-top-tabs/ni-top-tabs.module';
 export * from './lib/components/ni-uploader/ni-uploader.module';
 export * from './lib/components/ni-vertical-tabs/ni-vertical-tabs.module';
 export * from './lib/components/ni-image-box/ni-image-box.module';
+export * from './lib/components/ni-component-box/ni-component-box.module';
 
 export * from './lib/components/ni-alert/ni-alert.component';
 export * from './lib/components/ni-card-form/ni-card-form.component';
 export * from './lib/components/ni-chips-select/ni-chips-select.component';
 export * from './lib/components/ni-confirm-modal/ni-confirm-modal.component';
 export * from './lib/components/ni-data-table/ni-data-table.component';
+export * from './lib/components/ni-data-table-firestore/ni-data-table-firestore.component';
 export * from './lib/components/ni-data-table-algolia/ni-data-table-algolia.component';
 export * from './lib/components/ni-datepicker/ni-datepicker.component';
 
@@ -69,3 +72,8 @@ export * from './lib/components/ni-vertical-tabs/ni-vertical-tab/ni-vertical-tab
 export * from './lib/components/ni-image-box/ni-image-box.component';
 export * from './lib/components/ni-image-box/ni-image-box.service';
 export * from './lib/components/ni-image-box/ni-image-box.tokens';
+
+export * from './lib/components/ni-component-box/ni-component-box.component';
+export * from './lib/components/ni-component-box/ni-component-box.service';
+export * from './lib/components/ni-component-box/ni-component-box.tokens';
+export * from './lib/components/ni-component-box/ni-component-box-ref';

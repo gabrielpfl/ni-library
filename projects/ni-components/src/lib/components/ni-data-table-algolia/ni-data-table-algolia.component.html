@@ -57,7 +57,7 @@
 								<span class="chip-icon-color {{column.chipsColors[doc[column.key]]}}-bg-color"></span><span class="chip-span">{{doc[column.key]}}</span>
 							</div> -->
 							<div>
-								<span [innerHTML]="sanitizer.bypassSecurityTrustHtml(column.content ? column.content(row) : '')" (click)="column.onClick ? column.onClick(row) : ''"></span>
+								<span [innerHTML]="sanitizer.bypassSecurityTrustHtml(column.content ? column.content(row) : '')" (click)="column.onClick ? column.onClick($event, row) : ''"></span>
 							</div>
 							<!-- <div *ngIf="column.sub" class="sub-title-cell"><small>{{doc[column.sub.key]}}</small></div> -->
 
@@ -87,11 +87,11 @@
 					</ng-container> -->
 
 					<tr mat-header-row *matHeaderRowDef="getColumns(); sticky: true" class="ni-header-row"></tr>
-					<tr mat-row #tableRow *matRowDef="let row; columns: getColumns(); let x = index" [ngClass]="rowClass ? rowClass(row) : ''" class="ni-body-row {{this.rowSelected?.objectID === row.objectID ? 'selected' : ''}}" [@removingRow]="dataSource.data[x]['status']" (contextmenu)="onRightClick($event, actionsPanel, row, x)" ></tr>
+					<tr mat-row #tableRow *matRowDef="let row; columns: getColumns(); let x = index" [ngClass]="rowClass ? rowClass(row) : ''" class="ni-body-row {{rowSelected?.objectID === row.objectID ? 'selected' : ''}}" [@removingRow]="dataSource.data[x]['status']" (contextmenu)="onRightClick($event, actionsPanel, row, x)" ></tr>
 				</table>
 			</div>
 		</div>
-		<div class="table-paginator">
+		<div class="ni-table-paginator">
 			<div *ngIf="tableActions" class="table-actions">
 				<div class="table-actions-dropdown">
 					<mat-form-field>
@@ -106,7 +106,7 @@
 					</mat-form-field>
 				</div>
 			</div>
-			<mat-paginator [length]="resultsLength" [pageSizeOptions]="[5, 10, 20, 50]" [pageSize]="searchParams.hitsPerPage" showFirstLastButtons></mat-paginator>
+			<mat-paginator [length]="total" [pageSizeOptions]="[5, 10, 20, 50]" [pageSize]="searchParams.hitsPerPage" showFirstLastButtons></mat-paginator>
 		</div>
 	</div>
 </div>

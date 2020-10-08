@@ -1,12 +1,10 @@
 <div class="ni-data-table">
+
+	<ni-top-tabs [tabs]="tabs" [selectedTab]="0" [ngClass]="{'hidden': !tabs, 'tabsJoined': tabsStyle && tabsStyle == 'joined'}"></ni-top-tabs>
+
 	<div class="ni-table" [ngClass]="{'tabsJoined': tabsStyle && tabsStyle == 'joined'}">
 		<div class="ni-table-header">
-			<div class="ni-table-filter-section">
-				<input class="ni-search-input" [placeholder]="searchPlaceholder ? searchPlaceholder : 'Search'" [formControl]="search">
-				<button *ngIf="search.value" mat-icon-button (click)="clearInput()">
-					<mat-icon>close</mat-icon>
-				</button>
-			</div>
+			<ni-filters [filters]="filtersSections" [searchKey]="searchKey" [ngClass]="{'hidden': hideSearchSection}" [searchPlaceholder]="searchPlaceholder"></ni-filters>
 		</div>
 		<div class="ni-table-body-wrapper" [ngStyle]="{'position': 'relative'}">
 			<div class="ni-table-body">
@@ -72,7 +70,7 @@
 					</mat-form-field>
 				</div>
 			</div>
-			<mat-paginator [length]="total" [pageSizeOptions]="[10, 20, 50]" [pageSize]="20" [hidePageSize]="filters && filters.filtered" [ngClass]="{'filtered-paginator': filters && filters.filtered || dataSource.data.length < 1 || hidePaginator || statusFiltered}"></mat-paginator>
+			<mat-paginator [length]="total" [pageSizeOptions]="[5, 10, 20, 50]" [pageSize]="20" [hidePageSize]="filters && filters.filtered" [ngClass]="{'filtered-paginator': filters && filters.filtered || dataSource.data.length < 1 || hidePaginator || statusFiltered}"></mat-paginator>
 		</div>
 	</div>
 </div>

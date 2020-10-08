@@ -19,7 +19,6 @@
     display: block;
     width: 100%;
     font-size: 1rem;
-    opacity: .6;
     height: 56px;
     color: inherit;
     font-family: inherit;
@@ -76,11 +75,15 @@
 /* Structure Ni Table */
 .ni-table {
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
     min-width: 300px;
     height: 100%;
     position: relative;
     overflow: hidden;
+}
+
+.ni-table-header {
+    flex: 0 0 50px;
 }
 
 .no-results-table {
@@ -120,14 +123,14 @@
 }
 
 .ni-table-body-wrapper {
-    height: calc(100% - 51px);
+    flex: 1 1 auto;
+    overflow: auto;
 }
 
 .ni-table-body {
-    overflow: auto;
     width: 100%;
     max-width: 100%;
-    height: calc(100% - 56px);
+    height: 100%;
 }
 
 .ni-table-body table {
@@ -142,14 +145,11 @@
     font-weight: 500;
 }
 
-.table-paginator {
-    position: absolute;
+.ni-table-paginator {
+    flex: 0 0 50px;
     display: flex;
     align-items: center;
     width: 100%;
-    height: auto;
-    left: 0;
-    bottom: 0;
     border-top-width: 1px;
     border-top-style: solid;
 }
