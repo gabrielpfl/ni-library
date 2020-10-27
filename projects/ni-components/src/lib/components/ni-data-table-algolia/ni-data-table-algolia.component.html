@@ -1,5 +1,11 @@
 <div class="ni-data-table">
 	<div class="ni-table" [ngClass]="{'tabsJoined': tabsStyle && tabsStyle == 'joined'}">
+		<div class="data-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
+			<mat-progress-spinner *ngIf="isLoadingResults" [color]="'accent'" [mode]="'indeterminate'" [diameter]="'50'" value="50" [strokeWidth]="'3'"></mat-progress-spinner>
+			<div class="data-rate-limit-reached" *ngIf="isRateLimitReached">
+				Rate limit has been reached. It will be reset in one minute.
+			</div>
+		</div>
 		<div class="ni-table-header">
 			<div class="ni-table-filter-section">
 				<input class="ni-search-input" [placeholder]="searchPlaceholder ? searchPlaceholder : 'Search'" [formControl]="search ? search : ''">
@@ -10,12 +16,6 @@
 		</div>
 		<div class="ni-table-body-wrapper" [ngStyle]="{'position': 'relative'}">
 			<div class="ni-table-body">
-				<div class="data-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
-					<mat-progress-spinner *ngIf="isLoadingResults" [color]="'accent'" [mode]="'indeterminate'" [diameter]="'50'" value="50" [strokeWidth]="'3'"></mat-progress-spinner>
-					<div class="data-rate-limit-reached" *ngIf="isRateLimitReached">
-						Rate limit has been reached. It will be reset in one minute.
-					</div>
-				</div>
 				<table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortActive" matSortDisableClear [matSortDirection]="sortDirection">
 					
 					<!-- Select Column -->

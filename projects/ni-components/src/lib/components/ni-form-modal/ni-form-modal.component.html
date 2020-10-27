@@ -70,6 +70,10 @@
 					<div [innerHTML]="sanitizer.bypassSecurityTrustHtml(field.value.value)"></div>
 				</div>
 
+				<div *ngIf="field.value.type === 'button'" class="plain-html">
+					<button mat-button (click)="field.value.onClick(fieldsArray)">{{field.value.label}}</button>
+				</div>
+
 				<ni-alert *ngIf="field.value.type === 'note'">{{field.value.value}}</ni-alert>
 
 				<mat-slide-toggle *ngIf="field.value.type === 'slide-toggle'" formControlName="value">{{field.value.label}}</mat-slide-toggle>

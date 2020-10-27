@@ -500,6 +500,13 @@ export class NiHelperSnippetsService {
     }
 
     toDate(date: any){
+        if(date instanceof Date){
+            return date
+        }else if(this.isValidTimeStamp(date)){
+            return date.toDate()
+        }else if(moment.isMoment(date)){
+            return date.toDate()
+        }
         return date.toDate()
     }
 

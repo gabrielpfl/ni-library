@@ -45,7 +45,8 @@ export interface NiFormField {
 	dropzone?: boolean
 	onOpen?(): void
 	onLoad?(value: any): void
-	onChange?(value: any): void
+	onChange?(fieldsArray: any): void
+	onClick?(fieldsArray): void
 }
 
 export interface NiFormFieldChoice {
@@ -235,6 +236,10 @@ export class NiFormModal implements OnDestroy {
 
 			if(field.hasOwnProperty('permissions') && !field.permissions){
 				group.get('value').disable({emitEvent: false})
+			}
+
+			if(field.onClick){
+				group.addControl('onClick', new FormControl(field.onClick))
 			}
 
 			(<FormArray>this.fieldsArray).push(group)

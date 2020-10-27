@@ -55,6 +55,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	@Input() tableActions: any[] = []
 	@Input() rowActions: any[] = []
 	@Input() height: string
+	@Input() searchValue: string
 	@Input() searchPlaceholder: string
 	@Input() rowClass: any
 	@Input() searchParams: any = {
@@ -101,6 +102,8 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	ngOnInit() {
+		this.search.setValue(this.searchValue, {emitEvent: false})
+		
 		this.search.valueChanges.pipe(
 			map(() => {
 				this.onSearch.emit()
@@ -208,15 +211,20 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 						filter['filtered'] = filter.choices.getRawValue().some(choice => choice.selected)
 					} else if(filter.type === 'daterange'){
 						if(filter.from.value && filter.to.value){
+							let from = moment(filter.from.value.format('YYYY-MM-DDTHH:mm:ss'))
+							let to = moment(filter.to.value.format('YYYY-MM-DDTHH:mm:ss')).add(1, 'd')
+							from = filter.hasOwnProperty('tz') && filter.tz ? from.tz(filter.tz).hour(0) : from
+							to = filter.hasOwnProperty('tz') && filter.tz ? to.tz(filter.tz).hour(0) : to
+							
 							filters = [...filters, 
 								[{
 									key: filter.key,
-									value: moment(filter.from.value.format('YYYY-MM-DDTHH:mm:ss')).unix()*1000,
+									value: from.unix()*1000,
 									operator: '>='
 								}],
 								[{
 									key: filter.key,
-									value: moment(filter.to.value.format('YYYY-MM-DDTHH:mm:ss')).add(1, 'd').unix()*1000,
+									value: to.unix()*1000,
 									operator: '<'
 								}]
 							]
