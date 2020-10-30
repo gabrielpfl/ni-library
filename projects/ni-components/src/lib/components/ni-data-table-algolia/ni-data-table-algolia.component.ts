@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, Output, EventEmitter, ViewChildren, QueryList } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table'
 import { MatSort } from '@angular/material/sort'
 import { MatPaginator } from '@angular/material/paginator';
@@ -14,6 +14,7 @@ import { NiTopTabs } from '../ni-top-tabs/ni-top-tabs.component'
 
 import { FormControl, FormGroup } from '@angular/forms'
 import { MatMenuTrigger } from '@angular/material/menu';
+import { NiRow } from '../../directives/ni-row/ni-row.directive';
 const moment = _moment;
 
 @Component({
@@ -79,6 +80,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	@ViewChild(MatSort, { static: true }) sort: MatSort;
 	@ViewChild(NiTopTabs, { static: true }) topTabs: NiTopTabs;
 	@ViewChild('filterPanel', { static: false } ) filterMenu: MatMenuTrigger
+	@ViewChildren(NiRow) niRows: QueryList<NiRow>
 
 	filter = new BehaviorSubject<any>(null)
 
@@ -89,7 +91,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	contextMenuPosition = { x: '0px', y: '0px' }
 	currentFilter
 
-	rowSelected
+	rowSelected: NiRow
 	rowSelectedIndex = -1
 
 	private unsubscribe = new Subject<void>()
@@ -282,24 +284,16 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 			});
 	}
 
-	runRowAction(action, doc, i){
-		const dataRow = {
-			index: i,
-			data: this.dataSource.data[i],
-		}
-		action.action(dataRow)
-		this.rowAction.emit(dataRow)
+	runRowAction(action, row: NiRow){
+		action.action(row)
+		this.rowAction.emit(row)
 	}
 
-	getRowActionPermissions({canActivate}, row, i) {
-		const dataRow = {
-			index: i,
-			data: row,
-		}
+	getRowActionPermissions({canActivate}, row: NiRow, i) {
 		if(typeof canActivate === 'boolean'){
 			return canActivate
 		}
-		return canActivate ? canActivate(dataRow) : true
+		return canActivate ? canActivate(row) : true
 	}
 
 	getTableActionPermissions({canActivate}) {
@@ -347,12 +341,12 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 		return filter.hasOwnProperty('filtered') && filter.filtered
 	}
 
-	onRightClick(event, actionsPanel, data, index){
+	onRightClick(event, actionsPanel, rowData, index){
 		event.preventDefault();
 		
 		if(!this.rowActions.length) return;
 
-		this.rowSelected = data
+		this.rowSelected = this.niRows.toArray()[index]
 		this.rowSelectedIndex = index
     	this.contextMenuPosition.x = event.clientX + 'px';
 		this.contextMenuPosition.y = event.clientY + 'px';

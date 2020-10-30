@@ -41,17 +41,13 @@
 					<!-- Columns -->
 					<ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
 						<th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sorting ? column.key : null" [disabled]="!column.sorting ? true : false" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}"> {{column.label}} </th>
-						<td mat-cell *matCellDef="let doc" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}">
-
-							<div>
-								<span [innerHTML]="sanitizer.bypassSecurityTrustHtml(column.content ? column.content(doc) : '')" (click)="column.onClick ? column.onClick($event, doc) : ''"></span>
-							</div>
-
+						<td mat-cell *matCellDef="let row; let x = index" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}">
+							<span ni-cell [rows]="niRows" [column]="column" [index]="x"></span>
 						</td>
 					</ng-container>
 
 					<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="ni-header-row"></tr>
-					<tr mat-row #tableRow *matRowDef="let row; columns: displayedColumns; let x = index" class="ni-body-row {{rowSelected?.id === row.id ? 'selected' : ''}}" [@removingRow]="dataSource.data[x]['status']" (contextmenu)="onRightClick($event, actionsPanel, row, x)"></tr>
+					<tr mat-row ni-row #tableRow *matRowDef="let row; columns: displayedColumns; let x = index" [data]="row" [index]="x" class="ni-body-row {{rowSelected?.data.id === row.id ? 'selected' : ''}}" [@removingRow]="dataSource.data[x]['status']" (contextmenu)="onRightClick($event, actionsPanel, row, x)"></tr>
 				</table>
 			</div>
 		</div>
@@ -78,8 +74,8 @@
 <div style="position: fixed" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" #actionsPanel="matMenuTrigger" [matMenuTriggerFor]="actionsMenu"></div>
 <mat-menu #actionsMenu="matMenu" (closed)="actionsClosed($event)">
 	<div *ngIf="rowActions.length" class="row-actions">
-		<div *ngIf="rowSelected as doc">
-			<button *ngFor="let action of rowActions" mat-menu-item (click)="runRowAction(action, doc, rowSelectedIndex)" [disabled]="!getRowActionPermissions(action, doc, rowSelectedIndex)">
+		<div *ngIf="rowSelected as row">
+			<button *ngFor="let action of rowActions" mat-menu-item (click)="runRowAction(action, row)" [disabled]="!getRowActionPermissions(action, row, rowSelectedIndex)">
 				<span>
 					<mat-icon>{{action.icon}}</mat-icon>
 					<b>{{action.label}}</b>

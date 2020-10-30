@@ -83,16 +83,22 @@
 					<quill-editor formControlName="value" [styles]="{height: '180px'}" [modules]="editorModules"></quill-editor>
 				</div>
 
+				<div *ngIf="field.value.type === 'button-toggle'">
+					<div *ngIf="field.value.label">{{field.value.label}}</div>
+					<mat-button-toggle-group formControlName="value">
+						<mat-button-toggle *ngFor="let choice of field.value.choices, let c = index" [value]="getChoiceValue(choice)">{{getChoiceLabel(choice)}}</mat-button-toggle>
+					</mat-button-toggle-group>
+				</div>
+
 				<div *ngIf="field.value.type === 'daterange'" formGroupName="range">
 					<mat-form-field [appearance]="field.value.appearance">
-						<mat-label>From</mat-label>
-						<input matInput [matDatepicker]="dpTo" (focus)="dpTo.open()" type="text" formControlName="from" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" autocomplete="off">
-						<mat-daterangepicker #dpTo [touchUi]="false" [startAt]="field.value.startAt ? field.value.startAt : false"></mat-daterangepicker>
-					</mat-form-field>
-					<mat-form-field [appearance]="field.value.appearance">
-						<mat-label>To</mat-label>
-						<input matInput [matDaterangepickerEnd]="dpTo" (focus)="dpTo.open()" type="text" formControlName="to" autocomplete="off" (dateChange)="onRangeChange(field)">
-						<mat-datepicker-toggle matSuffix [for]="dpTo"></mat-datepicker-toggle>
+						<mat-label>From - To</mat-label>
+						<mat-date-range-input [rangePicker]="picker">
+						  	<input matStartDate formControlName="from" placeholder="Start date" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" autocomplete="off">
+						  	<input matEndDate formControlName="to" placeholder="End date" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" autocomplete="off" (dateChange)="onRangeChange(field)">
+						</mat-date-range-input>
+						<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+						<mat-date-range-picker #picker [startAt]="field.value.startAt ? field.value.startAt : false"></mat-date-range-picker>
 					</mat-form-field>
 				</div>
 

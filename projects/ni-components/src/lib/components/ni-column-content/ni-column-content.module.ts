@@ -3,11 +3,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MarkdownModule } from 'ngx-markdown';
 
 import { MaterialModule } from '../../material.module';
 
-import { NiMarkdownEditor } from './ni-markdown-editor.component';
+import { NiColumnContentComponent } from './ni-column-content.component';
 
 @NgModule({
   imports: [
@@ -16,15 +15,15 @@ import { NiMarkdownEditor } from './ni-markdown-editor.component';
     ReactiveFormsModule,
     MaterialModule,
     BrowserAnimationsModule,
-    MarkdownModule
+    
   ],
   declarations: [
-    NiMarkdownEditor
+    NiColumnContentComponent
   ],
   exports: [
-    NiMarkdownEditor
+    NiColumnContentComponent
   ],
   entryComponents: [
   ],
 })
-export class NiMarkdownEditorModule { }
+export class NiColumnContentModule { }

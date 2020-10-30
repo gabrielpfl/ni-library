@@ -5,6 +5,8 @@ import { NiConfirmModal } from './components/ni-confirm-modal/ni-confirm-modal.c
 import { NiFormModal, NiFormData } from './components/ni-form-modal/ni-form-modal.component';
 import { NiGlobalLoaderModal } from './components/ni-global-loader-modal/ni-global-loader-modal.component';
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
+import { NiDataTableAlgolia } from './components/ni-data-table-algolia/ni-data-table-algolia.component';
+import { NiAlgoliaService } from 'ni-algolia-functions';
 
 export interface NiFormDialogConfig extends MatDialogConfig {
     data: NiFormData
@@ -18,6 +20,7 @@ export class NiComponentsService {
 	constructor(
         public dialog: MatDialog,
         public snackBar: MatSnackBar,
+        private algoliaService: NiAlgoliaService
     ){
     }
 
@@ -69,5 +72,11 @@ export class NiComponentsService {
             disableClose: true,
             data: data
         })
+    }
+
+    async reloadTable(table: NiDataTableAlgolia){
+        const args = table.buildParams()
+        const response: any = await this.algoliaService.search(args)
+        table.dataSource.data = response.hits
     }
 }

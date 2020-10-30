@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, Output, EventEmitter, QueryList, ViewChildren } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table'
 import { MatSort } from '@angular/material/sort'
 import { MatPaginator } from '@angular/material/paginator';
@@ -14,6 +14,7 @@ import { NiHelperSnippetsService } from 'ni-helper-snippets'
 
 import { NiFilters } from '../ni-filters/ni-filters.component'
 import { NiTopTabs } from '../ni-top-tabs/ni-top-tabs.component'
+import { NiRow } from '../../directives/ni-row/ni-row.directive';
 
 @Component({
   selector: 'ni-data-table-firestore',
@@ -70,6 +71,7 @@ export class NiDataTableFirestore implements OnInit, OnDestroy, AfterViewInit {
 	@ViewChild(MatSort, { static: true }) sort: MatSort;
 	@ViewChild(NiFilters, { static: true }) filters: NiFilters;
 	@ViewChild(NiTopTabs, { static: true }) topTabs: NiTopTabs;
+	@ViewChildren(NiRow) niRows: QueryList<NiRow>
 
 	previousPageIndex
 	pageSize
@@ -78,7 +80,7 @@ export class NiDataTableFirestore implements OnInit, OnDestroy, AfterViewInit {
 
 	contextMenuPosition = { x: '0px', y: '0px' }
 
-	rowSelected
+	rowSelected: NiRow
 	rowSelectedIndex = -1
 
 	private unsubscribe = new Subject<void>()
@@ -265,12 +267,12 @@ export class NiDataTableFirestore implements OnInit, OnDestroy, AfterViewInit {
 			});
 	}
 
-	onRightClick(event, actionsPanel, data, index){
+	onRightClick(event, actionsPanel, rowData, index){
 		event.preventDefault();
 		
 		if(!this.rowActions.length) return;
 
-		this.rowSelected = data
+		this.rowSelected = this.niRows.toArray()[index]
 		this.rowSelectedIndex = index
     	this.contextMenuPosition.x = event.clientX + 'px';
 		this.contextMenuPosition.y = event.clientY + 'px';
@@ -282,24 +284,16 @@ export class NiDataTableFirestore implements OnInit, OnDestroy, AfterViewInit {
 		this.rowSelectedIndex = -1
 	}
 
-	runRowAction(action, doc, i){
-		const dataRow = {
-			index: i,
-			data: this.dataSource.data[i],
-		}
-		action.action(dataRow)
-		this.rowAction.emit(dataRow)
+	runRowAction(action, row: NiRow){
+		action.action(row)
+		this.rowAction.emit(row)
 	}
 
-	getRowActionPermissions({canActivate}, row, i) {
-		const dataRow = {
-			index: i,
-			data: row,
-		}
+	getRowActionPermissions({canActivate}, row: NiRow, i) {
 		if(typeof canActivate === 'boolean'){
 			return canActivate
 		}
-		return canActivate(dataRow)
+		return canActivate ? canActivate(row) : true
 	}
 
 	getTableActionPermissions({canActivate}) {

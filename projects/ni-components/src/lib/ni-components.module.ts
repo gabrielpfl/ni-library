@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { NiComponentsComponent } from './ni-components.component';
 
 @NgModule({
-  declarations: [NiComponentsComponent],
+  declarations: [
+    NiComponentsComponent,
+  ],
   imports: [
 
   ],
   exports: [
-    NiComponentsComponent
+    NiComponentsComponent,
   ]
 })
 export class NiComponentsModule { }

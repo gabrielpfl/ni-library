@@ -45,49 +45,13 @@
 								</span>
 							</div>
 						</th>
-						<td mat-cell *matCellDef="let row" class="ni-cell {{column.hidden ? 'hidden' : ''}} {{column.width === 2 ? 'width2' : ''}}" [ngClass]="column.class ? column.class : ''">
-
-							<!-- <div *ngIf="column.type === 'link'">
-								<a [routerLink]="column.getLink(doc)" class="row-table-link h6">{{doc[column.key]}}</a>
-							</div>
-							<div *ngIf="column.type === 'pipe'">
-								<span *ngIf="column.chipsColors" class="chip-icon-color {{column.chipsColors[(( deepColKey(doc, column.key) | cellDocPipe: column.pipeArgs) | async)]}}-bg-color"></span><span [ngClass]="{'chip-span': column.chipsColors}">{{ (( deepColKey(doc, column.key) | cellDocPipe: column.pipeArgs) | async) }}</span>
-							</div>
-							<div *ngIf="column.type === 'chip'">
-								<span class="chip-icon-color {{column.chipsColors[doc[column.key]]}}-bg-color"></span><span class="chip-span">{{doc[column.key]}}</span>
-							</div> -->
-							<div>
-								<span [innerHTML]="sanitizer.bypassSecurityTrustHtml(column.content ? column.content(row) : '')" (click)="column.onClick ? column.onClick($event, row) : ''"></span>
-							</div>
-							<!-- <div *ngIf="column.sub" class="sub-title-cell"><small>{{doc[column.sub.key]}}</small></div> -->
-
+						<td mat-cell *matCellDef="let row; let x = index" class="ni-cell {{column.hidden ? 'hidden' : ''}} {{column.width === 2 ? 'width2' : ''}}" [ngClass]="column.class ? column.class : ''">
+							<span ni-cell [rows]="niRows" [column]="column" [index]="x"></span>
 						</td>
 					</ng-container>
 
-					<!-- Actions Column -->
-					<!-- <ng-container matColumnDef="row-actions">
-						<th mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !rowActions}"></th>
-						<td mat-cell *matCellDef="let doc, let i = index" [ngClass]="{'hidden': !rowActions}"> 
-							<div *ngIf="rowActions && rowActions.length > 0" class="row-actions">
-								<button mat-icon-button [matMenuTriggerFor]="actions">
-									<mat-icon>more_vert</mat-icon>
-								</button>
-								<mat-menu #actions="matMenu">
-									<div *ngFor="let action of rowActions">
-										<button mat-menu-item (click)="runRowAction(action, doc, i)" [disabled]="!getRowActionPermissions(action, doc, i)">
-											<span>
-												<mat-icon>{{action.icon}}</mat-icon>
-												<b>{{action.label}}</b>
-											</span>
-										</button>
-									</div>
-								</mat-menu>
-							</div>
-						</td>
-					</ng-container> -->
-
 					<tr mat-header-row *matHeaderRowDef="getColumns(); sticky: true" class="ni-header-row"></tr>
-					<tr mat-row #tableRow *matRowDef="let row; columns: getColumns(); let x = index" [ngClass]="rowClass ? rowClass(row) : ''" class="ni-body-row {{rowSelected?.objectID === row.objectID ? 'selected' : ''}}" [@removingRow]="dataSource.data[x]['status']" (contextmenu)="onRightClick($event, actionsPanel, row, x)" ></tr>
+					<tr mat-row ni-row #tableRow *matRowDef="let row; columns: getColumns(); let x = index" [data]="row" [index]="x" [ngClass]="rowClass ? rowClass(row) : ''" class="ni-body-row {{rowSelected?.data.objectID === row.objectID ? 'selected' : ''}}" [@removingRow]="dataSource.data[x]['status']" (contextmenu)="onRightClick($event, actionsPanel, row, x)" ></tr>
 				</table>
 			</div>
 		</div>
@@ -125,13 +89,14 @@
 					>{{choice.value.label}}</mat-checkbox>
 				</div>
 				<div *ngIf="filter.type === 'daterange'" class="range-field-flex">
-					<mat-form-field>
-						<input matInput (focus)="dpTo.open()" [matDatepicker]="dpTo" type="text" [formControl]="filter.from" placeholder="From" autocomplete="off">
-						<mat-daterangepicker #dpTo [touchUi]="false" [dualView]="true" [showCustomRanges]="true"></mat-daterangepicker>
-					</mat-form-field>
-					<mat-form-field>
-						<input matInput (focus)="dpTo.open()" [matDaterangepickerEnd]="dpTo" type="text" [formControl]="filter.to" placeholder="To" autocomplete="off">
-						<mat-datepicker-toggle matSuffix [for]="dpTo"></mat-datepicker-toggle>
+					<mat-form-field appearance="fill">
+						<mat-label>From - To</mat-label>
+						<mat-date-range-input [rangePicker]="picker">
+						  	<input matStartDate [formControl]="filter.from" placeholder="Start date">
+						  	<input matEndDate [formControl]="filter.to" placeholder="End date">
+						</mat-date-range-input>
+						<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+						<mat-date-range-picker #picker></mat-date-range-picker>
 					</mat-form-field>
 				</div>
 			</div>
@@ -146,8 +111,8 @@
 <div style="position: fixed" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" #actionsPanel="matMenuTrigger" [matMenuTriggerFor]="actionsMenu"></div>
 <mat-menu #actionsMenu="matMenu" (closed)="actionsClosed($event)">
 	<div *ngIf="rowActions.length" class="row-actions">
-		<div *ngIf="rowSelected as doc">
-			<button *ngFor="let action of rowActions" mat-menu-item (click)="runRowAction(action, doc, rowSelectedIndex)" [disabled]="!getRowActionPermissions(action, doc, rowSelectedIndex)">
+		<div *ngIf="rowSelected as row">
+			<button *ngFor="let action of rowActions" mat-menu-item (click)="runRowAction(action, row)" [disabled]="!getRowActionPermissions(action, row, rowSelectedIndex)">
 				<span>
 					<mat-icon>{{action.icon}}</mat-icon>
 					<b>{{action.label}}</b>

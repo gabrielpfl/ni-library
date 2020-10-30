@@ -12,7 +12,6 @@ import { NiDatepickerModule } from '../ni-datepicker/ni-datepicker.module';
 import { NiSelectModule } from '../ni-select/ni-select.module';
 import { NiChipsSelectModule } from '../ni-chips-select/ni-chips-select.module';
 import { QuillModule } from 'ngx-quill';
-import { MatDaterangepickerModule } from 'mat-daterangepicker';
 
 @NgModule({
   imports: [
@@ -25,7 +24,6 @@ import { MatDaterangepickerModule } from 'mat-daterangepicker';
     NiDatepickerModule,
     NiSelectModule,
     NiChipsSelectModule,
-    MatDaterangepickerModule,
     QuillModule
   ],
   declarations: [

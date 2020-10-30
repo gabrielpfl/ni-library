@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, AngularFirestoreModule } from '@angular/fire/firestore'
-import { AngularFireStorage, AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore'
+import { AngularFireStorage } from '@angular/fire/storage';
 import { Observable, BehaviorSubject, of } from 'rxjs'
-import { map, switchMap, combineLatest } from 'rxjs/operators';
-import * as firebase from 'firebase/app';
+import { map, switchMap } from 'rxjs/operators';
+import * as firebase from 'firebase';
 
 @Injectable({
   providedIn: 'root',

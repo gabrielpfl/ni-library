@@ -9,6 +9,8 @@ import { MaterialModule } from '../../material.module';
 import { NiDataTableFirestore } from './ni-data-table-firestore.component';
 import { NiTopTabsModule } from '../ni-top-tabs/ni-top-tabs.module';
 import { NiFiltersModule } from '../ni-filters/ni-filters.module';
+import { NiCellModule } from '../../directives/ni-cell/ni-cell.module';
+import { NiRowModule } from '../../directives/ni-row/ni-row.module';
 
 @NgModule({
   imports: [
@@ -18,7 +20,9 @@ import { NiFiltersModule } from '../ni-filters/ni-filters.module';
     MaterialModule,
     BrowserAnimationsModule,
     NiTopTabsModule,
-    NiFiltersModule
+    NiFiltersModule,
+    NiRowModule,
+    NiCellModule
   ],
   declarations: [
     NiDataTableFirestore

@@ -7,6 +7,9 @@
   },
   "description": "Some helpers for angular development",
   "author": "Braulio David",
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/brauliodavid/ni-library/tree/master/projects/ni-helper-snippets"

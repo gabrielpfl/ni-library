@@ -7,6 +7,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../../material.module';
 
 import { NiDataTable } from './ni-data-table.component';
+import { NiCellModule } from '../../directives/ni-cell/ni-cell.module';
+import { NiRowModule } from '../../directives/ni-row/ni-row.module';
 
 @NgModule({
   imports: [
@@ -14,7 +16,9 @@ import { NiDataTable } from './ni-data-table.component';
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NiRowModule,
+    NiCellModule
   ],
   declarations: [
     NiDataTable

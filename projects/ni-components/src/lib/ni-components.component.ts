@@ -74,7 +74,7 @@ export class NiComponentsComponent implements OnInit {
 				}
 			]
 		}
-		this.sharedComponets.openFormModal(args).afterClosed().pipe(take(1)).subscribe((data) => {
+		this.sharedComponets.openFormModal({data: args}).afterClosed().pipe(take(1)).subscribe((data) => {
 			console.log(data)
 		})
 	}
