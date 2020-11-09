@@ -398,11 +398,12 @@ export class NiHelperSnippetsService {
     }
 
     priceFormat(val){
-        return Number(round(val, 2).toFixed(2))
+        return val || val === 0 ? Number(round(val, 2).toFixed(2)) : 0
     }
 
     priceFormat2(val){
-        return Number(round(val, 2).toFixed(2)).toFixed(2)
+        const num = val || val === 0 ? Number(round(val, 2).toFixed(2)).toFixed(2) : 0.00
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     }
 
     isValidTimeStamp(value){

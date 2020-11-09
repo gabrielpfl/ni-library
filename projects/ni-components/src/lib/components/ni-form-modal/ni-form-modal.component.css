@@ -1,6 +1,7 @@
 .label-radio-list {
     margin-bottom: 10px;
     display: block;
+    font-weight: 600;
 }
 
 .radio-list mat-radio-button {
@@ -12,7 +13,7 @@
 }
 
 .field-control {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .files {
@@ -85,4 +86,8 @@
 .dropzone.hovering {
     border: 2px solid #f16624;
     color: #dadada !important;
+}
+
+.inline-instructions {
+    margin-bottom: 10px;
 }

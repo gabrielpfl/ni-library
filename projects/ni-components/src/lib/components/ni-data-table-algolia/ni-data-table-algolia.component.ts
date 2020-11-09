@@ -15,6 +15,7 @@ import { NiTopTabs } from '../ni-top-tabs/ni-top-tabs.component'
 import { FormControl, FormGroup } from '@angular/forms'
 import { MatMenuTrigger } from '@angular/material/menu';
 import { NiRow } from '../../directives/ni-row/ni-row.directive';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 const moment = _moment;
 
 @Component({
@@ -68,6 +69,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	@Output() onFilter = new EventEmitter()
 	@Output() rowAction = new EventEmitter()
 	@Output() tableAction = new EventEmitter()
+	@Output() sortedColumns = new EventEmitter()
 
 	search: FormControl = new FormControl()
 
@@ -94,6 +96,8 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	rowSelected: NiRow
 	rowSelectedIndex = -1
 
+	displayedColumns = []
+
 	private unsubscribe = new Subject<void>()
 
 	constructor(
@@ -105,10 +109,12 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 
 	ngOnInit() {
 		this.search.setValue(this.searchValue, {emitEvent: false})
+
+		this.setColumns()
 		
 		this.search.valueChanges.pipe(
-			map(() => {
-				this.onSearch.emit()
+			map((value) => {
+				this.onSearch.emit(value)
 			}),
 			debounceTime(500),
 			takeUntil(this.unsubscribe)
@@ -330,11 +336,11 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 		}
 	}
 
-	getColumns(){
-		const columns = this.columns.filter(column => column.display).map(column => column.key)
+	setColumns(){
+		// const columns = this.columns.filter(column => column.display).map(column => column.key)
+		const columns = this.columns.map(column => column.key)
 		columns.unshift('select')
-		// columns.push('row-actions')
-		return columns
+		this.displayedColumns = columns
 	}
 
 	filterFiltered(filter){
@@ -356,6 +362,15 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	actionsClosed(event){
 		this.rowSelected = null
 		this.rowSelectedIndex = -1
+	}
+
+	dropColumns(event: CdkDragDrop<string[]>) {
+		moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex)
+		this.columns = this.columns.sort((a, b) => {
+			return this.displayedColumns.indexOf(a.key) - this.displayedColumns.indexOf(b.key)
+		})
+		this.setColumns()
+		this.sortedColumns.emit(this.columns)
 	}
 
 	ngOnDestroy() {

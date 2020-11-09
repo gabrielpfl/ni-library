@@ -52,6 +52,7 @@
 
 				<div *ngIf="field.value.type === 'radio'">
 					<label class="label-radio-list">{{field.value.label}}</label>
+					<div *ngIf="field.value.instructions" class="inline-instructions">{{field.value.instructions}}</div>
 					<mat-radio-group formControlName="value" class="radio-list">
 						<mat-radio-button *ngFor="let choice of field.value.choices" [value]="getChoiceValue(choice)">{{getChoiceLabel(choice)}}</mat-radio-button>
 					</mat-radio-group>
@@ -61,6 +62,7 @@
 				
 				<div *ngIf="field.value.type === 'checkbox'">
 					<label class="label-radio-list">{{field.value.label}}</label>
+					<div *ngIf="field.value.instructions" class="inline-instructions">{{field.value.instructions}}</div>
 					<div class="checkbox-choices">
 						<mat-checkbox *ngFor="let choice of field.value.choices, let c = index" [checked]="checkedChoice(field, choice, c)" (change)="changeCheckbox($event, field, choice, c)" class="checkbox-item">{{getChoiceLabel(choice)}}</mat-checkbox>
 					</div>

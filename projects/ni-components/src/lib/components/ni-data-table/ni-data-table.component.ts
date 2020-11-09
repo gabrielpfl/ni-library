@@ -91,8 +91,8 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 		this.search.setValue(this.searchValue, {emitEvent: false})
 
 		this.search.valueChanges.pipe(
-			map(() => {
-				this.onSearch.emit()
+			map((value) => {
+				this.onSearch.emit(value)
 			}),
 			debounceTime(500),
 			takeUntil(this.unsubscribe)
