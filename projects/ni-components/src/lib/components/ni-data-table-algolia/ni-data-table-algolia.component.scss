@@ -267,3 +267,9 @@ tr td:last-child {
 tr.selected {
     background-color: rgba(0, 0, 0, 0.08);
 }
+
+.no-results-box {
+    position: absolute !important;
+    width: 100% !important;
+    height: 400px !important;
+}

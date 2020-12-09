@@ -249,3 +249,9 @@ tr td:last-child {
 .row-actions > button {
     margin-left: auto;
 }
+
+.no-results-box {
+    position: absolute !important;
+    width: 100% !important;
+    height: 400px !important;
+}

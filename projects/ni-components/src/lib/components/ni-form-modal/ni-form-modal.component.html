@@ -44,7 +44,12 @@
 					</mat-error>
 				</mat-form-field>-->
 
-				<ni-datepicker *ngIf="field.value.type === 'date'" formControlName="value" [materialInput]="true" [label]="field.value.label" [placeholder]="field.value.placeholder" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" [startAt]="field.value.startAt ? field.value.startAt : ''" [appearance]="field.value.appearance"></ni-datepicker>
+				<mat-form-field *ngIf="field.value.type === 'date'" [appearance]="field.value.appearance">
+					<mat-label>{{field.value.label}}</mat-label>
+					<input matInput [matDatepicker]="picker" formControlName="value" [placeholder]="field.value.placeholder" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" [startAt]="field.value.startAt ? field.value.startAt : ''">
+					<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+					<mat-datepicker #picker></mat-datepicker>
+				</mat-form-field>
 				
 				<ni-select *ngIf="field.value.type === 'select'" [label]="field.value.label" [placeholder]="field.value.placeholder" [multiple]="field.value.multiple" formControlName="value" (opened)="field.value.hasOwnProperty('onOpen') ? field.value['onOpen']() : ''" [appearance]="field.value.appearance">
 					<ni-option *ngFor="let choice of field.value.choices" [value]="getChoiceValue(choice)" [viewValue]="getChoiceLabel(choice)" [disabled]="choice && choice.hasOwnProperty('disabled') ? choice.disabled : false"></ni-option>
@@ -140,5 +145,5 @@
 	</div>
 </mat-dialog-content>
 <div *ngIf="loading" class="loading-shape">
-	<mat-spinner color="primary" mode="indeterminate" [strokeWidth]="3" [diameter]="70"></mat-spinner>
+	<mat-spinner color="primary" mode="indeterminate" diameter="50" value="100" strokeWidth="3"></mat-spinner>
 </div>

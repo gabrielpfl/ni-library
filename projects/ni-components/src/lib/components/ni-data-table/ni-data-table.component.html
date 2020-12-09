@@ -16,17 +16,17 @@
 		</div>
 		<div class="ni-table-body-wrapper" [ngStyle]="{'position': 'relative'}">
 			<div class="ni-table-body">
-				<div *ngIf="!dataSource.data || dataSource.data.length < 1" class="no-results-box">
+				<div *ngIf="!dataSource.data.length" class="no-results-box">
 					<div>
 						<i class="material-icons">info</i>
 						<span>No results found</span>
 					</div>
 				</div>
-				<table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortActive" matSortDisableClear [matSortDirection]="sortDirection" [ngClass]="{'table-hidden': !dataSource.data || dataSource.data.length < 1}">
+				<table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortActive" matSortDisableClear [matSortDirection]="sortDirection" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumns($event)">
 					
 					<!-- Select Column -->
 					<ng-container matColumnDef="select">
-						<th mat-header-cell *matHeaderCellDef [ngClass]="'checkboxCell'"> 
+						<th mat-header-cell *matHeaderCellDef cdkDrag [ngClass]="'checkboxCell'"> 
 							<mat-checkbox (change)="$event ? masterToggle() : null"
 								[checked]="selection.hasValue() && isAllSelected()"
 								[indeterminate]="selection.hasValue() && !isAllSelected()">
@@ -42,8 +42,8 @@
 				
 					<!-- Columns -->
 					<ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
-						<th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sorting ? column.key : null" [disabled]="!column.sorting ? true : false" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}"> {{column.label}} </th>
-						<td mat-cell *matCellDef="let row; let x = index" [ngClass]="{'hidden': column.hidden, 'width2': column.width == 2}">
+						<th mat-header-cell *matHeaderCellDef cdkDrag [mat-sort-header]="column.sorting ? column.key : null" [disabled]="!column.sorting ? true : false" [ngClass]="{'hidden': column.hidden || !column.display, 'width2': column.width == 2}"> {{column.label}} </th>
+						<td mat-cell *matCellDef="let row; let x = index" class="ni-cell {{column.hidden || !column.display ? 'hidden' : ''}} {{column.width === 2 ? 'width2' : ''}}" [ngClass]="column.class ? column.class : ''">
 							<span ni-cell [rows]="niRows" [column]="column" [index]="x"></span>
 						</td>
 					</ng-container>

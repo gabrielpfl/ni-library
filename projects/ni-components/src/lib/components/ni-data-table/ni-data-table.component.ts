@@ -11,6 +11,7 @@ import { DomSanitizer } from '@angular/platform-browser'
 import Fuse from 'fuse.js'
 import { FormControl } from '@angular/forms';
 import { NiRow } from '../../directives/ni-row/ni-row.directive';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'ni-data-table',
@@ -49,6 +50,7 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	@Output() onFilter = new EventEmitter()
 	@Output() rowAction = new EventEmitter()
 	@Output() tableAction = new EventEmitter()
+	@Output() sortedColumns = new EventEmitter()
 
 	filter = new BehaviorSubject<any>(null)
 
@@ -84,11 +86,9 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	ngOnInit() {
-		this.columns.map(column => {
-			this.displayedColumns.push(column.key)
-		})
-
 		this.search.setValue(this.searchValue, {emitEvent: false})
+
+		this.setColumns()
 
 		this.search.valueChanges.pipe(
 			map((value) => {
@@ -252,6 +252,22 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 
 	clearInput(){
 		this.search.setValue('')
+	}
+
+	setColumns(){
+		// const columns = this.columns.filter(column => column.display).map(column => column.key)
+		const columns = this.columns.map(column => column.key)
+		columns.unshift('select')
+		this.displayedColumns = columns
+	}
+
+	dropColumns(event: CdkDragDrop<string[]>) {
+		moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex)
+		this.columns = this.columns.sort((a, b) => {
+			return this.displayedColumns.indexOf(a.key) - this.displayedColumns.indexOf(b.key)
+		})
+		this.setColumns()
+		this.sortedColumns.emit(this.columns)
 	}
 
 	ngOnDestroy() {

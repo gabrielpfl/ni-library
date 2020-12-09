@@ -16,6 +16,12 @@
 		</div>
 		<div class="ni-table-body-wrapper" [ngStyle]="{'position': 'relative'}">
 			<div class="ni-table-body">
+				<div *ngIf="!dataSource.data.length" class="no-results-box">
+					<div>
+						<i class="material-icons">info</i>
+						<span>No results found</span>
+					</div>
+				</div>
 				<table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortActive" matSortDisableClear [matSortDirection]="sortDirection" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumns($event)">
 					
 					<!-- Select Column -->

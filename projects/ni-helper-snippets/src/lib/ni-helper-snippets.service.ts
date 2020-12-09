@@ -383,13 +383,15 @@ export class NiHelperSnippetsService {
     }
 
     dateFormat(date, format, tz?){
-        if(!date) return;
+        if(!date) return '';
         
         let date2 = date
         if(date instanceof Date){
             date2 = date
         }else if(this.isValidTimeStamp(date)){
             date2 = date.toDate()
+        }else if(this.isValidTimeStamp2(date)){
+            date2 = moment.unix(date['_seconds']).toDate()
         }
         if(tz){
             return moment(date2).tz(tz).format(format); 
@@ -408,6 +410,12 @@ export class NiHelperSnippetsService {
 
     isValidTimeStamp(value){
         if(isObject(value) && value.hasOwnProperty('seconds') && value.hasOwnProperty('nanoseconds')) 
+        return true
+        return false
+    }
+
+    isValidTimeStamp2(value){
+        if(isObject(value) && value.hasOwnProperty('_seconds') && value.hasOwnProperty('_nanoseconds')) 
         return true
         return false
     }
@@ -747,6 +755,16 @@ export class NiHelperSnippetsService {
 		return new Blob([ab], { type: parts[0].split(';')[0].split(':')[1] })
     }
     
+    blobToFile(theBlob: Blob, fileName:string): File {
+        var b: any = theBlob;
+        //A Blob() is almost a File() - it's just missing the two properties below which we will add
+        b.lastModifiedDate = new Date();
+        b.name = fileName;
+    
+        //Cast to a File() type
+        return <File>theBlob;
+    }
+
     dataURLtoFile(dataurl, filename) {
         let arr = dataurl.split(','),
             mime = arr[0].match(/:(.*?);/)[1],

@@ -20,7 +20,7 @@
 						<span>No results found</span>
 					</div>
 				</div>
-				<table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortActive" matSortDisableClear [matSortDirection]="sortDirection" [ngClass]="{'table-hidden': !dataSource.data || dataSource.data.length < 1}">
+				<table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortActive" matSortDisableClear [matSortDirection]="sortDirection">
 					
 					<!-- Select Column -->
 					<ng-container matColumnDef="select">
