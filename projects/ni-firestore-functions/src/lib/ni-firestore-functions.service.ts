@@ -66,7 +66,10 @@ export class NiFirestoreService {
 	 * @param {AngularFirestoreCollection} collection the parent collection Firestore reference
 	 * @param {string|DocumentPath[]} path the document reference as string|path, if exists, overrides the collection & id params
      */
-	doc(params: FirestoreDocParams){
+	doc(params: FirestoreDocParams | string){
+		if(typeof params === 'string'){
+			return this.getDocRef(params)
+		}
 		const {id, collection, path} = params
 		let ref: AngularFirestoreDocument
 		if(path){
@@ -168,7 +171,7 @@ export class NiFirestoreService {
 	 * @param {AngularFirestoreCollection} collection the parent collection Firestore reference
 	 * @param {string|DocumentPath[]} path the document reference as string|path, if exists, overrides the collection & id params
      */
-	getDoc(params: FirestoreDocParams | AngularFirestoreDocument): Observable<FirestoreDocument>{
+	getDoc(params: FirestoreDocParams | AngularFirestoreDocument | string): Observable<FirestoreDocument>{
 		const ref: AngularFirestoreDocument = params instanceof AngularFirestoreDocument ? params : this.doc(params)
 		return ref.snapshotChanges().pipe(
 			map(actions => {

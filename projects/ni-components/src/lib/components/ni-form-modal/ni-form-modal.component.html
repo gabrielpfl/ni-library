@@ -47,6 +47,7 @@
 				<mat-form-field *ngIf="field.value.type === 'date'" [appearance]="field.value.appearance">
 					<mat-label>{{field.value.label}}</mat-label>
 					<input matInput [matDatepicker]="picker" formControlName="value" [placeholder]="field.value.placeholder" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" [startAt]="field.value.startAt ? field.value.startAt : ''">
+					<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
 					<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
 					<mat-datepicker #picker></mat-datepicker>
 				</mat-form-field>
@@ -63,7 +64,7 @@
 					</mat-radio-group>
 				</div>
 
-				<ni-chips-select *ngIf="field.value.type === 'chips-select'" formControlName="value" [label]="field.value.label" [placeholder]="field.value.placeholder" [instructions]="field.value.instructions" [choices]="field.value.choices" [appearance]="field.value.appearance"></ni-chips-select>
+				<ni-chips-select *ngIf="field.value.type === 'chips-select'" formControlName="value" [label]="field.value.label" [placeholder]="field.value.placeholder" [instructions]="field.value.instructions" [choices]="field.value.choices" [appearance]="field.value.appearance" [addOnKeyEnter]="field.value.addOnKeyEnter"></ni-chips-select>
 				
 				<div *ngIf="field.value.type === 'checkbox'">
 					<label class="label-radio-list">{{field.value.label}}</label>

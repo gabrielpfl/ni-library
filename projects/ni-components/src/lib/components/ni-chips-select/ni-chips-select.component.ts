@@ -63,32 +63,38 @@ export class NiChipsSelectComponent implements OnInit {
 	add(event: MatChipInputEvent): void {
 		if(!this.addOnKeyEnter) return;
 
-		const input = event.input;
-		const value = event.value;
+		const input = event.input
+		const value = event.value
+		const _value = this.value
 	
 		// Add our chip
 		if ((value || '').trim()) {
-		  this.value.push(value.trim());
+			_value.push(value.trim())
+			this.value = _value
 		}
 	
 		// Reset the input value
 		if (input) {
-		  input.value = '';
+		  	input.value = ''
 		}
 	
-		this.chipCtrl.setValue(null);
+		this.chipCtrl.setValue(null)
 	}
 	
 	remove(chip: string): void {
-		const index = this.value.indexOf(chip);
+		const index = this._value.indexOf(chip)
+		const value = this.value
 	
 		if (index >= 0) {
-		  this.value.splice(index, 1);
+			value.splice(index, 1)
+			this.value = value
 		}
 	}
 	
 	selected(event: MatAutocompleteSelectedEvent): void {
-		this.value.push(event.option.viewValue);
+		const value = this.value
+		value.push(event.option.viewValue);
+		this.value = value
 		this.chipInput.nativeElement.value = '';
 		this.chipCtrl.setValue(null);
 	}

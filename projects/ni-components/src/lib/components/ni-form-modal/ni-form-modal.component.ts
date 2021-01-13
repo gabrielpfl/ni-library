@@ -43,6 +43,7 @@ export interface NiFormField {
 	fieldClass?: string | string[] | Set<string> | { [klass: string]: any; }
 	multiple?: boolean
 	dropzone?: boolean
+	addOnKeyEnter?: boolean
 	onOpen?(): void
 	onLoad?(value: any): void
 	onChange?(fieldsArray: any): void
@@ -211,6 +212,10 @@ export class NiFormModal implements OnDestroy {
 
 			if(field.dropzone){
 				group.addControl('dropzone', new FormControl(field.dropzone))
+			}
+
+			if(field.addOnKeyEnter){
+				group.addControl('addOnKeyEnter', new FormControl(field.addOnKeyEnter))
 			}
 
 			if(field.type === 'daterange'){

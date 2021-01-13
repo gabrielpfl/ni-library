@@ -12,8 +12,8 @@ const moment = _moment
 })
 export class NiHelperSnippetsService {
 
-	setForm(formGroup: AbstractControl, obj: any, opts: any = { disabled: false, emitEvent: true}){
-		const { disabled = false, emitEvent = true} = opts
+	setForm(formGroup: AbstractControl, obj: any, opts: any = { disabled: false, emitEvent: true, ignoreProps: []}){
+		const { disabled = false, emitEvent = true, ignoreProps = []} = opts
 
         if(!obj) return;
 
@@ -38,7 +38,7 @@ export class NiHelperSnippetsService {
             }
             let value = obj[key]
 
-			if((!isObject(value) && !Array.isArray(value)) || this.isValidTimeStamp(value) || moment.isMoment(value) || value instanceof Date){
+            const setControl = () => {
                 let control: FormControl = formGroup['controls'][key];
                 if(this.isValidTimeStamp(value) || moment.isMoment(value)){
                     value = value.toDate()
@@ -60,6 +60,10 @@ export class NiHelperSnippetsService {
                         control.enable({emitEvent: false})
                     }
                 }
+            }
+
+			if((!isObject(value) && !Array.isArray(value)) || this.isValidTimeStamp(value) || moment.isMoment(value) || value instanceof Date){
+                setControl()
 			}else if(isObject(value) && !Array.isArray(value) && !(value instanceof Date) && !this.isValidTimeStamp(value)){
 				let group = formGroup['controls'][key];
 				if(group){
@@ -74,6 +78,11 @@ export class NiHelperSnippetsService {
 					}
 				}
 			}else if(Array.isArray(value)){
+                if(ignoreProps.includes(key)){
+                    setControl()
+                    return;
+                }
+                
                 let array = formGroup['controls'][key];
                 if(array){
                     this.setForm(array, value, opts);
