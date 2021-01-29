@@ -1,10 +1,10 @@
 <mat-dialog-content>
-	<div [ngClass]="formClass">
+	<div>
 		<div class="dialog-header">
 			<h5>{{title}}</h5>
 			<ni-alert *ngFor="let note of notes" [type]="note.type">{{note.content}}</ni-alert>
 		</div>
-		<div class="dialog-content" [formGroup]="fieldsArray">
+		<div class="dialog-content" [formGroup]="fieldsArray" [ngClass]="formClass">
 			<div *ngFor="let field of fieldsArray.controls, let i =index" [formGroupName]="i" class="field-control" [ngClass]="field.value.fieldClass">
 				
 				<mat-form-field *ngIf="field.value.type === 'text' || field.value.type === 'email'" [appearance]="field.value.appearance">

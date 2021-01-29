@@ -5,8 +5,8 @@ import * as _moment from 'moment-timezone';
 const moment = _moment;
 
 @Component({
-  selector: 'ni-datepicker',
-  templateUrl: './ni-datepicker.component.html',
+  	selector: 'ni-datepicker',
+  	templateUrl: './ni-datepicker.component.html',
 	styleUrls: ['./ni-datepicker.component.css'],
 	providers: [
 		{

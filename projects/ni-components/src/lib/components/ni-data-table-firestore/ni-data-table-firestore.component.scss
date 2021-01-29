@@ -255,3 +255,13 @@ tr td:last-child {
     width: 100% !important;
     height: 400px !important;
 }
+
+.cell-info {
+    display: flex;
+    align-items: center;
+}
+
+.cell-info i {
+    margin-left: 4px;
+    cursor: pointer;
+}

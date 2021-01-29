@@ -398,7 +398,8 @@ export class NiHelperSnippetsService {
         if(date instanceof Date){
             date2 = date
         }else if(this.isValidTimeStamp(date)){
-            date2 = date.toDate()
+            // date2 = date.toDate()
+            date2 = moment.unix(date['seconds']).toDate()
         }else if(this.isValidTimeStamp2(date)){
             date2 = moment.unix(date['_seconds']).toDate()
         }

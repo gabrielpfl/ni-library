@@ -81,3 +81,7 @@ export * from './lib/components/ni-component-box/ni-component-box.tokens';
 export * from './lib/components/ni-component-box/ni-component-box-ref';
 
 export * from './lib/components/ni-column-content/ni-column-content.component';
+
+export * from './lib/components/ni-ckeditor/ni-ckeditor.service';
+export * from './lib/components/ni-ckeditor/ni-ckeditor.module';
+export * from './lib/components/ni-ckeditor/ni-ckeditor.component';

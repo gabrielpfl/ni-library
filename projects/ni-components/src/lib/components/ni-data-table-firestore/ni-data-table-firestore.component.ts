@@ -121,6 +121,8 @@ export class NiDataTableFirestore implements OnInit, OnDestroy, AfterViewInit {
 		.pipe(
 			startWith({}),
 			switchMap(() => {
+				this.selection.clear()
+				
 				this.isLoadingResults = true;
 				this.isRateLimitReached = false;
 
@@ -304,8 +306,12 @@ export class NiDataTableFirestore implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	runTableAction(action){
-		action.action(this.selection.selected)
-		this.tableAction.emit(this.selection.selected)
+		const items = this.selection.selected.map(item => {
+			const findRow = this.niRows.toArray().filter(r => r['id'] === item['id'])
+			return findRow[0]
+		})
+		action.action(items)
+		this.tableAction.emit(items)
 	}
 
 	ngOnDestroy() {

@@ -249,10 +249,12 @@ export class NiFirestoreService {
 		collection.doc(id).delete()
 	}
 
-	deleteImage(downloadURL, path){
+	async deleteImage(downloadURL, path = null){
 		const sizes = [150, 350, 1024];
 
-		this.storage.storage.refFromURL(downloadURL).delete(); //remove the file
+		await this.storage.storage.refFromURL(downloadURL).delete(); //remove the file
+
+		if(!path) return;
 
 		const arr = path.split('/')
 		const name = arr[arr.length-1]
@@ -264,7 +266,6 @@ export class NiFirestoreService {
 			const thumbPath = `${newPath}/${thumb}`
 			this.storage.storage.ref(thumbPath).delete();
 		})
-		
 	}
 
 	private getDocRef(path): AngularFirestoreDocument{
