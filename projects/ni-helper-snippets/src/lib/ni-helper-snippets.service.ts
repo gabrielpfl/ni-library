@@ -4,7 +4,8 @@ import { FormBuilder, FormGroup, FormArray, FormControl, AbstractControl, Valida
 import { difference, differenceWith, isEqual, transform, isObject, round, differenceBy, filter, intersection } from 'lodash'
 
 import * as _moment from 'moment-timezone'
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 const moment = _moment
 
 @Injectable({
@@ -12,10 +13,12 @@ const moment = _moment
 })
 export class NiHelperSnippetsService {
 
-	setForm(formGroup: AbstractControl, obj: any, opts: any = { disabled: false, emitEvent: true, ignoreProps: []}){
-		const { disabled = false, emitEvent = true, ignoreProps = []} = opts
+	setForm(formGroup: AbstractControl, obj: any, opts: any = { disabled: false, emitEvent: true, ignoreProps: [], stopPropagation: false}){
+		const { disabled = false, emitEvent = true, ignoreProps = [], stopPropagation = false} = opts
 
         if(!obj) return;
+
+        if(stopPropagation) return;
 
         let keys = []
         if(formGroup instanceof FormGroup){
@@ -38,7 +41,9 @@ export class NiHelperSnippetsService {
             }
             let value = obj[key]
 
-            const setControl = () => {
+            const setControl = async () => {
+                if(stopPropagation) return;
+                
                 let control: FormControl = formGroup['controls'][key];
                 if(this.isValidTimeStamp(value) || moment.isMoment(value)){
                     value = value.toDate()
