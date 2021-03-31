@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, FormArray, FormControl, AbstractControl, Valida
 import { difference, differenceWith, isEqual, transform, isObject, round, differenceBy, filter, intersection } from 'lodash'
 
 import * as _moment from 'moment-timezone'
-import { BehaviorSubject, Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
 const moment = _moment
 
 @Injectable({
@@ -13,8 +13,8 @@ const moment = _moment
 })
 export class NiHelperSnippetsService {
 
-	setForm(formGroup: AbstractControl, obj: any, opts: any = { disabled: false, emitEvent: true, ignoreProps: [], stopPropagation: false}){
-		const { disabled = false, emitEvent = true, ignoreProps = [], stopPropagation = false} = opts
+	setForm(formGroup: AbstractControl, obj: any, opts: any = { disabled: false, emitEvent: true, ignoreProps: [], stopPropagation: false, setValue: null}){
+		const { disabled = false, emitEvent = true, ignoreProps = [], stopPropagation = false, setValue = null} = opts
 
         if(!obj) return;
 
@@ -35,13 +35,13 @@ export class NiHelperSnippetsService {
             }
         }
 
-		keys.map(async (key, i) => {
+		keys.map((key, i) => {
             if(formGroup instanceof FormArray){
                 key = i
             }
             let value = obj[key]
 
-            const setControl = async () => {
+            const setControl = () => {
                 if(stopPropagation) return;
                 
                 let control: FormControl = formGroup['controls'][key];
@@ -49,7 +49,7 @@ export class NiHelperSnippetsService {
                     value = value.toDate()
                 }
 				if(control && control.value !== value){
-                    control.patchValue(value, { emitEvent });
+                    setValue ? setValue(control, value) : control.patchValue(value, { emitEvent })
 				}else if(!control){
                     control = new FormControl({value, disabled})
 					if(formGroup instanceof FormGroup){
@@ -102,6 +102,31 @@ export class NiHelperSnippetsService {
                 }
 			}
         })
+    }
+
+    setFormReactive(formGroup: AbstractControl, obj: any, opts: any = { disabled: false, emitEvent: true, ignoreProps: []}){
+		const { disabled = false, emitEvent = true, ignoreProps = []} = opts
+
+        if(!obj) return;
+
+        const valuesStream = new Observable<any>((observer) => {
+
+            this.setForm(formGroup, obj, {...opts, setValue: (control, value) => observer.next({control, value})})
+          
+            // When the consumer unsubscribes, clean up data ready for next subscription.
+            // return {
+            //     unsubscribe() {
+            //         console.log('unsubscribed')
+            //     }
+            // }
+        })
+
+        const formSubscription = valuesStream.subscribe(data => {
+            if(!data) return;
+            data.control.patchValue(data.value, { emitEvent })
+        })
+
+        return formSubscription
     }
 
     setFormStatus(form: AbstractControl, canActivate: Observable<boolean> | Promise<boolean> | boolean): Promise<void>{
