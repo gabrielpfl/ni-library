@@ -25,14 +25,14 @@ export class NiHelperSnippetsService {
             keys = Object.keys(obj)
         }else if(formGroup instanceof FormArray){
             keys = obj
-            let diff1 = differenceBy(formGroup.getRawValue(), obj, '_id')
-            if(diff1.length){
-                this.removeFromFormArray(formGroup, diff1, '_id')
-            }
-            let diff2 = differenceBy(formGroup.getRawValue(), obj, 'id')
-            if(diff2.length){
-                this.removeFromFormArray(formGroup, diff2, 'id')
-            }
+            // let diff1 = differenceBy(formGroup.getRawValue(), obj, '_id')
+            // if(diff1.length){
+            //     this.removeFromFormArray(formGroup, diff1, '_id')
+            // }
+            // let diff2 = differenceBy(formGroup.getRawValue(), obj, 'id')
+            // if(diff2.length){
+            //     this.removeFromFormArray(formGroup, diff2, 'id')
+            // }
         }
 
 		keys.map((key, i) => {
@@ -102,10 +102,21 @@ export class NiHelperSnippetsService {
                 }
 			}
         })
+
+        // delete from form array
+        if(formGroup instanceof FormArray){
+            const size1 = formGroup.length // Eg. 7
+            const size2 = obj.length // Eg. 5
+            if((size1 - size2) > 0){
+                for (let i = size2; i < size1; i++) {
+                    formGroup.removeAt(i)
+                }
+            }
+        }
     }
 
-    setFormReactive(formGroup: AbstractControl, obj: any, opts: any = { disabled: false, emitEvent: true, ignoreProps: []}){
-		const { disabled = false, emitEvent = true, ignoreProps = []} = opts
+    setFormReactive(formGroup: AbstractControl, obj: any, opts: any = { disabled: false, emitEvent: true, ignoreProps: [], done: false}){
+		const { disabled = false, emitEvent = true, ignoreProps = [], done = false} = opts
 
         if(!obj) return;
 
@@ -114,11 +125,11 @@ export class NiHelperSnippetsService {
             this.setForm(formGroup, obj, {...opts, setValue: (control, value) => observer.next({control, value})})
           
             // When the consumer unsubscribes, clean up data ready for next subscription.
-            // return {
-            //     unsubscribe() {
-            //         console.log('unsubscribed')
-            //     }
-            // }
+            return {
+                unsubscribe() {
+                    opts.done = true
+                }
+            }
         })
 
         const formSubscription = valuesStream.subscribe(data => {
