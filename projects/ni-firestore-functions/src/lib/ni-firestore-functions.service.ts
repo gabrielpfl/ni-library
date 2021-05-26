@@ -178,10 +178,8 @@ export class NiFirestoreService {
 				if (actions.payload.exists === false) {
 					return new FirestoreDocument(ref, null)
 				}
-				let data = actions.payload.data() as any;
-				let id = actions.payload.id;
-				let docData = { id, ...data }
-				return new FirestoreDocument(ref, docData)
+				const data = {...actions.payload.data(), id: actions.payload.id} as any
+				return new FirestoreDocument(ref, data)
 			})
 		)
 	}
