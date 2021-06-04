@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore'
+import { Action, AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentData, DocumentSnapshot } from '@angular/fire/firestore'
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Observable, BehaviorSubject, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators';
@@ -174,12 +174,12 @@ export class NiFirestoreService {
 	getDoc(params: FirestoreDocParams | AngularFirestoreDocument | string): Observable<FirestoreDocument>{
 		const ref: AngularFirestoreDocument = params instanceof AngularFirestoreDocument ? params : this.doc(params)
 		return ref.snapshotChanges().pipe(
-			map(actions => {
+			map((actions: Action<DocumentSnapshot<firebase.firestore.DocumentData>>) => {
 				if (actions.payload.exists === false) {
-					return new FirestoreDocument(ref, null)
+					return new FirestoreDocument(ref, null, actions)
 				}
 				const data = {...actions.payload.data(), id: actions.payload.id} as any
-				return new FirestoreDocument(ref, data)
+				return new FirestoreDocument(ref, data, actions)
 			})
 		)
 	}
@@ -313,10 +313,14 @@ export class FirestoreCollection {
 
 export class FirestoreDocument {
 
+	actions: Action<DocumentSnapshot<firebase.firestore.DocumentData>>
+
 	constructor(
 		private ref: AngularFirestoreDocument,
-		private document: any = null
+		private document: any = null,
+		private _actions: Action<DocumentSnapshot<firebase.firestore.DocumentData>>
 	){
+		this.actions = _actions
 	}
 
 	doc(): AngularFirestoreDocument {
