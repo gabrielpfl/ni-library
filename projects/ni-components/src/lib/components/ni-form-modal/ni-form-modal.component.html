@@ -75,7 +75,7 @@
 				</div>
 
 				<div *ngIf="field.value.type === 'html'" class="plain-html">
-					<div [innerHTML]="sanitizer.bypassSecurityTrustHtml(field.value.value)"></div>
+					<div [innerHTML]="field.value.satinizedValue"></div>
 				</div>
 
 				<div *ngIf="field.value.type === 'button'" class="plain-html">

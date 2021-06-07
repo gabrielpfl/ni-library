@@ -150,12 +150,14 @@ export class NiFormModal implements OnDestroy {
 				validators = [...validators, Validators.email]
 			}
 
+			const value = field.value || field.value === false ? field.value : null
+
 			const group = new FormGroup({
 				type: new FormControl(field.type),
 				name: new FormControl(field.name),
 				appearance: new FormControl(field.appearance ? field.appearance : 'legacy'),
 				choices: new FormControl([]),
-				value: new FormControl({value: field.value || field.value === false ? field.value : null, disabled: field.disabled}, validators)
+				value: new FormControl({value, disabled: field.disabled}, validators)
 			})
 
 			if(field.hasOwnProperty('disabled') && field.disabled == true || field.disabled == false){
@@ -216,6 +218,10 @@ export class NiFormModal implements OnDestroy {
 
 			if(field.addOnKeyEnter){
 				group.addControl('addOnKeyEnter', new FormControl(field.addOnKeyEnter))
+			}
+
+			if(field.type === 'html'){
+				group.addControl('satinizedValue', new FormControl(this.sanitizer.bypassSecurityTrustHtml(value)))
 			}
 
 			if(field.type === 'daterange'){
