@@ -312,6 +312,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	runTableAction(action){
+		if(!this.getTableActionPermissions(action)) return;
 		const items = this.selection.selected.map(item => {
 			const findRow = this.niRows.toArray().filter(r => r.data['objectID'] === item['objectID'])
 			return findRow[0]

@@ -306,6 +306,7 @@ export class NiDataTableFirestore implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	runTableAction(action){
+		if(!this.getTableActionPermissions(action)) return;
 		const items = this.selection.selected.map(item => {
 			const findRow = this.niRows.toArray().filter(r => r['id'] === item['id'])
 			return findRow[0]
