@@ -129,4 +129,12 @@ export class NiChipsSelectComponent implements OnInit {
 
 	registerOnTouched() { }
 
+	setDisabledState(isDisabled: boolean): void {
+		if(isDisabled){
+			this.chipCtrl.disable({emitEvent: false})
+		}else{
+			this.chipCtrl.enable({emitEvent: false})
+		}
+	}
+
 }
