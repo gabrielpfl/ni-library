@@ -18,7 +18,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 	},
 ]
 })
-export class NiChipsSelectComponent implements OnInit {
+export class NiChipsSelectComponent implements ControlValueAccessor, OnInit {
 	@Input() _value: string[] = []; // notice the '_'
 	@Input() appearance = 'legacy'
 	@Input() choices: string[] = [];
@@ -26,12 +26,12 @@ export class NiChipsSelectComponent implements OnInit {
 	@Input() placeholder: string
 	@Input() instructions: string
 	@Input() addOnKeyEnter: boolean = false // when hints enter for non searcheables values
+	@Input() addOnBlur: boolean = false
 
 	//for chips field
 	visible = true;
 	selectable = true;
 	removable = true;
-	addOnBlur = false;
 	separatorKeysCodes: number[] = [ENTER, COMMA];
 	chipCtrl = new FormControl();
 	filteredChips: Observable<any[]>;
@@ -130,11 +130,17 @@ export class NiChipsSelectComponent implements OnInit {
 	registerOnTouched() { }
 
 	setDisabledState(isDisabled: boolean): void {
-		if(isDisabled){
-			this.chipCtrl.disable({emitEvent: false})
-		}else{
-			this.chipCtrl.enable({emitEvent: false})
-		}
+		setTimeout(() => {
+			if(isDisabled){
+				this.chipCtrl.disable({emitEvent: false})
+			}else{
+				this.chipCtrl.enable({emitEvent: false})
+			}
+		}, 50)
+	}
+
+	copy(o) {
+		return Object.assign({}, o)
 	}
 
 }

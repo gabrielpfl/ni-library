@@ -5,7 +5,9 @@
 		*ngFor="let chip of value"
 		[selectable]="selectable"
 		[removable]="removable"
-		(removed)="remove(chip)">
+		(removed)="remove(chip)"
+		[disabled]="chipCtrl.disabled"
+		>
 		{{chip}}
 		<mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
 	  </mat-chip>
