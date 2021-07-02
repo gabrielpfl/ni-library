@@ -114,7 +114,7 @@ export class NiFormModal implements OnDestroy {
 	}
 
 	async init(data){
-		await this.buildForm()
+		this.buildForm()
 
 		this.fieldsArray.valueChanges.pipe(takeUntil(this.unsubscribe)).subscribe(fields => {
 			data.fields = fields
@@ -124,148 +124,161 @@ export class NiFormModal implements OnDestroy {
 
 	buildForm(){
 		this.fields.map(field => {
-			let validators =  [field.required ? Validators.required : Validators.nullValidator]
+			this.addControl(field)
+		})
+	}
 
-			if((field.type === 'checkbox' || field.type === 'file') && field.required){
-				validators = [...validators, Validators.minLength(1)]
-			}
+	addControl(field, position = -1){
+		let validators =  [field.required ? Validators.required : Validators.nullValidator]
 
-			if(field.minLength){
-				validators = [...validators, Validators.minLength(field.minLength)]
-			}
+		if((field.type === 'checkbox' || field.type === 'file') && field.required){
+			validators = [...validators, Validators.minLength(1)]
+		}
 
-			if(field.maxLength){
-				validators = [...validators, Validators.min(field.maxLength)]
-			}
+		if(field.minLength){
+			validators = [...validators, Validators.minLength(field.minLength)]
+		}
 
-			if(field.min){
-				validators = [...validators, Validators.min(field.min)]
-			}
+		if(field.maxLength){
+			validators = [...validators, Validators.min(field.maxLength)]
+		}
 
-			if(field.max){
-				validators = [...validators, Validators.min(field.max)]
-			}
+		if(field.min){
+			validators = [...validators, Validators.min(field.min)]
+		}
 
-			if(field.type === 'email'){
-				validators = [...validators, Validators.email]
-			}
+		if(field.max){
+			validators = [...validators, Validators.min(field.max)]
+		}
 
-			const value = field.value || field.value === false ? field.value : null
+		if(field.type === 'email'){
+			validators = [...validators, Validators.email]
+		}
 
-			const group = new FormGroup({
-				type: new FormControl(field.type),
-				name: new FormControl(field.name),
-				appearance: new FormControl(field.appearance ? field.appearance : 'legacy'),
-				choices: new FormControl([]),
-				value: new FormControl({value, disabled: field.disabled}, validators)
-			})
+		const value = field.value || field.value === false ? field.value : null
 
-			if(field.hasOwnProperty('disabled') && field.disabled == true || field.disabled == false){
-				group.addControl('disabled', new FormControl(field.disabled))
-			}
+		const group = new FormGroup({
+			type: new FormControl(field.type),
+			name: new FormControl(field.name),
+			appearance: new FormControl(field.appearance ? field.appearance : 'legacy'),
+			choices: new FormControl([]),
+			value: new FormControl({value, disabled: field.disabled}, validators)
+		})
 
-			if(field.label){
-				group.addControl('label', new FormControl(field.label))
-			}
+		if(field.hasOwnProperty('disabled') && field.disabled == true || field.disabled == false){
+			group.addControl('disabled', new FormControl(field.disabled))
+		}
 
-			if(field.placeholder){
-				group.addControl('placeholder', new FormControl(field.placeholder))
-			}
+		if(field.label){
+			group.addControl('label', new FormControl(field.label))
+		}
 
-			if(field.instructions){
-				group.addControl('instructions', new FormControl(field.instructions))
-			}
-			
-			if(field.onOpen){
-				group.addControl('onOpen', new FormControl(field.onOpen))
-			}
+		if(field.placeholder){
+			group.addControl('placeholder', new FormControl(field.placeholder))
+		}
 
-			if(field.minLength){
-				group.addControl('minLength', new FormControl(field.minLength))
-			}
+		if(field.instructions){
+			group.addControl('instructions', new FormControl(field.instructions))
+		}
+		
+		if(field.onOpen){
+			group.addControl('onOpen', new FormControl(field.onOpen))
+		}
 
-			if(field.maxLength){
-				group.addControl('maxLength', new FormControl(field.maxLength))
-			}
+		if(field.minLength){
+			group.addControl('minLength', new FormControl(field.minLength))
+		}
 
-			if(field.minDate){
-				group.addControl('minDate', new FormControl(field.minDate))
-			}
+		if(field.maxLength){
+			group.addControl('maxLength', new FormControl(field.maxLength))
+		}
 
-			if(field.maxDate){
-				group.addControl('maxDate', new FormControl(field.maxDate))
-			}
+		if(field.minDate){
+			group.addControl('minDate', new FormControl(field.minDate))
+		}
 
-			if(field.startAt){
-				group.addControl('startAt', new FormControl(field.startAt))
-			}
+		if(field.maxDate){
+			group.addControl('maxDate', new FormControl(field.maxDate))
+		}
 
-			if(field.multiple){
-				group.addControl('multiple', new FormControl(field.multiple))
-			}
+		if(field.startAt){
+			group.addControl('startAt', new FormControl(field.startAt))
+		}
 
-			if(field.fieldClass){
-				group.addControl('fieldClass', new FormControl(field.fieldClass))
-			}
+		if(field.multiple){
+			group.addControl('multiple', new FormControl(field.multiple))
+		}
 
-			if(field.accept){
-				group.addControl('accept', new FormControl(field.accept))
-			}
+		if(field.fieldClass){
+			group.addControl('fieldClass', new FormControl(field.fieldClass))
+		}
 
-			if(field.dropzone){
-				group.addControl('dropzone', new FormControl(field.dropzone))
-			}
+		if(field.accept){
+			group.addControl('accept', new FormControl(field.accept))
+		}
 
-			if(field.addOnKeyEnter){
-				group.addControl('addOnKeyEnter', new FormControl(field.addOnKeyEnter))
-			}
+		if(field.dropzone){
+			group.addControl('dropzone', new FormControl(field.dropzone))
+		}
 
-			if(field.type === 'html'){
-				group.addControl('satinizedValue', new FormControl(this.sanitizer.bypassSecurityTrustHtml(value)))
-			}
+		if(field.addOnKeyEnter){
+			group.addControl('addOnKeyEnter', new FormControl(field.addOnKeyEnter))
+		}
 
-			if(field.type === 'daterange'){
-				group.addControl('range', new FormGroup({
-					from: new FormControl(),
-					to: new FormControl()
-				}))
-			}
+		if(field.type === 'html'){
+			group.addControl('satinizedValue', new FormControl(this.sanitizer.bypassSecurityTrustHtml(value)))
+		}
 
-			if(field.choices){
-				if(Array.isArray(field.choices)){
-					group.get('choices').setValue(field.choices, {emitEvent: false})
-				}else if(field.choices instanceof Promise){
-					field.choices.then(data => {
-						group.get('choices').setValue(data, {emitEvent: false})
-					})
-				}else if(field.choices instanceof Observable){
-					field.choices.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-						group.get('choices').setValue(data, {emitEvent: false})
-					})
-				}
-			}
+		if(field.type === 'daterange'){
+			group.addControl('range', new FormGroup({
+				from: new FormControl(),
+				to: new FormControl()
+			}))
+		}
 
-			if(field.hasOwnProperty('permissions') && !field.permissions){
-				group.get('value').disable({emitEvent: false})
-			}
-
-			if(field.onClick){
-				group.addControl('onClick', new FormControl(field.onClick))
-			}
-
-			(<FormArray>this.fieldsArray).push(group)
-
-			//value changes for each field
-			if(field.onChange){
-				group.get('value').valueChanges.pipe(takeUntil(this.unsubscribe)).subscribe(value => {
-					field['onChange'](this.fieldsArray)
+		if(field.choices){
+			if(Array.isArray(field.choices)){
+				group.get('choices').setValue(field.choices, {emitEvent: false})
+			}else if(field.choices instanceof Promise){
+				field.choices.then(data => {
+					group.get('choices').setValue(data, {emitEvent: false})
+				})
+			}else if(field.choices instanceof Observable){
+				field.choices.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+					group.get('choices').setValue(data, {emitEvent: false})
 				})
 			}
+		}
 
-			if(field.onLoad){
-				field.onLoad(group.get('value').value)
-			}
-		})
+		if(field.hasOwnProperty('permissions') && !field.permissions){
+			group.get('value').disable({emitEvent: false})
+		}
+
+		if(field.onClick){
+			group.addControl('onClick', new FormControl(field.onClick))
+		}
+
+		if(position === -1){
+			(<FormArray>this.fieldsArray).push(group)
+		}else{
+			(<FormArray>this.fieldsArray).insert(position, group)
+		}
+
+		//value changes for each field
+		if(field.onChange){
+			group.get('value').valueChanges.pipe(takeUntil(this.unsubscribe)).subscribe(value => {
+				field['onChange'](this)
+			})
+		}
+
+		if(field.onLoad){
+			field.onLoad(group.get('value').value)
+		}
+	}
+
+	deleteControl(fieldName){
+		const index = this.fieldsArray.getRawValue().findIndex(f => f.name === fieldName)
+		this.fieldsArray.removeAt(index)
 	}
   
 	onNoClick(): void {
