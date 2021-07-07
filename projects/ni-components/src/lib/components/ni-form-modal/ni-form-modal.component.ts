@@ -44,6 +44,7 @@ export interface NiFormField {
 	multiple?: boolean
 	dropzone?: boolean
 	addOnKeyEnter?: boolean
+	addOnBlur?: boolean
 	onOpen?(): void
 	onLoad?(value: any): void
 	onChange?(fieldsArray: any): void
@@ -223,6 +224,10 @@ export class NiFormModal implements OnDestroy {
 
 		if(field.addOnKeyEnter){
 			group.addControl('addOnKeyEnter', new FormControl(field.addOnKeyEnter))
+		}
+
+		if(field.addOnBlur){
+			group.addControl('addOnBlur', new FormControl(field.addOnBlur))
 		}
 
 		if(field.type === 'html'){

@@ -64,7 +64,7 @@
 					</mat-radio-group>
 				</div>
 
-				<ni-chips-select *ngIf="field.value.type === 'chips-select'" formControlName="value" [label]="field.value.label" [placeholder]="field.value.placeholder" [instructions]="field.value.instructions" [choices]="field.value.choices" [appearance]="field.value.appearance" [addOnKeyEnter]="field.value.addOnKeyEnter"></ni-chips-select>
+				<ni-chips-select *ngIf="field.value.type === 'chips-select'" formControlName="value" [label]="field.value.label" [placeholder]="field.value.placeholder" [instructions]="field.value.instructions" [choices]="field.value.choices" [appearance]="field.value.appearance" [addOnKeyEnter]="field.value.addOnKeyEnter" [addOnBlur]="field.value.addOnBlur"></ni-chips-select>
 				
 				<div *ngIf="field.value.type === 'checkbox'">
 					<label class="label-radio-list">{{field.value.label}}</label>
