@@ -45,6 +45,10 @@ export class NiDataTable implements OnInit, OnDestroy, AfterViewInit {
 	@Input() height: string = '500px'
 	@Input() searchValue: string
 	@Input() searchPlaceholder: string
+	@Input() searchParams: any = {
+		page: 0,
+        hitsPerPage: 20
+	}
 
 	@Output() onSearch = new EventEmitter()
 	@Output() onFilter = new EventEmitter()

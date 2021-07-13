@@ -73,7 +73,7 @@
 					</mat-form-field>
 				</div>
 			</div>
-			<mat-paginator [length]="total" [pageSizeOptions]="[10, 20, 50]" [pageSize]="20" [hidePageSize]="filters && filters.filtered" [ngClass]="{'filtered-paginator': filters && filters.filtered || dataSource.data.length < 1 || hidePaginator || statusFiltered}"></mat-paginator>
+			<mat-paginator [length]="total" [pageSizeOptions]="[10, 20, 50]" [pageSize]="searchParams.hitsPerPage" [hidePageSize]="filters && filters.filtered" [ngClass]="{'filtered-paginator': filters && filters.filtered || dataSource.data.length < 1 || hidePaginator || statusFiltered}"></mat-paginator>
 		</div>
 	</div>
 </div>
