@@ -1,6 +1,6 @@
 {
   "name": "ni-algolia-functions",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Simple functions for angular to query and update data in algolia indices",
   "peerDependencies": {
     "@angular/common": "^8.2.14",
@@ -8,7 +8,7 @@
   },
   "author": "Braulio David",
   "dependencies": {
-    "tslib": "^2.0.0"
+    "algoliasearch": "^4.10.3"
   },
   "repository": {
     "type": "git",
