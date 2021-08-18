@@ -1,8 +1,5 @@
 import { Injectable, Optional } from '@angular/core'
-import * as algoliasearch_ from 'algoliasearch';
-import { async, TestBed } from '@angular/core/testing';
-import { NiAlgoliaFunctionsComponent } from './ni-algolia-functions.component';
-const algoliasearch = algoliasearch_;
+import algoliasearch, { SearchClient } from 'algoliasearch'
 
 export class NiAlgoliaConfig {
     apiId = null
@@ -14,7 +11,7 @@ export class NiAlgoliaConfig {
 })
 export class NiAlgoliaService {
 	
-	client
+	client: SearchClient
 
     private _apiId = null
     private _apiKey = null
@@ -42,81 +39,99 @@ export class NiAlgoliaService {
 		return algoliaIndex.saveObjects(objects)
 	}
 
-	search(args): Promise<any[]>{
+	search(args){
 		let algoliaIndex = this.client.initIndex(args.index)
+
 		if(args.orderBy && args.order){
 			const replicaIndexName = `${args.index}_${args.orderBy}_${args.order}`
-			// // algoliaIndex.setSettings({
-			// // 	replicas: [
-			// // 		replicaIndexName
-			// // 	]
-			// // })
 			algoliaIndex = this.client.initIndex(replicaIndexName)
-			// algoliaIndex.setSettings({'ranking': [`${args.order}(${args.orderBy})`]}, (err, content) => {
-			// 	if (err) throw err;
-			// });
 		}
+
 		if(args.search.filters){
-			const filters = []
-			args.search.filters.map(AND => {
-				const filterValues = []
-				AND.map(OR => {
-					if(OR.operator === '=='){
-						filterValues.push(`${OR.key}:"${OR.value}"`)
-					}else if(OR.operator === '!='){
-						filterValues.push(`NOT ${OR.key}:"${OR.value}"`)
-					}else if(OR.operator === '>'){
-						filterValues.push(`${OR.key} > ${OR.value}`)
-					}else if(OR.operator === '<'){
-						filterValues.push(`${OR.key} < ${OR.value}`)
-					}else if(OR.operator === '>='){
-						filterValues.push(`${OR.key} >= ${OR.value}`)
-					}else if(OR.operator === '<='){
-						filterValues.push(`${OR.key} <= ${OR.value}`)
-					}else if(OR.operator === 'BETWEEN'){
-						filterValues.push(`${OR.key}:${OR.from} TO ${OR.to}`)
-					}else if(OR.operator === 'IN'){
-						const inVals = []
-						if(OR.value && Array.isArray(OR.value)){
-							OR.value.map(v => {
-								inVals.push(`(${OR.key}:"${v}")`)
-							})
-						}
-						if(inVals.length){
-							filterValues.push(`(${inVals.join(' AND ')})`)
-						}
-					}else if(OR.operator === 'NOT_IN'){
-						const notInVals = []
-						if(OR.value && Array.isArray(OR.value)){
-							OR.value.map(v => {
-								notInVals.push(`(NOT ${OR.key}:"${v}")`)
-							})
-						}
-						if(notInVals.length){
-							filterValues.push(`(${notInVals.join(' AND ')})`)
-						}
-					}else if(OR.operator === 'ANY'){
-						if(OR.value && Array.isArray(OR.value)){
-							OR.value.map(v => {
-								filterValues.push(`(${OR.key}:"${v}")`)
-							})
-						}
+			this.setFilters(args)
+		}
+
+		return algoliaIndex.search(args.search.query, args.search)
+	}
+
+	setFilters(args){
+		const filters = []
+		args.search.filters.map(AND => {
+			const filterValues = []
+			AND.map(OR => {
+				if(OR.operator === '=='){
+					filterValues.push(`${OR.key}:"${OR.value}"`)
+				}else if(OR.operator === '!='){
+					filterValues.push(`NOT ${OR.key}:"${OR.value}"`)
+				}else if(OR.operator === '>'){
+					filterValues.push(`${OR.key} > ${OR.value}`)
+				}else if(OR.operator === '<'){
+					filterValues.push(`${OR.key} < ${OR.value}`)
+				}else if(OR.operator === '>='){
+					filterValues.push(`${OR.key} >= ${OR.value}`)
+				}else if(OR.operator === '<='){
+					filterValues.push(`${OR.key} <= ${OR.value}`)
+				}else if(OR.operator === 'BETWEEN'){
+					filterValues.push(`${OR.key}:${OR.from} TO ${OR.to}`)
+				}else if(OR.operator === 'IN'){
+					const inVals = []
+					if(OR.value && Array.isArray(OR.value)){
+						OR.value.map(v => {
+							inVals.push(`(${OR.key}:"${v}")`)
+						})
 					}
-				})
-				const filterString = `(${filterValues.join(' OR ')})`
-				if(filterValues.length){
-					filters.push(filterString)
+					if(inVals.length){
+						filterValues.push(`(${inVals.join(' AND ')})`)
+					}
+				}else if(OR.operator === 'NOT_IN'){
+					const notInVals = []
+					if(OR.value && Array.isArray(OR.value)){
+						OR.value.map(v => {
+							notInVals.push(`(NOT ${OR.key}:"${v}")`)
+						})
+					}
+					if(notInVals.length){
+						filterValues.push(`(${notInVals.join(' AND ')})`)
+					}
+				}else if(OR.operator === 'ANY'){
+					if(OR.value && Array.isArray(OR.value)){
+						OR.value.map(v => {
+							filterValues.push(`(${OR.key}:"${v}")`)
+						})
+					}
 				}
 			})
-			const filtersString = filters.join(args.search.filterComparator ? args.search.filterComparator : ' AND ')
-			delete args.search['filterComparator']
-			args.search.filters = filtersString
-		}
-		return algoliaIndex.search(args.search)
+			const filterString = `(${filterValues.join(' OR ')})`
+			if(filterValues.length){
+				filters.push(filterString)
+			}
+		})
+		
+		const filtersString = filters.join(args.search.filterComparator ? args.search.filterComparator : ' AND ')
+		delete args.search['filterComparator']
+		args.search.filters = filtersString
+		return args
 	}
 
 	deleteObject(index: string, objectId: string){
 		let algoliaIndex = this.client.initIndex(index)
 		return algoliaIndex.deleteObject(objectId)
+	}
+
+	async browseIndex(args){
+		const algoliaIndex = this.client.initIndex(args.index)
+
+		this.setFilters(args)
+
+		let hits = []
+		await algoliaIndex.browseObjects({
+			query: args.search.query, // Empty query will match all records
+			filters: args.search.filters,
+			batch: batch => {
+			  hits = hits.concat(batch)
+			}
+		})
+
+		return hits
 	}
 }
