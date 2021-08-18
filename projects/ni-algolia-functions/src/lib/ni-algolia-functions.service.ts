@@ -1,3 +1,4 @@
+import { createNullCache } from '@algolia/cache-common'
 import { Injectable, Optional } from '@angular/core'
 import algoliasearch, { SearchClient } from 'algoliasearch'
 
@@ -20,7 +21,9 @@ export class NiAlgoliaService {
         if (config) { 
             this._apiId = config.apiId
             this._apiKey = config.apiKey
-            this.client = algoliasearch(this._apiId, this._apiKey)
+            this.client = algoliasearch(this._apiId, this._apiKey, {
+				responsesCache: createNullCache()
+			})
         }
     }
 
