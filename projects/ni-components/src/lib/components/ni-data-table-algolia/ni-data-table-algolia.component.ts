@@ -214,7 +214,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 								ORFilters = [...ORFilters, {
 									key: filter.key,
 									value: filter.operator === 'IN' ? [choice.value] : choice.value,
-									operator: filter.operator
+									operator: choice.operator ? choice.operator : filter.operator
 								}]
 							}
 						})
@@ -378,6 +378,13 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 		})
 		this.setColumns()
 		this.sortedColumns.emit(this.columns)
+	}
+
+	getFilteredChoices(searchValue, filter){
+		if(searchValue){
+			return filter.choices.controls.filter(c => c.value.label.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1)
+		}
+		return filter.choices.controls
 	}
 
 	ngOnDestroy() {

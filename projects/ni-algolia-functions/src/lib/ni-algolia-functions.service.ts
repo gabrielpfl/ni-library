@@ -63,9 +63,29 @@ export class NiAlgoliaService {
 			const filterValues = []
 			AND.map(OR => {
 				if(OR.operator === '=='){
-					filterValues.push(`${OR.key}:"${OR.value}"`)
+					if(Array.isArray(OR.value)){
+						const inVals = []
+						OR.value.map(v => {
+							inVals.push(`(${OR.key}:"${v}")`)
+						})
+						if(inVals.length){
+							filterValues.push(`(${inVals.join(' AND ')})`)
+						}
+					}else{
+						filterValues.push(`${OR.key}:"${OR.value}"`)
+					}
 				}else if(OR.operator === '!='){
-					filterValues.push(`NOT ${OR.key}:"${OR.value}"`)
+					if(Array.isArray(OR.value)){
+						const notInVals = []
+						OR.value.map(v => {
+							notInVals.push(`(NOT ${OR.key}:"${v}")`)
+						})
+						if(notInVals.length){
+							filterValues.push(`(${notInVals.join(' AND ')})`)
+						}
+					}else{
+						filterValues.push(`NOT ${OR.key}:"${OR.value}"`)
+					}
 				}else if(OR.operator === '>'){
 					filterValues.push(`${OR.key} > ${OR.value}`)
 				}else if(OR.operator === '<'){

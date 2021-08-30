@@ -19,7 +19,7 @@ export class NiCell implements AfterViewInit, OnDestroy {
 
     row: NiRow
 
-    private _safeHtml: SafeHtml
+    private _safeHtml: SafeHtml = ''
     
     set safeHtml(value: SafeHtml) {
        this._safeHtml = value;

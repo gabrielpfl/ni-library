@@ -89,13 +89,18 @@
 	<div *ngIf="currentFilter as filter" (click)="$event.stopPropagation()">
 		<div class="filter-body">
 			<div class="filters-controls">
-				<div *ngIf="filter.type === 'checkbox'">
-					<mat-checkbox 
-						*ngFor="let choice of filter.choices.controls" 
+				<div *ngIf="filter.type === 'checkbox'" class="filter-checkboxes-container">
+					<div class="filter-search" [style.display]="filter.hasOwnProperty('search') && filter.search ? 'block' : 'none'">
+						<input #searchValueFilter type="text" placeholder="search">
+					</div>
+					<div class="filter-checkboxes-list" [ngClass]="{'filter-checkboxes-list-search': filter.hasOwnProperty('search') && filter.search}">
+						<mat-checkbox 
+						*ngFor="let choice of getFilteredChoices(searchValueFilter.value, filter)" 
 						[formControl]="choice.controls.selected"
 						(change)="runFilters()" 
 						class="filter-control"
-					>{{choice.value.label}}</mat-checkbox>
+						>{{choice.value.label}}</mat-checkbox>
+					</div>
 				</div>
 				<div *ngIf="filter.type === 'daterange'" class="range-field-flex">
 					<mat-form-field appearance="fill">

@@ -279,3 +279,38 @@ tr.selected {
     margin-left: 4px;
     cursor: pointer;
 }
+
+.filter-checkboxes-container {
+    width: 220px;
+}
+
+.filter-search {
+    position: absolute;
+    width: 220px;
+    top: 0;
+    left: 0;
+}
+
+.filter-search input {
+    background-color: transparent !important;
+    outline: 0;
+    border: none;
+    display: block;
+    width: 100%;
+    font-size: 1rem;
+    height: 35px;
+    color: inherit;
+    font-family: inherit;
+    border-radius: 0 !important;
+    border-bottom: 1px solid #eee;
+    &:focus{
+        outline: 0;
+    }
+    &::-webkit-input-placeholder {
+        font-weight: 300;
+    }
+}
+
+.filter-checkboxes-list-search {
+    margin-top: 26px;
+}
