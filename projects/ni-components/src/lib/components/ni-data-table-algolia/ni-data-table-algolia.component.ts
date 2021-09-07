@@ -214,11 +214,31 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 								ORFilters = [...ORFilters, {
 									key: filter.key,
 									value: filter.operator === 'IN' ? [choice.value] : choice.value,
-									operator: choice.operator ? choice.operator : filter.operator
+									operator: filter.operator
 								}]
 							}
 						})
 						filter['filtered'] = filter.choices.getRawValue().some(choice => choice.selected)
+					} else if(filter.type === 'range'){
+						if(filter.from.value || filter.from.value === 0){
+							filters = [...filters, 
+								[{
+									key: filter.key,
+									value: filter.from.value,
+									operator: '>='
+								}],
+							]
+						}
+						if(filter.to.value || filter.to.value === 0){
+							filters = [...filters, 
+								[{
+									key: filter.key,
+									value: filter.to.value,
+									operator: '<='
+								}]
+							]
+						}
+						filter['filtered'] = filter.from.value || filter.to.value
 					} else if(filter.type === 'daterange'){
 						if(filter.from.value && filter.to.value){
 							let from = moment(filter.from.value.format('YYYY-MM-DDTHH:mm:ss'))
@@ -336,7 +356,7 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 					this.filter.next('filter')
 				}
 			})
-		}else if(filter.type === 'daterange'){
+		}else if(filter.type === 'range' || filter.type === 'daterange'){
 			filter.from.setValue(null)
 			filter.to.setValue(null)
 			this.filter.next('filter')
