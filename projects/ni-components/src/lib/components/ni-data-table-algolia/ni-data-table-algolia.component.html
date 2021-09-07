@@ -102,6 +102,16 @@
 						>{{choice.value.label}}</mat-checkbox>
 					</div>
 				</div>
+				<div *ngIf="filter.type === 'range'" class="range-field-flex">
+					<mat-form-field appearance="fill" [style.width]="'120px'">
+						<mat-label>From</mat-label>
+						<input matInput type="number" [formControl]="filter.from" autocomplete="off">
+					</mat-form-field>
+					<mat-form-field appearance="fill" [style.width]="'120px'">
+						<mat-label>To</mat-label>
+						<input matInput type="number" [formControl]="filter.to" autocomplete="off">
+					</mat-form-field>
+				</div>
 				<div *ngIf="filter.type === 'daterange'" class="range-field-flex">
 					<mat-form-field appearance="fill">
 						<mat-label>From - To</mat-label>

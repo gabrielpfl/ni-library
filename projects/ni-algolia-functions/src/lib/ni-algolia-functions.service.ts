@@ -72,7 +72,7 @@ export class NiAlgoliaService {
 							filterValues.push(`(${inVals.join(' AND ')})`)
 						}
 					}else{
-						filterValues.push(`${OR.key}:"${OR.value}"`)
+						filterValues.push(this.getOperator(OR.operator, OR.key, OR.value))
 					}
 				}else if(OR.operator === '!='){
 					if(Array.isArray(OR.value)){
@@ -84,7 +84,7 @@ export class NiAlgoliaService {
 							filterValues.push(`(${notInVals.join(' AND ')})`)
 						}
 					}else{
-						filterValues.push(`NOT ${OR.key}:"${OR.value}"`)
+						filterValues.push(this.getOperator(OR.operator, OR.key, OR.value))
 					}
 				}else if(OR.operator === '>'){
 					filterValues.push(`${OR.key} > ${OR.value}`)
@@ -156,5 +156,19 @@ export class NiAlgoliaService {
 		})
 
 		return hits
+	}
+
+	getOperator(operator, key, value){
+		if(operator === '=='){
+			if(typeof value == "boolean"){
+				return `${key}:"${value}"`
+			}
+			return isNaN(value) ? `${key}:"${value}"` : `${key} = ${value}`
+		}else if(operator === '!='){
+			if(typeof value == "boolean"){
+				return `NOT ${key}:"${value}"`
+			}
+			return isNaN(value) ? `NOT ${key}:"${value}"` : `${key} != ${value}`
+		}
 	}
 }
