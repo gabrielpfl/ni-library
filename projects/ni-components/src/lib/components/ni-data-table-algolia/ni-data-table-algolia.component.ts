@@ -368,7 +368,11 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 					this.filter.next('filter')
 				}
 			})
-		}else if(filter.type === 'daterange' || filter.type === 'range'){
+		}else if(filter.type === 'range'){
+			filter.min.setValue(null)
+			filter.max.setValue(null)
+			this.filter.next('filter')
+		}else if(filter.type === 'daterange'){
 			filter.from.setValue(null)
 			filter.to.setValue(null)
 			this.filter.next('filter')
