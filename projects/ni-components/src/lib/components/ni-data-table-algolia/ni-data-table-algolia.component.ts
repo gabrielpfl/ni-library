@@ -220,37 +220,37 @@ export class NiDataTableAlgolia implements OnInit, OnDestroy, AfterViewInit {
 						})
 						filter['filtered'] = filter.choices.getRawValue().some(choice => choice.selected)
 					}else if(filter.type === 'range'){
-						const from = filter.from.value
-						const to = filter.to.value
-						if(from && to && from === to){
+						const min = filter.min.value
+						const max = filter.max.value
+						if(min && max && min === max){
 							filters = [...filters, 
 								[{
 									key: filter.key,
-									value: to,
+									value: max,
 									operator: '=='
 								}],
 							]
 						}else{
-							if(from|| from === 0){
+							if(min || min === 0){
 								filters = [...filters, 
 									[{
 										key: filter.key,
-										value: from,
+										value: min,
 										operator: '>='
 									}],
 								]
 							}
-							if(to || to === 0){
+							if(max || max === 0){
 								filters = [...filters, 
 									[{
 										key: filter.key,
-										value: to,
+										value: max,
 										operator: '<='
 									}]
 								]
 							}
 						}
-						filter['filtered'] = from || to || from === 0 || to === 0
+						filter['filtered'] = min || max || min === 0 || max === 0
 					}else if(filter.type === 'daterange'){
 						if(filter.from.value && filter.to.value){
 							let from = moment(filter.from.value.format('YYYY-MM-DDTHH:mm:ss'))
