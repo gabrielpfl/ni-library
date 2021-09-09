@@ -20,18 +20,14 @@
 					<mat-label>{{field.value.label}}</mat-label>
 					<input matInput type="number" [placeholder]="field.value.placeholder" formControlName="value" autocomplete="off">
 					<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
-					<mat-error *ngIf="field.get('value').hasError('required')">
-						{{field.value.label}} is <strong>required</strong>
-					</mat-error>
+					<mat-error *ngIf="field.get('value').hasError('required')">{{field.value.label}} is <strong>required</strong></mat-error>
 				</mat-form-field>
 
 				<mat-form-field *ngIf="field.value.type === 'textarea'" [appearance]="field.value.appearance">
 					<mat-label>{{field.value.label}}</mat-label>
 					<textarea matInput [placeholder]="field.value.placeholder" formControlName="value"></textarea>
 					<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
-					<mat-error *ngIf="field.get('value').hasError('required')">
-						{{field.value.label}} is <strong>required</strong>
-					</mat-error>
+					<mat-error *ngIf="field.get('value').hasError('required')">{{field.value.label}} is <strong>required</strong></mat-error>
 				</mat-form-field>
 
 				<!--<mat-form-field *ngIf="field.value.type === 'date'">
@@ -100,13 +96,16 @@
 
 				<div *ngIf="field.value.type === 'daterange'" formGroupName="range">
 					<mat-form-field [appearance]="field.value.appearance">
-						<mat-label>From - To</mat-label>
+						<mat-label>{{field.value.label}}</mat-label>
 						<mat-date-range-input [rangePicker]="picker">
 						  	<input matStartDate formControlName="from" placeholder="Start date" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" autocomplete="off">
 						  	<input matEndDate formControlName="to" placeholder="End date" [min]="field.value.minDate ? field.value.minDate : ''" [max]="field.value.maxDate ? field.value.maxDate : ''" autocomplete="off" (dateChange)="onRangeChange(field)">
 						</mat-date-range-input>
 						<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
 						<mat-date-range-picker #picker [startAt]="field.value.startAt ? field.value.startAt : false"></mat-date-range-picker>
+						<mat-hint *ngIf="field.value.instructions" align="start"><strong>{{field.value.instructions}}</strong></mat-hint>
+						<mat-error *ngIf="field.get('range').get('from').hasError('required')">Start date is <strong>required</strong></mat-error>
+						<mat-error *ngIf="field.get('range').get('to').hasError('required')">End date is <strong>required</strong></mat-error>
 					</mat-form-field>
 				</div>
 

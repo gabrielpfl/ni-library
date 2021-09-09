@@ -236,9 +236,11 @@ export class NiFormModal implements OnDestroy {
 
 		if(field.type === 'daterange'){
 			group.addControl('range', new FormGroup({
-				from: new FormControl(),
-				to: new FormControl()
+				from: new FormControl({value: field.from, disabled: field.disabled}, validators),
+				to: new FormControl({value: field.to, disabled: field.disabled}, validators)
 			}))
+
+			group.get('value').setValue(group.get('range').value, {emitEvent: false})
 		}
 
 		if(field.choices){
